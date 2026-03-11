@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad | Vellum Costa Property Management</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { bg: '#FAFAFA', gold: '#C5A059', dark: '#333333', darkmode: '#121212', darkcard: '#1E1E1E' }
+                    },
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 overflow-x-hidden">
+
+    <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="index.html" class="block">
+                <img src="LOGO.png" alt="Vellum Costa Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            </a>
+            
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="index.html" class="text-brand-gold transition-colors">Inicio</a>
+                <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
+                <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
+                <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
+                <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
+                <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+            </div>
+        
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-brand-dark dark:text-white focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-5">
+                
+                <div class="relative group cursor-pointer">
+                    <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2">
+                        <i class="fa-solid fa-globe text-xl"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                    </button>
+                    <div class="absolute right-0 mt-0 w-32 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
+                        <div class="py-2 flex flex-col">
+                            <a href="#" class="px-4 py-2 text-sm text-brand-gold font-bold hover:bg-brand-dark/5 dark:hover:bg-white/5 transition-colors">Español</a>
+                            <a href="index-en.html" class="px-4 py-2 text-sm text-brand-dark dark:text-white hover:bg-brand-dark/5 dark:hover:bg-white/5 hover:text-brand-gold transition-colors">English</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                </button>
+                <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
+            <div class="px-6 py-4 space-y-4 text-center">
+                <a href="index.html" class="block text-brand-gold font-bold">Inicio</a>
+                <a href="servicios.html" class="block text-brand-dark dark:text-white">Servicios</a>
+                <a href="nosotros.html" class="block text-brand-dark dark:text-white">Nosotros</a>
+                <a href="areas.html" class="block text-brand-dark dark:text-white">Áreas</a>
+                <a href="blog.html" class="block text-brand-dark dark:text-white">Blog</a>
+                <a href="index.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+                
+                <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-6">
+                    <a href="#" class="text-brand-gold font-bold flex items-center"><i class="fa-solid fa-globe mr-2"></i> ES</a>
+                    <a href="index-en.html" class="text-brand-dark dark:text-white flex items-center">EN</a>
+                </div>
+                
+                <a href="index.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-16 bg-brand-dark dark:bg-black transition-colors duration-500 text-center">
+        <div class="max-w-4xl mx-auto px-4" data-aos="fade-down">
+            <h1 class="font-serif text-4xl md:text-5xl text-white mb-4">Política de Privacidad</h1>
+            <div class="w-16 h-0.5 bg-brand-gold mx-auto mb-6"></div>
+            <p class="text-brand-gold tracking-[0.2em] uppercase text-xs">Protegemos su información con el máximo rigor</p>
+        </div>
+    </header>
+
+    <main class="py-16 px-6 max-w-4xl mx-auto bg-white dark:bg-brand-darkcard shadow-sm border border-brand-dark/5 dark:border-white/5 my-12 rounded-sm" data-aos="fade-up">
+        
+        <div class="space-y-10 text-brand-dark/80 dark:text-white/80 font-light text-sm leading-relaxed">
+            
+            <section>
+                <h3 class="font-serif text-xl text-brand-dark dark:text-white font-bold mb-4">1. Corresponsables del Tratamiento</h3>
+                <p class="mb-6">A efectos de lo previsto en el Reglamento General de Protección de Datos (RGPD), le informamos de que los datos personales que nos facilite a través de este sitio web (Vellum Costa) serán tratados de forma conjunta por los siguientes responsables:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div class="p-6 bg-brand-bg dark:bg-brand-darkmode border border-brand-dark/10 dark:border-white/10 rounded-sm">
+                        <h4 class="font-bold text-brand-dark dark:text-white mb-3 tracking-wide uppercase text-xs">Gestión y Contacto Inicial:</h4>
+                        <ul class="list-none space-y-2">
+                            <li><strong>Titular:</strong> [TU NOMBRE COMPLETO]</li>
+                            <li><strong>NIF:</strong> [TU DNI]</li>
+                            <li><strong>Email:</strong> info@vellumcosta.com</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-brand-bg dark:bg-brand-darkmode border border-brand-dark/10 dark:border-white/10 rounded-sm">
+                        <h4 class="font-bold text-brand-dark dark:text-white mb-3 tracking-wide uppercase text-xs">Administración y Facturación:</h4>
+                        <ul class="list-none space-y-2">
+                            <li><strong>Empresa:</strong> Jilesur SL</li>
+                            <li><strong>CIF:</strong> [CIF DE JILESUR SL]</li>
+                            <li><strong>Email:</strong> [CORREO DE JILESUR]</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 class="font-serif text-xl text-brand-dark dark:text-white font-bold mb-3">2. Finalidad del Tratamiento</h3>
+                <p>En Vellum Costa tratamos la información que nos facilitan las personas interesadas con los siguientes fines:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li>Gestionar las solicitudes de información, auditorías y consultas enviadas a través del sitio web.</li>
+                    <li>Proveer los servicios de gestión integral de propiedades (Property Management) contratados.</li>
+                    <li>Gestionar la facturación, contabilidad y administración (labor llevada a cabo por Jilesur SL).</li>
+                    <li>Enviar comunicaciones comerciales sobre nuestros servicios (solo si se ha dado el consentimiento expreso).</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3 class="font-serif text-xl text-brand-dark dark:text-white font-bold mb-3">3. Legitimación</h3>
+                <p>La base legal para el tratamiento de sus datos es:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Consentimiento del interesado:</strong> Para la gestión de consultas a través del formulario de contacto o WhatsApp.</li>
+                    <li><strong>Ejecución de un contrato:</strong> Para la prestación de los servicios de gestión de la propiedad y posterior facturación.</li>
+                    <li><strong>Cumplimiento de obligaciones legales:</strong> Para la facturación y mantenimiento de registros por parte de Jilesur SL.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3 class="font-serif text-xl text-brand-dark dark:text-white font-bold mb-3">4. Destinatarios de los datos</h3>
+                <p>Los datos se comunicarán internamente entre los corresponsables mencionados (Gestión Operativa y Jilesur SL) para el correcto desarrollo del servicio contratado. Asimismo, no se cederán datos a terceros, salvo obligación legal (ej. Agencia Tributaria, Fuerzas y Cuerpos de Seguridad del Estado) o cuando sea estrictamente necesario para la prestación del servicio (ej. pasarelas de pago, asesores fiscales de la empresa).</p>
+            </section>
+
+            <section>
+                <h3 class="font-serif text-xl text-brand-dark dark:text-white font-bold mb-3">5. Conservación de los datos</h3>
+                <p>Los datos personales proporcionados se conservarán mientras se mantenga la relación comercial o durante los años necesarios para cumplir con las obligaciones legales (generalmente 5 años según la normativa fiscal española en el caso de facturación por parte de Jilesur SL).</p>
+            </section>
+
+            <section>
+                <h3 class="font-serif text-xl text-brand-dark dark:text-white font-bold mb-3">6. Derechos de los Usuarios</h3>
+                <p>Cualquier persona tiene derecho a obtener confirmación sobre si estamos tratando datos personales que les conciernan. Las personas interesadas tienen derecho a:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li>Solicitar el acceso a los datos personales relativos al interesado.</li>
+                    <li>Solicitar su rectificación o supresión.</li>
+                    <li>Solicitar la limitación de su tratamiento.</li>
+                    <li>Oponerse al tratamiento.</li>
+                    <li>Solicitar la portabilidad de los datos.</li>
+                </ul>
+                <p class="mt-4">Podrá ejercer sus derechos dirigiendo una comunicación por escrito al correo electrónico: <strong>info@vellumcosta.com</strong>, especificando el derecho que desea ejercer e identificándose adecuadamente.</p>
+            </section>
+            
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div>
+                <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="LOGO.png" alt="Icono Vellum Costa" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                </a>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h5>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> info@vellumcosta.com</p>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> +34 642 827 794</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Legal</h5>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/60 dark:text-white/60 font-light">
+                    <a href="aviso-legal.html" class="hover:text-brand-gold transition-colors">Aviso Legal</a>
+                    <a href="privacidad.html" class="hover:text-brand-gold transition-colors">Política de Privacidad</a>
+                    <a href="terminos.html" class="hover:text-brand-gold transition-colors">Términos y Condiciones</a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="text-center text-brand-dark/40 dark:text-white/40 text-xs font-light">
+            &copy; 2026 Vellum Costa. Todos los derechos reservados.
+            <div class="mt-2 text-[10px] text-brand-dark/30 dark:text-white/30 italic uppercase tracking-widest text-center">
+                Vellum Costa es una marca comercial operada conjuntamente con Jilesur SL.
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/34642827794" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 50, duration: 800 });
+
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        if (themeToggleDarkIcon && themeToggleLightIcon) {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', function() {
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

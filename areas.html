@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zonas de Actuación | Property Management Costa del Sol</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { bg: '#FAFAFA', gold: '#C5A059', dark: '#333333', darkmode: '#121212', darkcard: '#1E1E1E' }
+                    },
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 overflow-x-hidden">
+
+    <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="index.html" class="block">
+                <img src="LOGO.png" alt="Vellum Costa Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            </a>
+            
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
+                <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
+                <a href="areas.html" class="text-brand-gold transition-colors">Áreas</a>
+                <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
+                <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+            </div>
+        
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-brand-dark dark:text-white focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-5">
+                
+                <div class="relative group cursor-pointer">
+                    <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2">
+                        <i class="fa-solid fa-globe text-xl"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                    </button>
+                    <div class="absolute right-0 mt-0 w-32 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
+                        <div class="py-2 flex flex-col">
+                            <a href="#" class="px-4 py-2 text-sm text-brand-gold font-bold hover:bg-brand-dark/5 dark:hover:bg-white/5 transition-colors">Español</a>
+                            <a href="index-en.html" class="px-4 py-2 text-sm text-brand-dark dark:text-white hover:bg-brand-dark/5 dark:hover:bg-white/5 hover:text-brand-gold transition-colors">English</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                </button>
+                <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
+            <div class="px-6 py-4 space-y-4 text-center">
+                <a href="index.html" class="block text-brand-dark dark:text-white">Inicio</a>
+                <a href="servicios.html" class="block text-brand-dark dark:text-white">Servicios</a>
+                <a href="nosotros.html" class="block text-brand-dark dark:text-white">Nosotros</a>
+                <a href="areas.html" class="block text-brand-gold font-bold">Áreas</a>
+                <a href="blog.html" class="block text-brand-dark dark:text-white">Blog</a>
+                <a href="index.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+                
+                <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-6">
+                    <a href="#" class="text-brand-gold font-bold flex items-center"><i class="fa-solid fa-globe mr-2"></i> ES</a>
+                    <a href="index-en.html" class="text-brand-dark dark:text-white flex items-center">EN</a>
+                </div>
+                
+                <a href="index.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 bg-brand-dark dark:bg-black transition-colors duration-500 text-center">
+        <div class="max-w-4xl mx-auto px-4" data-aos="fade-down">
+            <h1 class="font-serif text-5xl md:text-6xl text-white mb-4">Nuestras Zonas de Actuación</h1>
+            <div class="w-16 h-0.5 bg-brand-gold mx-auto mb-6"></div>
+            <p class="text-brand-gold tracking-[0.2em] uppercase text-sm">Conocimiento local, estándares de calidad</p>
+        </div>
+    </header>
+
+    <main class="py-24 px-6 max-w-7xl mx-auto space-y-32">
+
+        <div class="flex flex-col md:flex-row gap-12 items-center">
+            <div class="w-full md:w-1/2 relative group" data-aos="fade-right">
+                <div class="absolute inset-0 bg-brand-gold transform -translate-x-4 translate-y-4 -z-10"></div>
+                <img src="marbella.jpg" alt="Marbella Lujo" class="w-full h-[450px] object-cover shadow-xl border border-brand-dark/5 dark:border-white/5 transition-transform duration-700 group-hover:scale-[1.02]">
+            </div>
+            <div class="w-full md:w-1/2 md:pl-8" data-aos="fade-left">
+                <h2 class="font-serif text-4xl mb-4 text-brand-dark dark:text-white">Marbella</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">El corazón de la Costa del Sol</h3>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Desde la exclusiva Milla de Oro hasta el vibrante estilo de vida de Puerto Banús y Nueva Andalucía. Marbella exige un estándar de gestión impecable para destacar en un mercado maduro. 
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                    Sabemos que los huéspedes aquí buscan la máxima calidad. Nuestro servicio personalizado garantiza un mantenimiento riguroso de todo tipo de propiedades, optimizando su valor y visibilidad en el mercado más competitivo del sur de Europa.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
+            <div class="w-full md:w-1/2 relative group" data-aos="fade-left">
+                <div class="absolute inset-0 bg-brand-dark transform translate-x-4 translate-y-4 -z-10 dark:bg-brand-darkcard"></div>
+                <img src="sanpedro.jpg" alt="San Pedro" class="w-full h-[450px] object-cover shadow-xl border border-brand-dark/5 dark:border-white/5 transition-transform duration-700 group-hover:scale-[1.02]">
+            </div>
+            <div class="w-full md:w-1/2 md:pr-8" data-aos="fade-right">
+                <h2 class="font-serif text-4xl mb-4 text-brand-dark dark:text-white">San Pedro de Alcántara</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">Autenticidad y alta demanda</h3>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    La fusión perfecta entre el encanto del pueblo andaluz y la modernidad de sus nuevas zonas residenciales y el Boulevard. San Pedro se ha convertido en una de las áreas más codiciadas para familias y turismo de calidad.
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                    Gestionamos propiedades en esta zona con un enfoque ágil y cercano. Aprovechamos su alta ocupación durante todo el año para asegurar a nuestros propietarios un flujo de ingresos constante, respaldado por un cuidado minucioso de las instalaciones.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-12 items-center">
+            <div class="w-full md:w-1/2 relative group" data-aos="fade-right">
+                <div class="absolute inset-0 bg-brand-gold transform -translate-x-4 translate-y-4 -z-10"></div>
+                <img src="estepona.jpg" alt="Estepona" class="w-full h-[450px] object-cover shadow-xl border border-brand-dark/5 dark:border-white/5 transition-transform duration-700 group-hover:scale-[1.02]">
+            </div>
+            <div class="w-full md:w-1/2 md:pl-8" data-aos="fade-left">
+                <h2 class="font-serif text-4xl mb-4 text-brand-dark dark:text-white">Estepona</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">El Jardín de la Costa del Sol</h3>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Conocida como la "Nueva Milla de Oro", Estepona es el mercado con mayor explosión de crecimiento de la costa. Sus infraestructuras modernas y su cuidado casco histórico atraen a un turismo de calidad.
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                    Nuestro servicio en Estepona está diseñado para proteger y revalorizar tanto propiedades modernas, apartamentos y villas, aplicando estrategias de marketing que destaquen la calidad de vida única de esta zona.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
+            <div class="w-full md:w-1/2 relative group" data-aos="fade-left">
+                <div class="absolute inset-0 bg-brand-dark transform translate-x-4 translate-y-4 -z-10 dark:bg-brand-darkcard"></div>
+                <img src="mijas.jpg" alt="Mijas" class="w-full h-[450px] object-cover shadow-xl border border-brand-dark/5 dark:border-white/5 transition-transform duration-700 group-hover:scale-[1.02]">
+            </div>
+            <div class="w-full md:w-1/2 md:pr-8" data-aos="fade-right">
+                <h2 class="font-serif text-4xl mb-4 text-brand-dark dark:text-white">Mijas</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">Vistas panorámicas y privacidad</h3>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Desde el pintoresco Mijas Pueblo hasta las residencias esparcidas por la sierra y sus prestigiosos campos de golf. Mijas ofrece una tranquilidad inigualable que los huéspedes valoran enormemente.
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                    Entendemos que la gestión en estas zonas requiere una logística especial. Nos encargamos de todos los detalles técnicos y operativos, asegurando que su refugio privado esté siempre en perfectas condiciones para recibir visitantes.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-12 items-center">
+            <div class="w-full md:w-1/2 relative group" data-aos="fade-right">
+                <div class="absolute inset-0 bg-brand-gold transform -translate-x-4 translate-y-4 -z-10"></div>
+                <img src="fuengirola.jpg" alt="Fuengirola" class="w-full h-[450px] object-cover shadow-xl border border-brand-dark/5 dark:border-white/5 transition-transform duration-700 group-hover:scale-[1.02]">
+            </div>
+            <div class="w-full md:w-1/2 md:pl-8" data-aos="fade-left">
+                <h2 class="font-serif text-4xl mb-4 text-brand-dark dark:text-white">Fuengirola</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">Dinamismo internacional</h3>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Con uno de los paseos marítimos más largos de España, Fuengirola es sinónimo de alta ocupación y turismo internacional constante, especialmente el mercado nórdico y británico.
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                    Convertimos este alto volumen de tránsito en una ventaja para usted. Optimizamos los perfiles de su propiedad en plataformas vacacionales para destacar frente a la competencia y gestionamos los check-ins con la máxima hospitalidad, asegurando reseñas perfectas.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
+            <div class="w-full md:w-1/2 relative group" data-aos="fade-left">
+                <div class="absolute inset-0 bg-brand-dark transform translate-x-4 translate-y-4 -z-10 dark:bg-brand-darkcard"></div>
+                <img src="benalmadena.jpg" alt="Benalmádena" class="w-full h-[450px] object-cover shadow-xl border border-brand-dark/5 dark:border-white/5 transition-transform duration-700 group-hover:scale-[1.02]">
+            </div>
+            <div class="w-full md:w-1/2 md:pr-8" data-aos="fade-right">
+                <h2 class="font-serif text-4xl mb-4 text-brand-dark dark:text-white">Benalmádena</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">Estilo de vida frente al mar</h3>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Famosa por su premiado Puerto Marina y sus impresionantes vistas al Mediterráneo. Benalmádena ofrece un gran retorno de inversión (ROI) debido a su enorme atractivo para familias y turismo vacacional prolongado.
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                    Ofrecemos una gestión integral que cubre desde el marketing de apartamentos en la costa hasta el mantenimiento de viviendas en la zona alta, asegurando que la brisa marina no pase factura a sus instalaciones.
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div>
+                <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="LOGO.png" alt="Icono Vellum Costa" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                </a>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h5>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> info@vellumcosta.com</p>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> +34 642 827 794</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Legal</h5>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/60 dark:text-white/60 font-light">
+                    <a href="aviso-legal.html" class="hover:text-brand-gold transition-colors">Aviso Legal</a>
+                    <a href="privacidad.html" class="hover:text-brand-gold transition-colors">Política de Privacidad</a>
+                    <a href="terminos.html" class="hover:text-brand-gold transition-colors">Términos y Condiciones</a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="text-center text-brand-dark/40 dark:text-white/40 text-xs font-light">
+            &copy; 2026 Vellum Costa. Todos los derechos reservados.
+            <div class="mt-2 text-[10px] text-brand-dark/30 dark:text-white/30 italic uppercase tracking-widest text-center">
+                Vellum Costa es una marca comercial operada conjuntamente con Jilesur SL.
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/34642827794" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Iniciar Animaciones
+        AOS.init({ once: true, offset: 100, duration: 800 });
+
+        // LÓGICA DEL MODO OSCURO
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        // Comprobar preferencia previa o del sistema
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            themeToggleLightIcon.classList.remove('hidden');
+            document.documentElement.classList.add('dark');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        // Evento al hacer clic en el botón
+        themeToggleBtn.addEventListener('click', function() {
+            // Cambiar iconos
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            // Cambiar tema
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+        
+        // Lógica del menú móvil
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+    </script>
+</body>
+</html>

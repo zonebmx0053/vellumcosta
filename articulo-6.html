@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsiones Temporada Alta 2026 | Vellum Insights</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { bg: '#FAFAFA', gold: '#C5A059', dark: '#333333', darkmode: '#121212', darkcard: '#1E1E1E' }
+                    },
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 overflow-x-hidden">
+
+    <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="index.html" class="block">
+                <img src="LOGO.png" alt="Vellum Costa Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            </a>
+            
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
+                <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
+                <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
+                <a href="blog.html" class="text-brand-gold transition-colors">Blog</a>
+                <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+            </div>
+        
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-brand-dark dark:text-white focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-5">
+                
+                <div class="relative group cursor-pointer">
+                    <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2">
+                        <i class="fa-solid fa-globe text-xl"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                    </button>
+                    <div class="absolute right-0 mt-0 w-32 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
+                        <div class="py-2 flex flex-col">
+                            <a href="#" class="px-4 py-2 text-sm text-brand-gold font-bold hover:bg-brand-dark/5 dark:hover:bg-white/5 transition-colors">Español</a>
+                            <a href="index-en.html" class="px-4 py-2 text-sm text-brand-dark dark:text-white hover:bg-brand-dark/5 dark:hover:bg-white/5 hover:text-brand-gold transition-colors">English</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                </button>
+                <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
+            <div class="px-6 py-4 space-y-4 text-center">
+                <a href="index.html" class="block text-brand-dark dark:text-white">Inicio</a>
+                <a href="servicios.html" class="block text-brand-dark dark:text-white">Servicios</a>
+                <a href="nosotros.html" class="block text-brand-dark dark:text-white">Nosotros</a>
+                <a href="areas.html" class="block text-brand-dark dark:text-white">Áreas</a>
+                <a href="blog.html" class="block text-brand-gold font-bold">Blog</a>
+                <a href="index.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+                
+                <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-6">
+                    <a href="#" class="text-brand-gold font-bold flex items-center"><i class="fa-solid fa-globe mr-2"></i> ES</a>
+                    <a href="index-en.html" class="text-brand-dark dark:text-white flex items-center">EN</a>
+                </div>
+                
+                <a href="index.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 bg-brand-dark dark:bg-black transition-colors duration-500">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=1920&q=80" alt="Playa de Marbella" class="w-full h-full object-cover opacity-40">
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto px-6 text-center" data-aos="fade-up">
+            <span class="bg-brand-gold text-white text-xs font-bold uppercase tracking-widest px-3 py-1 mb-6 inline-block">Análisis 2026</span>
+            <h1 class="font-serif text-4xl md:text-5xl text-white mb-6 leading-tight">Previsiones del mercado vacacional para la temporada alta</h1>
+            <div class="flex items-center justify-center space-x-4 text-sm text-white/80 font-light">
+                <span><i class="fa-regular fa-calendar mr-2"></i> Marzo 2026</span>
+                <span>|</span>
+                <span><i class="fa-solid fa-pen-nib mr-2"></i> Análisis Vellum Costa</span>
+                <span>|</span>
+                <span><i class="fa-regular fa-clock mr-2"></i> 4 min de lectura</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-16 px-6 max-w-3xl mx-auto bg-white dark:bg-brand-darkmode transition-colors duration-500">
+        <article class="prose prose-lg dark:prose-invert prose-headings:font-serif prose-a:text-brand-gold hover:prose-a:text-brand-dark text-brand-dark/80 dark:text-white/80 font-light leading-relaxed">
+            
+            <p class="text-xl font-medium text-brand-dark dark:text-white mb-8">El equipo de análisis de Vellum Costa cruza datos de reservas de vuelos y ocupación hotelera para anticipar un verano muy dinámico. Todo indica que la próxima temporada alta será muy positiva para el alquiler vacacional de calidad en la Costa del Sol.</p>
+
+            <h2 class="text-2xl font-bold text-brand-dark dark:text-white mt-12 mb-4">La anticipación es la clave</h2>
+            <p>Observamos un cambio constante en el comportamiento del consumidor: el "early booking" (reserva anticipada) sigue creciendo. Los huéspedes previsores ya no esperan al mes de mayo para planificar su verano; están cerrando acuerdos durante los primeros meses del año para asegurar las propiedades mejor valoradas.</p>
+
+            <h2 class="text-2xl font-bold text-brand-dark dark:text-white mt-12 mb-4">Tendencias de Precios y Servicios</h2>
+            <p>Nuestras proyecciones sugieren que la demanda seguirá empujando los precios al alza, especialmente en áreas de consolidación como Estepona o la Milla de Oro. Sin embargo, el cliente está cada vez más informado. Las propiedades que logren un incremento real en su rentabilidad serán aquellas que ofrezcan servicios añadidos (atención 24/7, limpieza impecable, guías locales) que justifiquen su tarifa frente a la competencia.</p>
+
+            <blockquote class="border-l-4 border-brand-gold pl-6 py-2 my-10 italic text-xl text-brand-dark dark:text-white bg-brand-gold/5 dark:bg-brand-gold/10">
+                "El éxito ya no depende solo de la ubicación, sino del valor y la experiencia que se le proporciona al huésped desde el primer contacto."
+            </blockquote>
+
+            <h2 class="text-2xl font-bold text-brand-dark dark:text-white mt-12 mb-4">Zonas de mayor rendimiento</h2>
+            <p>Si bien Marbella centro mantiene su estatus clásico, detectamos un interés creciente por urbanizaciones en zonas más tranquilas y propiedades independientes a lo largo de toda la costa oeste, donde la comodidad y el espacio son los factores decisivos para las familias.</p>
+
+            <div class="mt-16 p-8 bg-brand-bg dark:bg-brand-darkcard border border-brand-gold/30 rounded-sm text-center">
+                <h3 class="font-serif text-2xl font-bold text-brand-dark dark:text-white mb-4">¿Preparado para la temporada alta?</h3>
+                <p class="text-sm mb-6">No espere al último momento para ajustar su anuncio. Adelántese al mercado y asegure su calendario con nuestra estrategia de gestión profesional.</p>
+                <a href="index.html#contacto" class="inline-block bg-brand-gold text-white px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-brand-dark transition-colors">Solicitar Plan Estratégico</a>
+            </div>
+
+        </article>
+    </main>
+
+    <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div>
+                <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="LOGO.png" alt="Icono Vellum Costa" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                </a>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h5>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> info@vellumcosta.com</p>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> +34 642 827 794</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Legal</h5>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/60 dark:text-white/60 font-light">
+                    <a href="aviso-legal.html" class="hover:text-brand-gold transition-colors">Aviso Legal</a>
+                    <a href="privacidad.html" class="hover:text-brand-gold transition-colors">Política de Privacidad</a>
+                    <a href="terminos.html" class="hover:text-brand-gold transition-colors">Términos y Condiciones</a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="text-center text-brand-dark/40 dark:text-white/40 text-xs font-light">
+            &copy; 2026 Vellum Costa. Todos los derechos reservados.
+            <div class="mt-2 text-[10px] text-brand-dark/30 dark:text-white/30 italic uppercase tracking-widest text-center">
+                Vellum Costa es una marca comercial operada conjuntamente con Jilesur SL.
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/34642827794" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 50, duration: 800 });
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        // Modo Oscuro Funcional
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        if (themeToggleDarkIcon && themeToggleLightIcon) {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', function() {
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

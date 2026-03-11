@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros | Vellum Costa Property Management</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { bg: '#FAFAFA', gold: '#C5A059', dark: '#333333', darkmode: '#121212', darkcard: '#1E1E1E' }
+                    },
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 overflow-x-hidden">
+
+    <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="index.html" class="block">
+                <img src="LOGO.png" alt="Vellum Costa Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            </a>
+            
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
+                <a href="nosotros.html" class="text-brand-gold transition-colors">Nosotros</a>
+                <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
+                <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
+                <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+            </div>
+        
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-brand-dark dark:text-white focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-5">
+                
+                <div class="relative group cursor-pointer">
+                    <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2">
+                        <i class="fa-solid fa-globe text-xl"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                    </button>
+                    <div class="absolute right-0 mt-0 w-32 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
+                        <div class="py-2 flex flex-col">
+                            <a href="#" class="px-4 py-2 text-sm text-brand-gold font-bold hover:bg-brand-dark/5 dark:hover:bg-white/5 transition-colors">Español</a>
+                            <a href="index-en.html" class="px-4 py-2 text-sm text-brand-dark dark:text-white hover:bg-brand-dark/5 dark:hover:bg-white/5 hover:text-brand-gold transition-colors">English</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                </button>
+                <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
+            <div class="px-6 py-4 space-y-4 text-center">
+                <a href="index.html" class="block text-brand-dark dark:text-white">Inicio</a>
+                <a href="servicios.html" class="block text-brand-dark dark:text-white">Servicios</a>
+                <a href="nosotros.html" class="block text-brand-gold font-bold">Nosotros</a>
+                <a href="areas.html" class="block text-brand-dark dark:text-white">Áreas</a>
+                <a href="blog.html" class="block text-brand-dark dark:text-white">Blog</a>
+                <a href="index.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+                
+                <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-6">
+                    <a href="#" class="text-brand-gold font-bold flex items-center"><i class="fa-solid fa-globe mr-2"></i> ES</a>
+                    <a href="index-en.html" class="text-brand-dark dark:text-white flex items-center">EN</a>
+                </div>
+                
+                <a href="index.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 bg-brand-dark dark:bg-black transition-colors duration-500 text-center">
+        <div class="max-w-4xl mx-auto px-4" data-aos="fade-down">
+            <h1 class="font-serif text-5xl md:text-6xl text-white mb-4">Conozca Nuestra Visión</h1>
+            <div class="w-16 h-0.5 bg-brand-gold mx-auto mb-6"></div>
+            <p class="text-brand-gold tracking-[0.2em] uppercase text-sm">Su tranquilidad es nuestra máxima prioridad</p>
+        </div>
+    </header>
+
+    <section class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-16 items-center">
+            
+            <div class="w-full md:w-5/12 relative group" data-aos="fade-right">
+                <div class="absolute inset-0 bg-brand-gold transform -translate-x-4 translate-y-4 -z-10 rounded-sm"></div>
+                <img src="IMG_4952.jpg" alt="Fundador de Vellum Costa" class="w-full h-[500px] object-cover object-center shadow-2xl border border-brand-dark/20 dark:border-white/10 rounded-sm transition-transform duration-700 hover:scale-[1.02]">
+            </div>
+
+            <div class="w-full md:w-7/12" data-aos="fade-left">
+                <h2 class="font-serif text-3xl md:text-4xl mb-4 text-brand-dark dark:text-white">Una nueva visión en la gestión inmobiliaria</h2>
+                <h3 class="text-brand-gold font-medium uppercase tracking-wider text-sm mb-6">Emprendimiento, Análisis y Dedicación</h3>
+                
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Bienvenidos. Soy un joven emprendedor apasionado por el sector inmobiliario de la Costa del Sol. Mi trayectoria combina una profunda experiencia en Property Management con una visión analítica del mercado. 
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-6">
+                    Me di cuenta de que el sector tradicional a menudo carece de agilidad. Por eso, fundé esta empresa con un objetivo claro: fusionar un trato cercano y personalizado con el análisis de datos más avanzado para optimizar cada alquiler. No tomo decisiones basadas en intuiciones, sino en datos del mercado, garantizando que su propiedad sea altamente competitiva.
+                </p>
+                <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed font-semibold italic">
+                    "Mi compromiso es personal. Su propiedad no es un número más en un sistema; es un activo que cuidaré y potenciaré con todo mi esfuerzo y dedicación."
+                </p>
+                
+                <div class="mt-8 font-serif text-2xl text-brand-dark dark:text-white">
+                    - Fernando Jiménez Lezcano, Fundador de Vellum Costa
+                </div>
+
+                <div class="mt-12 p-8 bg-brand-bg dark:bg-brand-darkcard border border-brand-gold/20 rounded-sm" data-aos="fade-up">
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="text-brand-gold text-4xl">
+                            <i class="fa-solid fa-handshake-angle"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-2">Solidez Operativa & Fiscal</h4>
+                            <p class="text-sm font-light text-brand-dark/70 dark:text-white/70 leading-relaxed">
+                                Vellum Costa opera en alianza estratégica con <strong>Jilesur SL</strong>. Esta colaboración nos permite ofrecer a nuestros clientes una infraestructura administrativa consolidada, garantizando que toda la gestión contractual y fiscal se realice bajo los más altos estándares de rigor profesional y transparencia jurídica.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-brand-dark/5 dark:bg-black/30 transition-colors duration-500">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="font-serif text-4xl md:text-5xl mb-4 text-brand-dark dark:text-white">Por Qué Confiar en Nosotros</h2>
+                <div class="w-16 h-0.5 bg-brand-gold mx-auto mb-6"></div>
+                <p class="text-brand-dark/70 dark:text-white/70 font-light max-w-2xl mx-auto leading-relaxed">
+                    Nuestra filosofía se basa en el trabajo eficiente, la profesionalidad absoluta y la obsesión por la satisfacción tanto del propietario como del huésped.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="bg-white dark:bg-brand-darkcard p-10 shadow-lg border-t-4 border-brand-gold group hover:scale-[1.03] hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fa-solid fa-shield-heart text-4xl text-brand-gold mb-6 transition-transform duration-300 group-hover:scale-110"></i>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-4">Su Tranquilidad es la Nuestra</h3>
+                    <p class="font-light text-sm text-brand-dark/70 dark:text-white/70 leading-relaxed">
+                        Delegue sus preocupaciones. Asumimos el control total de los imprevistos, desde una avería técnica hasta una consulta a medianoche, para que usted simplemente disfrute de los beneficios de su inversión sin estrés.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-brand-darkcard p-10 shadow-lg border-t-4 border-brand-gold group hover:scale-[1.03] hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fa-solid fa-chart-pie text-4xl text-brand-gold mb-6 transition-transform duration-300 group-hover:scale-110"></i>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-4">Análisis y Eficiencia</h3>
+                    <p class="font-light text-sm text-brand-dark/70 dark:text-white/70 leading-relaxed">
+                        Trabajamos de forma inteligente. Estudiamos a sus competidores y las tendencias de la Costa del Sol para ajustar precios y estrategias, asegurando la máxima rentabilidad y ocupación en todo momento.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-brand-darkcard p-10 shadow-lg border-t-4 border-brand-gold group hover:scale-[1.03] hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fa-solid fa-face-smile text-4xl text-brand-gold mb-6 transition-transform duration-300 group-hover:scale-110"></i>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-4">Huéspedes Felices, Mejores Reseñas</h3>
+                    <p class="font-light text-sm text-brand-dark/70 dark:text-white/70 leading-relaxed">
+                        Un huésped contento es la mejor campaña de marketing. Nuestro servicio de hospitalidad cuida cada detalle, garantizando experiencias de cinco estrellas que se traducen en valoraciones impecables para su propiedad.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-brand-darkcard p-10 shadow-lg border-t-4 border-brand-gold group hover:scale-[1.03] hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fa-solid fa-handshake text-4xl text-brand-gold mb-6 transition-transform duration-300 group-hover:scale-110"></i>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-4">Trato Personal y Cercano</h3>
+                    <p class="font-light text-sm text-brand-dark/70 dark:text-white/70 leading-relaxed">
+                        No somos una macro-agencia donde su voz se pierde. Ofrecemos una comunicación directa, clara y transparente. Usted siempre sabrá quién está al frente de su patrimonio.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-brand-darkcard p-10 shadow-lg border-t-4 border-brand-gold group hover:scale-[1.03] hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="500">
+                    <i class="fa-solid fa-gem text-4xl text-brand-gold mb-6 transition-transform duration-300 group-hover:scale-110"></i>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-4">Profesionalidad y Excelencia</h3>
+                    <p class="font-light text-sm text-brand-dark/70 dark:text-white/70 leading-relaxed">
+                        Nos exigimos el máximo nivel de rigor en todo lo que hacemos. Desde la fotografía y el marketing hasta el servicio de limpieza; el cuidado por los detalles es nuestro único estándar de trabajo.
+                    </p>
+                </div>
+
+                <div class="bg-brand-dark dark:bg-[#1A1A1A] p-10 shadow-lg flex flex-col justify-center items-center text-center border-t-4 border-brand-gold group hover:scale-[1.03] hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="600">
+                    <h3 class="font-serif text-2xl font-bold text-white mb-4">¿Hablamos?</h3>
+                    <p class="font-light text-sm text-white/70 leading-relaxed mb-6">
+                        Compruebe la diferencia de trabajar con un equipo dedicado al 100% al éxito de su inversión.
+                    </p>
+                    <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 group-hover:bg-brand-gold group-hover:text-white transition-all duration-300 text-sm font-semibold uppercase tracking-wider">
+                        Contáctenos
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-brand-dark dark:bg-black text-white relative overflow-hidden" data-aos="fade-up">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-brand-gold/5 blur-3xl rounded-full transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16">
+                
+                <div class="w-full lg:w-1/3 lg:sticky lg:top-32 h-fit" data-aos="fade-right">
+                    <span class="text-brand-gold tracking-[0.2em] uppercase text-xs font-bold block mb-4">Soporte 360º</span>
+                    <h2 class="font-serif text-4xl md:text-5xl mb-6 leading-tight">Nuestra Red de Especialistas</h2>
+                    <div class="w-16 h-px bg-brand-gold mb-8"></div>
+                    <p class="text-white/70 font-light text-sm leading-relaxed mb-8">
+                        No solo somos analistas de mercado; somos el escudo protector de su propiedad. En Vellum Costa contamos con un equipo interno y una red de colaboradores de máxima confianza (auditados por nosotros) para cubrir cualquier necesidad en tiempo récord.
+                    </p>
+                    <a href="index.html#contacto" class="inline-flex items-center text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-white transition-colors group">
+                        Solicitar Asistencia <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <div class="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+                    
+                    <div class="group relative pt-6 border-t border-white/10 hover:border-brand-gold transition-colors duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div class="absolute top-6 right-0 text-white/5 text-6xl group-hover:text-brand-gold/10 transition-colors pointer-events-none"><i class="fa-solid fa-broom"></i></div>
+                        
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                                <i class="fa-solid fa-broom text-sm"></i>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold">Limpieza Premium</h3>
+                        </div>
+                        <p class="text-sm font-light text-white/60 leading-relaxed relative z-10">Housekeeping minucioso, lavandería profesional de textiles y puesta a punto impecable entre huéspedes.</p>
+                    </div>
+
+                    <div class="group relative pt-6 border-t border-white/10 hover:border-brand-gold transition-colors duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div class="absolute top-6 right-0 text-white/5 text-6xl group-hover:text-brand-gold/10 transition-colors pointer-events-none"><i class="fa-solid fa-snowflake"></i></div>
+                        
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                                <i class="fa-solid fa-snowflake text-sm"></i>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold">Climatización</h3>
+                        </div>
+                        <p class="text-sm font-light text-white/60 leading-relaxed relative z-10">Técnicos especialistas en aire acondicionado, bombas de calor y suelo radiante para asegurar confort 365 días al año.</p>
+                    </div>
+
+                    <div class="group relative pt-6 border-t border-white/10 hover:border-brand-gold transition-colors duration-300" data-aos="fade-up" data-aos-delay="300">
+                        <div class="absolute top-6 right-0 text-white/5 text-6xl group-hover:text-brand-gold/10 transition-colors pointer-events-none"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                        
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                                <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold">Mantenimiento 24/7</h3>
+                        </div>
+                        <p class="text-sm font-light text-white/60 leading-relaxed relative z-10">Fontanería, electricidad y reparaciones urgentes. Si algo falla un domingo a las 3 AM, nosotros respondemos.</p>
+                    </div>
+
+                    <div class="group relative pt-6 border-t border-white/10 hover:border-brand-gold transition-colors duration-300" data-aos="fade-up" data-aos-delay="400">
+                        <div class="absolute top-6 right-0 text-white/5 text-6xl group-hover:text-brand-gold/10 transition-colors pointer-events-none"><i class="fa-solid fa-hammer"></i></div>
+                        
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                                <i class="fa-solid fa-hammer text-sm"></i>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold">Reformas</h3>
+                        </div>
+                        <p class="text-sm font-light text-white/60 leading-relaxed relative z-10">Desde pequeños lavados de cara y pintura hasta renovaciones completas de baños y cocinas para aumentar el valor del activo.</p>
+                    </div>
+
+                    <div class="group relative pt-6 border-t border-white/10 hover:border-brand-gold transition-colors duration-300" data-aos="fade-up" data-aos-delay="500">
+                        <div class="absolute top-6 right-0 text-white/5 text-6xl group-hover:text-brand-gold/10 transition-colors pointer-events-none"><i class="fa-solid fa-tree"></i></div>
+                        
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                                <i class="fa-solid fa-tree text-sm"></i>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold">Carpintería a Medida</h3>
+                        </div>
+                        <p class="text-sm font-light text-white/60 leading-relaxed relative z-10">Arreglo de puertas, armarios, tarimas exteriores y muebles a medida para mantener la estética impecable de la propiedad.</p>
+                    </div>
+
+                    <div class="group relative pt-6 border-t border-white/10 hover:border-brand-gold transition-colors duration-300" data-aos="fade-up" data-aos-delay="600">
+                        <div class="absolute top-6 right-0 text-white/5 text-6xl group-hover:text-brand-gold/10 transition-colors pointer-events-none"><i class="fa-solid fa-leaf"></i></div>
+                        
+                        <div class="flex items-center gap-4 mb-4 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                                <i class="fa-solid fa-leaf text-sm"></i>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold">Piscinas y Jardinería</h3>
+                        </div>
+                        <p class="text-sm font-light text-white/60 leading-relaxed relative z-10">Cuidado paisajístico y mantenimiento químico de piscinas para que el exterior siempre luzca perfecto.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div>
+                <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="LOGO.png" alt="Icono Vellum Costa" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                </a>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h5>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> info@vellumcosta.com</p>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> +34 642 827 794</p>
+            </div>
+            
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Legal</h5>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/60 dark:text-white/60 font-light">
+                    <a href="aviso-legal.html" class="hover:text-brand-gold transition-colors">Aviso Legal</a>
+                    <a href="privacidad.html" class="hover:text-brand-gold transition-colors">Política de Privacidad</a>
+                    <a href="terminos.html" class="hover:text-brand-gold transition-colors">Términos y Condiciones</a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="text-center text-brand-dark/40 dark:text-white/40 text-xs font-light">
+            &copy; 2026 Vellum Costa. Todos los derechos reservados.
+            <div class="mt-2 text-[10px] text-brand-dark/30 dark:text-white/30 italic uppercase tracking-widest text-center">
+                Vellum Costa es una marca comercial operada conjuntamente con Jilesur SL.
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/34642827794" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 100, duration: 800 });
+
+        // Menú Móvil
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        // Modo Oscuro
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        if (themeToggleDarkIcon && themeToggleLightIcon) {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', function() {
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
