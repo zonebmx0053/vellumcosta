@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You! | Vellum Costa</title>
+    
+    <link rel="icon" type="image/png" href="LogoPestaña.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brand: { 
+                            bg: '#FAFAFA', 
+                            gold: '#C5A059', 
+                            dark: '#333333', 
+                            darkmode: '#121212', 
+                            darkcard: '#1E1E1E' 
+                        } 
+                    },
+                    fontFamily: { 
+                        sans: ['Montserrat', 'sans-serif'], 
+                        serif: ['Playfair Display', 'serif'] 
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased h-screen flex items-center justify-center text-center px-6 transition-colors duration-500">
+    
+    <div class="max-w-lg" data-aos="zoom-in">
+        <i class="fa-solid fa-circle-check text-brand-gold text-6xl mb-8 block"></i>
+        <h1 class="font-serif text-5xl mb-6">Thank You!</h1>
+        <p class="text-lg font-light text-brand-dark/70 dark:text-white/70 mb-10 leading-relaxed">
+            Your form has been successfully submitted.<br>
+            We will get back to you as soon as possible.
+        </p>
+        <a href="home.html" class="inline-block bg-brand-gold text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-dark dark:hover:bg-white dark:hover:text-brand-dark transition-all duration-300 rounded-md shadow-lg shadow-brand-gold/30">
+            Back to website
+        </a>
+    </div>
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</body>
+</html>

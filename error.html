@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error de envío | Vellum Costa</title>
+    <link rel="icon" type="image/png" href="LogoPestaña.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: { colors: { brand: { bg: '#FAFAFA', gold: '#C5A059', dark: '#333333', darkmode: '#121212', darkcard: '#1E1E1E' } }, fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] } }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased h-screen flex items-center justify-center text-center px-6">
+    <div class="max-w-lg">
+        <i class="fa-solid fa-triangle-exclamation text-brand-gold text-6xl mb-8 block"></i>
+        <h1 class="font-serif text-4xl mb-6">¡Vaya! Algo salió mal</h1>
+        <p class="text-base font-light text-brand-dark/70 dark:text-white/70 mb-8 leading-relaxed">
+            No se ha podido enviar el formulario correctamente por un problema técnico. Por favor, póngase en contacto con nosotros directamente a través de:
+        </p>
+        <div class="space-y-4 mb-10 font-medium">
+            <p><i class="fa-solid fa-envelope text-brand-gold mr-2"></i> info@vellumcosta.com</p>
+            <p><i class="fa-solid fa-phone text-brand-gold mr-2"></i> +34 642 827 794</p>
+        </div>
+        <a href="inicio.html" class="inline-block border border-brand-gold text-brand-gold px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-gold hover:text-white transition-all duration-300 rounded-md">
+            Regresar al inicio
+        </a>
+    </div>
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>
