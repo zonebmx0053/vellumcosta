@@ -328,41 +328,41 @@
                 </div>
 
                 <div class="lg:w-7/12 p-10 md:p-14">
-                    <form class="space-y-6" onsubmit="event.preventDefault(); alert('Formulario enviado. (Pendiente de conectar)');">
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Nombre completo</label>
-                                <input type="text" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Correo electrónico</label>
-                                <input type="email" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Teléfono</label>
-                                <input type="tel" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Ubicación de la propiedad</label>
-                                <input type="text" placeholder="Ej: Nueva Andalucía" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all placeholder-brand-dark/30 dark:placeholder-white/30">
-                            </div>
-                        </div>
+                    <form action="https://formspree.io/f/xyknwrnd" method="POST" class="space-y-6">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Nombre completo</label>
+            <input type="text" name="nombre" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
+        </div>
+        <div>
+            <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Correo electrónico</label>
+            <input type="email" name="email" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Teléfono</label>
+            <input type="tel" name="telefono" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
+        </div>
+        <div>
+            <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Ubicación de la propiedad</label>
+            <input type="text" name="ubicacion" placeholder="Ej: Nueva Andalucía" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all placeholder-brand-dark/30 dark:placeholder-white/30">
+        </div>
+    </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">¿En qué podemos ayudarle?</label>
-                            <textarea rows="4" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all resize-none"></textarea>
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-brand-gold text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-dark dark:hover:bg-white dark:hover:text-brand-dark shadow-lg shadow-brand-gold/30 hover:shadow-none transition-all duration-300 rounded-md">
-                                Enviar Solicitud
-                            </button>
-                        </div>
-                    </form>
+    <div>
+        <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">¿En qué podemos ayudarle?</label>
+        <textarea name="mensaje" rows="4" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all resize-none"></textarea>
+    </div>
+    
+    <div class="pt-4">
+        <button type="submit" class="w-full bg-brand-gold text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-dark dark:hover:bg-white dark:hover:text-brand-dark shadow-lg shadow-brand-gold/30 hover:shadow-none transition-all duration-300 rounded-md">
+            Enviar Solicitud
+        </button>
+    </div>
+</form>
                 </div>
                 
             </div>
