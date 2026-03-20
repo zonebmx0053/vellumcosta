@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://vellumcosta.com/inicio.html</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/home.html</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://vellumcosta.com/servicios.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/services.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/nosotros.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/about-us.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/areas.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/areas-en.html</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://vellumcosta.com/blog.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/blog-en.html</loc>
+    <priority>0.7</priority>
+  </url>
+
+  <url><loc>https://vellumcosta.com/articulo-1.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/articulo-2.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/articulo-3.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/articulo-4.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/articulo-5.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/articulo-6.html</loc><priority>0.6</priority></url>
+
+  <url><loc>https://vellumcosta.com/article-1.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/article-2.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/article-3.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/article-4.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/article-5.html</loc><priority>0.6</priority></url>
+  <url><loc>https://vellumcosta.com/article-6.html</loc><priority>0.6</priority></url>
+
+  <url><loc>https://vellumcosta.com/aviso-legal.html</loc><priority>0.3</priority></url>
+  <url><loc>https://vellumcosta.com/privacidad.html</loc><priority>0.3</priority></url>
+  <url><loc>https://vellumcosta.com/terminos.html</loc><priority>0.3</priority></url>
+  <url><loc>https://vellumcosta.com/legal-notice.html</loc><priority>0.3</priority></url>
+  <url><loc>https://vellumcosta.com/privacy-policy.html</loc><priority>0.3</priority></url>
+  <url><loc>https://vellumcosta.com/terms-and-conditions.html</loc><priority>0.3</priority></url>
+</urlset>
