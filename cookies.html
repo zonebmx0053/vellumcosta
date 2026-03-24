@@ -1,27 +1,67 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Política de Cookies | Vellum Costa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-[#FAFAFA] text-[#333] font-sans py-16 px-6">
-    <div class="max-w-3xl mx-auto bg-white p-10 shadow-sm border border-gray-100">
-        <h1 class="text-3xl font-serif mb-6">Política de Cookies</h1>
-        <div class="space-y-6 text-sm leading-relaxed opacity-80">
-            <p>En **Vellum Costa**, queremos ser transparentes sobre cómo cuidamos su privacidad. Esta web utiliza cookies para que podamos entender qué partes de nuestro sitio son más útiles para los propietarios.</p>
-            
-            <h2 class="text-xl font-serif text-[#C5A059]">¿Qué cookies usamos?</h2>
-            <ul class="list-disc pl-5 space-y-2">
-                <li><strong>Cookies Técnicas:</strong> Son esenciales para que la web funcione (por ejemplo, para recordar si aceptó este aviso).</li>
-                <li><strong>Cookies de Análisis (Google Analytics):</strong> Nos ayudan a saber cuántas personas nos visitan, sin identificarlas personalmente.</li>
-            </ul>
+    <link rel="icon" type="image/png" href="LogoPestaña.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-            <h2 class="text-xl font-serif text-[#C5A059]">¿Cómo desactivarlas?</h2>
-            <p>Puede restringir o bloquear las cookies a través de la configuración de su navegador en cualquier momento. Sin embargo, esto podría afectar a la navegación por nuestra web.</p>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { bg: '#FAFAFA', gold: '#C5A059', dark: '#333333', darkmode: '#121212', darkcard: '#1E1E1E' }
+                    },
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 min-h-screen flex flex-col">
+
+    <main class="flex-grow max-w-4xl mx-auto px-6 py-20">
+        <div class="bg-white dark:bg-brand-darkcard p-8 md:p-12 shadow-sm border border-brand-dark/10 dark:border-white/10 rounded-sm">
+            <h1 class="font-serif text-3xl md:text-4xl font-bold mb-8 text-brand-dark dark:text-white">Política de Cookies</h1>
             
-            <a href="inicio.html" class="inline-block mt-8 text-[#C5A059] font-bold uppercase tracking-widest text-xs border-b border-[#C5A059] pb-1">Volver a Inicio</a>
+            <div class="space-y-6 text-sm md:text-base text-brand-dark/80 dark:text-white/80 leading-relaxed">
+                <p>En Vellum Costa valoramos la transparencia y el trato directo. Por eso, queremos explicarle de forma clara cómo utilizamos las cookies en nuestra página web para mejorar nuestro servicio a los propietarios de apartamentos y casas en la Costa del Sol.</p>
+                
+                <h2 class="font-serif text-xl font-bold text-brand-gold mt-8">¿Qué son las cookies?</h2>
+                <p>Son pequeños archivos de texto que se guardan en su navegador cuando visita nuestra web. Nos ayudan a recordar sus preferencias (como el idioma) y a entender qué información le resulta más útil.</p>
+
+                <h2 class="font-serif text-xl font-bold text-brand-gold mt-8">¿Qué tipos de cookies utilizamos?</h2>
+                <ul class="list-disc pl-5 space-y-3">
+                    <li><strong>Cookies Técnicas (Necesarias):</strong> Son imprescindibles para que la web funcione correctamente y para recordar, por ejemplo, si ya ha aceptado o rechazado este aviso.</li>
+                    <li><strong>Cookies Analíticas:</strong> Nos permiten medir el número de visitas de forma anónima para saber qué artículos de nuestro blog o qué servicios interesan más a los propietarios.</li>
+                    <li><strong>Cookies de Marketing:</strong> Las utilizamos para poder mostrarle información relevante sobre nuestros servicios de gestión de propiedades de forma personalizada si ha mostrado interés previo.</li>
+                </ul>
+
+                <h2 class="font-serif text-xl font-bold text-brand-gold mt-8">Cómo gestionar sus cookies</h2>
+                <p>Usted tiene el control total. Puede permitir, bloquear o eliminar las cookies instaladas en su equipo mediante la configuración de las opciones del navegador que utilice (Chrome, Safari, Firefox, etc.). Tenga en cuenta que si desactiva algunas cookies, es posible que la web no funcione con la misma fluidez.</p>
+
+                <div class="pt-8 mt-8 border-t border-brand-dark/10 dark:border-white/10">
+                    <a href="inicio.html" class="inline-flex items-center space-x-2 text-brand-gold font-bold hover:text-brand-dark dark:hover:text-white transition-colors uppercase tracking-widest text-xs">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Volver a Inicio</span>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
+
 </body>
 </html>
