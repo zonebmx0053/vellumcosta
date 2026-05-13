@@ -15,7 +15,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://unpkg.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
     
     <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
@@ -31,7 +32,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             
             <a href="inicio.html" class="block">
-                <img src="LOGO.png" alt="Vellum Costa Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                <img src="LOGO.png" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
             </a>
             
             <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
@@ -44,8 +45,7 @@
             </div>
         
             <div class="md:hidden flex items-center">
-                <button id="mobile-menu-button" class="text-brand-dark dark:text-white focus:outline-none">
-                    <i class="fa-solid fa-bars text-2xl"></i>
+                <button id="mobile-menu-button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu" class="text-brand-dark dark:text-white focus:outline-none"><i class="fa-solid fa-bars text-2xl" aria-hidden="true"></i>
                 </button>
             </div>
             
@@ -53,25 +53,25 @@
                 
                 <div class="relative group cursor-pointer">
                     <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2 space-x-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" alt="ES" class="w-5 h-auto rounded-sm shadow-sm">
+                        <img src="flag-es.svg" alt="ES" class="w-5 h-auto rounded-sm shadow-sm">
                         <span class="font-bold text-sm tracking-wide">ES</span>
                         <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
                     </button>
                     <div class="absolute right-0 mt-0 w-36 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
                         <div class="py-2 flex flex-col">
                             <a href="#" class="px-4 py-2 flex items-center space-x-3 text-sm text-brand-gold font-bold hover:bg-brand-dark/5 dark:hover:bg-white/5 transition-colors">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" alt="Español" class="w-4 h-auto rounded-sm">
+                                <img src="flag-es.svg" alt="Español" class="w-4 h-auto rounded-sm">
                                 <span>Español</span>
                             </a>
                             <a href="home.html" class="px-4 py-2 flex items-center space-x-3 text-sm text-brand-dark dark:text-white hover:bg-brand-dark/5 dark:hover:bg-white/5 hover:text-brand-gold transition-colors">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg" alt="English" class="w-4 h-auto rounded-sm">
+                                <img src="flag-uk.svg" alt="English" class="w-4 h-auto rounded-sm">
                                 <span>English</span>
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <button id="theme-toggle" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
+                <button id="theme-toggle" aria-label="Cambiar tema" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
                     <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
                     <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
                 </button>
@@ -90,11 +90,11 @@
                 
                 <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-8">
                     <a href="#" class="text-brand-gold font-bold flex items-center space-x-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" alt="ES" class="w-5 h-auto rounded-sm shadow-sm">
+                        <img src="flag-es.svg" alt="ES" class="w-5 h-auto rounded-sm shadow-sm">
                         <span>ES</span>
                     </a>
                     <a href="home.html" class="text-brand-dark dark:text-white flex items-center space-x-2 hover:text-brand-gold transition-colors opacity-70 hover:opacity-100">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg" alt="EN" class="w-5 h-auto rounded-sm shadow-sm">
+                        <img src="flag-uk.svg" alt="EN" class="w-5 h-auto rounded-sm shadow-sm">
                         <span>EN</span>
                     </a>
                 </div>
@@ -106,7 +106,7 @@
 
     <section class="relative h-screen flex items-center justify-center">
         <div class="absolute inset-0 z-0">
-            <img src="imagen-principal.jpg" alt="Villa en la Costa del Sol" class="w-full h-full object-cover" />
+            <img src="imagen-principal.jpg" alt="Villa en la Costa del Sol" width="1920" height="1080" fetchpriority="high" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-black/30 dark:bg-black/80 transition-colors duration-500"></div>
         </div>
         
@@ -209,7 +209,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
                 <a href="areas.html" class="group relative overflow-hidden h-96 rounded-sm shadow-md" data-aos="fade-up" data-aos-delay="100">
-                    <img src="marbella.jpg" alt="Marbella" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="marbella.jpg" alt="Marbella" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full">
                         <h3 class="text-white font-serif text-3xl mb-2 group-hover:text-brand-gold transition-colors duration-300">Marbella</h3>
@@ -220,7 +220,7 @@
                 </a>
 
                 <a href="areas.html" class="group relative overflow-hidden h-96 rounded-sm shadow-md" data-aos="fade-up" data-aos-delay="200">
-                    <img src="sanpedro.jpg" alt="San Pedro de Alcántara" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="sanpedro.jpg" alt="San Pedro de Alcántara" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full">
                         <h3 class="text-white font-serif text-3xl mb-2 group-hover:text-brand-gold transition-colors duration-300">San Pedro</h3>
@@ -231,7 +231,7 @@
                 </a>
 
                 <a href="areas.html" class="group relative overflow-hidden h-96 rounded-sm shadow-md" data-aos="fade-up" data-aos-delay="300">
-                    <img src="estepona.jpg" alt="Estepona" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="estepona.jpg" alt="Estepona" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full">
                         <h3 class="text-white font-serif text-3xl mb-2 group-hover:text-brand-gold transition-colors duration-300">Estepona</h3>
@@ -242,7 +242,7 @@
                 </a>
 
                 <a href="areas.html" class="group relative overflow-hidden h-96 rounded-sm shadow-md" data-aos="fade-up" data-aos-delay="400">
-                    <img src="mijas.jpg" alt="Mijas" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="mijas.jpg" alt="Mijas" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full">
                         <h3 class="text-white font-serif text-3xl mb-2 group-hover:text-brand-gold transition-colors duration-300">Mijas</h3>
@@ -253,7 +253,7 @@
                 </a>
 
                 <a href="areas.html" class="group relative overflow-hidden h-96 rounded-sm shadow-md" data-aos="fade-up" data-aos-delay="500">
-                    <img src="fuengirola.jpg" alt="Fuengirola" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="fuengirola.jpg" alt="Fuengirola" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full">
                         <h3 class="text-white font-serif text-3xl mb-2 group-hover:text-brand-gold transition-colors duration-300">Fuengirola</h3>
@@ -264,7 +264,7 @@
                 </a>
 
                 <a href="areas.html" class="group relative overflow-hidden h-96 rounded-sm shadow-md" data-aos="fade-up" data-aos-delay="600">
-                    <img src="benalmadena.jpg" alt="Benalmádena" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="benalmadena.jpg" alt="Benalmádena" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full">
                         <h3 class="text-white font-serif text-3xl mb-2 group-hover:text-brand-gold transition-colors duration-300">Benalmádena</h3>
@@ -325,29 +325,24 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Nombre completo</label>
-                                <input type="text" name="nombre" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
+                                <label for="nombre" class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Nombre completo</label><input id="nombre" type="text" name="nombre" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Correo electrónico</label>
-                                <input type="email" name="email" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
+                                <label for="email" class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Correo electr&#243;nico</label><input id="email" type="email" name="email" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Teléfono</label>
-                                <input type="tel" name="telefono" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
+                                <label for="telefono" class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Tel&#233;fono</label><input id="telefono" type="tel" name="telefono" required class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Ubicación de la propiedad</label>
-                                <input type="text" name="ubicacion" placeholder="Ej: Nueva Andalucía" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all placeholder-brand-dark/30 dark:placeholder-white/30">
+                                <label for="ubicacion" class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">Ubicaci&#243;n de la propiedad</label><input id="ubicacion" type="text" name="ubicacion" placeholder="Ej: Nueva Andalucía" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all placeholder-brand-dark/30 dark:placeholder-white/30">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">¿En qué podemos ayudarle?</label>
-                            <textarea name="mensaje" rows="4" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all resize-none"></textarea>
+                            <label for="mensaje" class="block text-sm font-semibold text-brand-dark dark:text-white mb-2 tracking-wide">&#191;En qu&#233; podemos ayudarle?</label><textarea id="mensaje" name="mensaje" rows="4" class="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white px-4 py-3 rounded-md focus:outline-none focus:border-brand-gold dark:focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all resize-none"></textarea>
                         </div>
                         
                         <div class="pt-4">
@@ -368,7 +363,7 @@
             
             <div>
                 <a href="inicio.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
-                    <img src="LOGO.png" alt="Icono Vellum Costa" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <img src="LOGO.png" alt="Icono Vellum Costa" width="192" height="108" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                     <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
                 </a>
                 <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
@@ -502,8 +497,8 @@
         }
     </script>
 
-    <script src="form-rate-limit.js"></script>
-    <script src="cookie-banner.js"></script>
+    <script src="form-rate-limit.js" defer></script>
+    <script src="cookie-banner.js" defer></script>
 
 </body>
 </html>
