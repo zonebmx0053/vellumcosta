@@ -1,0 +1,7 @@
+# Tailwind CLI binary (download from https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.4.15)
+tailwindcss.exe
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
