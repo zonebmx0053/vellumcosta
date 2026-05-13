@@ -44,10 +44,10 @@ function crearAvisoCookies(lang) {
                 <p class="text-xs text-brand-dark/70 dark:text-white/70 leading-relaxed">${t.desc}</p>
             </div>
             <div class="flex flex-col space-y-3">
-                <button onclick="accionCookies('aceptadas')" class="w-full bg-brand-gold text-white px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-brand-dark transition-all duration-300 shadow-sm">${t.aceptar}</button>
-                
+                <button onclick="accionCookies('aceptadas')" class="w-full bg-brand-gold text-brand-dark px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all duration-300 shadow-sm">${t.aceptar}</button>
+
                 <div class="flex justify-between items-center px-1">
-                    <button onclick="accionCookies('rechazadas')" class="text-[10px] font-bold uppercase tracking-widest text-brand-dark/50 dark:text-white/50 hover:text-brand-dark dark:hover:text-white transition-colors">${t.rechazar}</button>
+                    <button onclick="accionCookies('rechazadas')" class="text-[10px] font-bold uppercase tracking-widest text-brand-dark/75 dark:text-white/75 hover:text-brand-dark dark:hover:text-white transition-colors">${t.rechazar}</button>
                     <a href="${t.enlace}" class="text-[10px] font-bold uppercase tracking-widest text-brand-gold hover:text-brand-dark dark:hover:text-white transition-colors">${t.info}</a>
                 </div>
             </div>
