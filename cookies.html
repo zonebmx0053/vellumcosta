@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Política de Cookies | Vellum Costa</title>
+    <meta name="description" content="Consulte la política de cookies de Vellum Costa. Le explicamos qué tipos de cookies utilizamos y cómo gestionarlas en nuestro sitio web de property management en la Costa del Sol.">
+    <link rel="canonical" href="https://vellumcosta.com/cookies.html" />
+    <link rel="alternate" hreflang="es" href="https://vellumcosta.com/cookies.html" />
+    <link rel="alternate" hreflang="en" href="https://vellumcosta.com/cookies-en.html" />
     <link rel="icon" type="image/png" href="LogoPestaña.png">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,13 +38,90 @@
 </head>
 <body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 min-h-screen flex flex-col">
 
-    <main class="flex-grow max-w-4xl mx-auto px-6 py-20">
-        <div class="bg-white dark:bg-brand-darkcard p-8 md:p-12 shadow-sm border border-brand-dark/10 dark:border-white/10 rounded-sm">
+    <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <a href="inicio.html" class="block">
+                <img src="LOGO.png" alt="Vellum Costa Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            </a>
+
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
+                <a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
+                <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
+                <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
+                <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
+                <a href="inicio.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+            </div>
+
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-brand-dark dark:text-white focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-5">
+
+                <div class="relative group cursor-pointer">
+                    <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2 space-x-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" alt="ES" class="w-5 h-auto rounded-sm shadow-sm">
+                        <span class="font-bold text-sm tracking-wide">ES</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                    </button>
+                    <div class="absolute right-0 mt-0 w-36 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
+                        <div class="py-2 flex flex-col">
+                            <a href="#" class="px-4 py-2 flex items-center space-x-3 text-sm text-brand-gold font-bold hover:bg-brand-dark/5 dark:hover:bg-white/5 transition-colors">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" alt="Español" class="w-4 h-auto rounded-sm">
+                                <span>Español</span>
+                            </a>
+                            <a href="cookies-en.html" class="px-4 py-2 flex items-center space-x-3 text-sm text-brand-dark dark:text-white hover:bg-brand-dark/5 dark:hover:bg-white/5 hover:text-brand-gold transition-colors">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg" alt="English" class="w-4 h-auto rounded-sm">
+                                <span>English</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                </button>
+                <a href="inicio.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
+            <div class="px-6 py-4 space-y-4 text-center">
+                <a href="inicio.html" class="block text-brand-dark dark:text-white">Inicio</a>
+                <a href="servicios.html" class="block text-brand-dark dark:text-white">Servicios</a>
+                <a href="nosotros.html" class="block text-brand-dark dark:text-white">Nosotros</a>
+                <a href="areas.html" class="block text-brand-dark dark:text-white">Áreas</a>
+                <a href="blog.html" class="block text-brand-dark dark:text-white">Blog</a>
+                <a href="inicio.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+
+                <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-8">
+                    <a href="#" class="text-brand-gold font-bold flex items-center space-x-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" alt="ES" class="w-5 h-auto rounded-sm shadow-sm">
+                        <span>ES</span>
+                    </a>
+                    <a href="cookies-en.html" class="text-brand-dark dark:text-white flex items-center space-x-2 hover:text-brand-gold transition-colors opacity-70 hover:opacity-100">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg" alt="EN" class="w-5 h-auto rounded-sm shadow-sm">
+                        <span>EN</span>
+                    </a>
+                </div>
+
+                <a href="inicio.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl mx-auto px-6 pt-32 pb-20">
+        <div class="bg-white dark:bg-brand-darkcard p-8 md:p-12 shadow-sm border border-brand-dark/10 dark:border-white/10 rounded-sm" data-aos="fade-up">
             <h1 class="font-serif text-3xl md:text-4xl font-bold mb-8 text-brand-dark dark:text-white">Política de Cookies</h1>
-            
+
             <div class="space-y-6 text-sm md:text-base text-brand-dark/80 dark:text-white/80 leading-relaxed">
                 <p>En Vellum Costa valoramos la transparencia y el trato directo. Por eso, queremos explicarle de forma clara cómo utilizamos las cookies en nuestra página web para mejorar nuestro servicio a los propietarios de apartamentos y casas en la Costa del Sol.</p>
-                
+
                 <h2 class="font-serif text-xl font-bold text-brand-gold mt-8">¿Qué son las cookies?</h2>
                 <p>Son pequeños archivos de texto que se guardan en su navegador cuando visita nuestra web. Nos ayudan a recordar sus preferencias (como el idioma) y a entender qué información le resulta más útil.</p>
 
@@ -62,6 +144,95 @@
             </div>
         </div>
     </main>
+
+    <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+
+            <div>
+                <a href="inicio.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="LOGO.png" alt="Icono Vellum Costa" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                </a>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
+            </div>
+
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h5>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> info@vellumcosta.com</p>
+                <p class="text-brand-dark/60 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> +34 642 827 794</p>
+            </div>
+
+            <div>
+                <h5 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Legal</h5>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/60 dark:text-white/60 font-light">
+                    <a href="aviso-legal.html" class="hover:text-brand-gold transition-colors">Aviso Legal</a>
+                    <a href="privacidad.html" class="hover:text-brand-gold transition-colors">Política de Privacidad</a>
+                    <a href="terminos.html" class="hover:text-brand-gold transition-colors">Términos y Condiciones</a>
+                    <a href="cookies.html" class="hover:text-brand-gold transition-colors">Política de Cookies</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center text-brand-dark/40 dark:text-white/40 text-xs font-light">
+            &copy; 2026 Vellum Costa. Todos los derechos reservados.
+            <div class="mt-2 text-[10px] text-brand-dark/30 dark:text-white/30 italic uppercase tracking-widest text-center">
+                Vellum Costa es una marca comercial operada conjuntamente con Jilesur SL.
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/34642827794" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 50, duration: 800 });
+
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        if (themeToggleDarkIcon && themeToggleLightIcon) {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', function() {
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script src="cookie-banner.js"></script>
 
 </body>
 </html>
