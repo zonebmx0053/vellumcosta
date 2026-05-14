@@ -1,30 +1,30 @@
 (function () {
 
-    // ── Rate Limiting ──────────────────────────────────────────────────────────
     var RL_KEY = 'vc_form_submissions';
     var RL_MAX = 3;
     var RL_WIN = 60 * 1000;
 
+    function _loadWindow() {
+        var now = Date.now();
+        var ts  = JSON.parse(localStorage.getItem(RL_KEY) || '[]').filter(function (t) { return now - t < RL_WIN; });
+        return { now: now, ts: ts };
+    }
+
     window.formRateLimit = {
         check: function () {
-            var now = Date.now();
-            var ts  = JSON.parse(localStorage.getItem(RL_KEY) || '[]');
-            ts = ts.filter(function (t) { return now - t < RL_WIN; });
-            if (ts.length >= RL_MAX) {
-                return { allowed: false, waitSeconds: Math.ceil((RL_WIN - (now - ts[0])) / 1000) };
+            var w = _loadWindow();
+            if (w.ts.length >= RL_MAX) {
+                return { allowed: false, waitSeconds: Math.ceil((RL_WIN - (w.now - w.ts[0])) / 1000) };
             }
             return { allowed: true };
         },
         record: function () {
-            var now = Date.now();
-            var ts  = JSON.parse(localStorage.getItem(RL_KEY) || '[]');
-            ts = ts.filter(function (t) { return now - t < RL_WIN; });
-            ts.push(now);
-            localStorage.setItem(RL_KEY, JSON.stringify(ts));
+            var w = _loadWindow();
+            w.ts.push(w.now);
+            localStorage.setItem(RL_KEY, JSON.stringify(w.ts));
         }
     };
 
-    // ── Sanitization & Validation ──────────────────────────────────────────────
     function clean(v) { return String(v || '').trim(); }
 
     function validEmail(v) {
@@ -35,7 +35,6 @@
         return /^[\d\s\+\-\(\)\.]{7,20}$/.test(v);
     }
 
-    // Patterns that indicate XSS, template injection or SQL injection attempts
     var MALICIOUS = [
         /<script[\s\S]*?>/i,
         /javascript\s*:/i,
@@ -52,7 +51,6 @@
         return MALICIOUS.some(function (re) { return re.test(v); });
     }
 
-    // ── Form Security ──────────────────────────────────────────────────────────
     window.formSecurity = {
         validate: function (form, lang) {
             var es = (lang !== 'en');

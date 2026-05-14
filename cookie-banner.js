@@ -58,14 +58,10 @@ function crearAvisoCookies(lang) {
 }
 
 function accionCookies(decision) {
-    // Guarda la decisión en el navegador del usuario
     localStorage.setItem('cookies-vellum', decision);
-    
-    // Oculta el banner con una animación suave
     const banner = document.getElementById('banner-flotante-cookies');
-    banner.classList.add('translate-y-4', 'opacity-0');
-    
-    setTimeout(() => {
-        banner.remove();
-    }, 500);
+    if (banner) {
+        banner.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => { banner.remove(); }, 500);
+    }
 }
