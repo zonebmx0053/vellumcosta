@@ -1,14 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Comprueba si el usuario ya ha tomado una decisión
     if (!localStorage.getItem('cookies-vellum')) {
-        // Detecta el idioma de la página actual (por defecto 'es')
         const lang = document.documentElement.lang || 'es';
         crearAvisoCookies(lang);
     }
 });
 
 function crearAvisoCookies(lang) {
-    // Textos en ambos idiomas
     const textos = {
         es: {
             titulo: "Uso de Cookies",
@@ -30,12 +27,22 @@ function crearAvisoCookies(lang) {
 
     const t = textos[lang] || textos.es;
 
-    // Crear el contenedor flotante
     const banner = document.createElement('div');
     banner.id = 'banner-flotante-cookies';
-    
-    // Clases de Tailwind para posicionarlo abajo a la derecha y darle estilo Vellum
-    banner.className = 'fixed bottom-6 right-6 w-[calc(100%-3rem)] md:w-80 z-[9999] bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 shadow-2xl p-6 rounded-sm transition-all duration-500 transform translate-y-0 opacity-100';
+
+    // Tailwind solo para colores, bordes y sombra — posición e z-index via style inline
+    // para no depender de clases arbitrarias que no están en el CSS compilado
+    banner.className = 'bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 shadow-2xl p-6 rounded-sm';
+    banner.style.cssText = [
+        'position: fixed',
+        'bottom: 1.5rem',
+        'left: 50%',
+        'transform: translateX(-50%)',
+        'width: calc(100% - 3rem)',
+        'max-width: 28rem',
+        'z-index: 9999',
+        'transition: opacity 0.4s ease, transform 0.4s ease'
+    ].join(';');
 
     banner.innerHTML = `
         <div class="flex flex-col space-y-4">
@@ -45,7 +52,6 @@ function crearAvisoCookies(lang) {
             </div>
             <div class="flex flex-col space-y-3">
                 <button onclick="accionCookies('aceptadas')" class="w-full bg-brand-gold text-brand-dark px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all duration-300 shadow-sm">${t.aceptar}</button>
-
                 <div class="flex justify-between items-center px-1">
                     <button onclick="accionCookies('rechazadas')" class="text-[10px] font-bold uppercase tracking-widest text-brand-dark/75 dark:text-white/75 hover:text-brand-dark dark:hover:text-white transition-colors">${t.rechazar}</button>
                     <a href="${t.enlace}" class="text-[10px] font-bold uppercase tracking-widest text-brand-gold hover:text-brand-dark dark:hover:text-white transition-colors">${t.info}</a>
@@ -53,7 +59,7 @@ function crearAvisoCookies(lang) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(banner);
 }
 
@@ -61,7 +67,8 @@ function accionCookies(decision) {
     localStorage.setItem('cookies-vellum', decision);
     const banner = document.getElementById('banner-flotante-cookies');
     if (banner) {
-        banner.classList.add('translate-y-4', 'opacity-0');
-        setTimeout(() => { banner.remove(); }, 500);
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateX(-50%) translateY(1rem)';
+        setTimeout(() => { banner.remove(); }, 450);
     }
 }
