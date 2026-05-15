@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <link rel="canonical" href="https://vellumcosta.com/articulo-4.html" />
     <link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-4.html" />
     <link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-4.html" />
+    <link rel="alternate" hreflang="x-default" href="https://vellumcosta.com/articulo-4.html" />
 
     <link rel="icon" type="image/png" href="LogoPestaña.png">
     <meta property="og:type" content="article">
@@ -77,7 +78,7 @@
                     <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2 space-x-2">
                         <img src="flag-es.svg" alt="" class="w-5 h-auto rounded-sm shadow-sm">
                         <span class="font-bold text-sm tracking-wide">ES</span>
-                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70" aria-hidden="true"></i>
                     </button>
                     <div class="absolute right-0 mt-0 w-36 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
                         <div class="py-2 flex flex-col">
@@ -128,17 +129,17 @@
 
     <header class="relative pt-32 pb-20 bg-brand-dark dark:bg-black transition-colors duration-500">
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1920&q=80" alt="Turistas premium" class="w-full h-full object-cover opacity-40">
+            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1920&q=80" alt="Turistas premium" fetchpriority="high" width="1920" height="1080" class="w-full h-full object-cover opacity-40">
         </div>
         <div class="relative z-10 max-w-4xl mx-auto px-6 text-center" data-aos="fade-up">
             <span class="bg-brand-dark text-white text-xs font-bold uppercase tracking-widest px-3 py-1 mb-6 inline-block">Tendencias</span>
             <h1 class="font-serif text-4xl md:text-5xl text-white mb-6 leading-tight">El perfil del turista nórdico en la Costa del Sol</h1>
             <div class="flex items-center justify-center space-x-4 text-sm text-white/80 font-light">
-                <span><i class="fa-regular fa-calendar mr-2"></i> Enero 2026</span>
+                <span><i class="fa-regular fa-calendar mr-2" aria-hidden="true"></i> Enero 2026</span>
                 <span>|</span>
-                <span><i class="fa-solid fa-pen-nib mr-2"></i> Equipo de Análisis Vellum</span>
+                <span><i class="fa-solid fa-pen-nib mr-2" aria-hidden="true"></i> Equipo de Análisis Vellum</span>
                 <span>|</span>
-                <span><i class="fa-regular fa-clock mr-2"></i> 4 min de lectura</span>
+                <span><i class="fa-regular fa-clock mr-2" aria-hidden="true"></i> 4 min de lectura</span>
             </div>
         </div>
     </header>
@@ -174,20 +175,32 @@
     </main>
 
     <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
             
             <div>
                 <a href="inicio.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
                     <img src="LOGO.png" alt="Icono Vellum Costa" width="192" height="108" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM&nbsp;COSTA</span>
                 </a>
                 <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
             </div>
             
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h3>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> <a href="mailto:info@vellumcosta.com" class="hover:text-brand-gold transition-colors">info@vellumcosta.com</a></p>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> <a href="tel:+34642827794" class="hover:text-brand-gold transition-colors">+34 642 827 794</a></p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold" aria-hidden="true"></i> <a href="mailto:info@vellumcosta.com" class="hover:text-brand-gold transition-colors">info@vellumcosta.com</a></p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold" aria-hidden="true"></i> <a href="tel:+34642827794" class="hover:text-brand-gold transition-colors">+34 642 827 794</a></p>
+            </div>
+            
+            <div>
+                <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Navegación</h3>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
+                    <a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
+                    <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
+                    <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
+                    <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
+                    <a href="inicio.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+                </div>
             </div>
             
             <div>
@@ -197,6 +210,18 @@
                     <a href="privacidad.html" class="hover:text-brand-gold transition-colors">Política de Privacidad</a>
                     <a href="terminos.html" class="hover:text-brand-gold transition-colors">Términos y Condiciones</a>
                     <a href="cookies.html" class="hover:text-brand-gold transition-colors">Política de Cookies</a>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Nuestros Servicios</h3>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Gestión de Alquiler Vacacional</a>
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Revenue Management</a>
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Atención al Huésped 24/7</a>
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Mantenimiento de Propiedades</a>
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Fotografía Profesional</a>
+                    <a href="servicios.html" class="hover:text-brand-gold transition-colors">Asesoría de Licencias Turísticas</a>
                 </div>
             </div>
             
@@ -210,8 +235,8 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/34642827794" target="_blank" aria-label="Contactar por WhatsApp" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
-        <i class="fa-brands fa-whatsapp"></i>
+    <a href="https://wa.me/34642827794" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

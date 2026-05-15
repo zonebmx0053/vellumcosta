@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <link rel="canonical" href="https://vellumcosta.com/cookies-en.html" />
     <link rel="alternate" hreflang="en" href="https://vellumcosta.com/cookies-en.html" />
     <link rel="alternate" hreflang="es" href="https://vellumcosta.com/cookies.html" />
+    <link rel="alternate" hreflang="x-default" href="https://vellumcosta.com/cookies.html" />
     <link rel="icon" type="image/png" href="LogoPestaña.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,7 +60,7 @@
                     <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2 space-x-2">
                         <img src="flag-uk.svg" alt="" class="w-5 h-auto rounded-sm shadow-sm">
                         <span class="font-bold text-sm tracking-wide">EN</span>
-                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70" aria-hidden="true"></i>
                     </button>
                     <div class="absolute right-0 mt-0 w-36 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
                         <div class="py-2 flex flex-col">
@@ -130,7 +131,7 @@
 
                 <div class="pt-8 mt-8 border-t border-brand-dark/10 dark:border-white/10">
                     <a href="home.html" class="inline-flex items-center space-x-2 text-brand-gold font-bold hover:text-brand-dark dark:hover:text-white transition-colors uppercase tracking-widest text-xs">
-                        <i class="fa-solid fa-arrow-left"></i>
+                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                         <span>Back to Home</span>
                     </a>
                 </div>
@@ -139,22 +140,34 @@
     </main>
 
     <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
 
             <div>
                 <a href="home.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
                     <img src="LOGO.png" alt="Vellum Costa Icon" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM COSTA</span>
+                    <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM&nbsp;COSTA</span>
                 </a>
                 <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm">Boutique Property Management on the Costa del Sol. Peace of mind for property owners.</p>
             </div>
 
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contact</h3>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold"></i> info@vellumcosta.com</p>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold"></i> +34 642 827 794</p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold" aria-hidden="true"></i> info@vellumcosta.com</p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold" aria-hidden="true"></i> +34 642 827 794</p>
             </div>
 
+            <div>
+                <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Navigation</h3>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
+                    <a href="home.html" class="hover:text-brand-gold transition-colors">Home</a>
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">Services</a>
+                    <a href="about-us.html" class="hover:text-brand-gold transition-colors">About</a>
+                    <a href="areas-en.html" class="hover:text-brand-gold transition-colors">Areas</a>
+                    <a href="blog-en.html" class="hover:text-brand-gold transition-colors">Blog</a>
+                    <a href="home.html#contacto" class="hover:text-brand-gold transition-colors">Contact</a>
+                </div>
+            </div>
+            
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Legal</h3>
                 <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
@@ -162,6 +175,18 @@
                     <a href="privacy-policy.html" class="hover:text-brand-gold transition-colors">Privacy Policy</a>
                     <a href="terms-and-conditions.html" class="hover:text-brand-gold transition-colors">Terms and Conditions</a>
                     <a href="cookies-en.html" class="hover:text-brand-gold transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Our Services</h3>
+                <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">Holiday Rental Management</a>
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">Revenue Management</a>
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">24/7 Guest Support</a>
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">Property Maintenance</a>
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">Professional Photography</a>
+                    <a href="services.html" class="hover:text-brand-gold transition-colors">Tourist Licence Advisory</a>
                 </div>
             </div>
 
@@ -175,8 +200,8 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/34642827794" target="_blank" aria-label="Contactar por WhatsApp" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
-        <i class="fa-brands fa-whatsapp"></i>
+    <a href="https://wa.me/34642827794" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
