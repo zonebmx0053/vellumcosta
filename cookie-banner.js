@@ -39,7 +39,7 @@ function crearAvisoCookies(lang) {
         'left: 50%',
         'transform: translateX(-50%)',
         'width: calc(100% - 3rem)',
-        'max-width: 28rem',
+        'max-width: ' + (window.innerWidth >= 768 ? '44rem' : '28rem'),
         'z-index: 9999',
         'transition: opacity 0.4s ease, transform 0.4s ease'
     ].join(';');
