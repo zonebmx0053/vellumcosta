@@ -54,13 +54,13 @@
     <loc>https://vellumcosta.com/blog.html</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/blog.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/blog-en.html"/>
-    <lastmod>2026-05-15</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <lastmod>2026-10-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://vellumcosta.com/blog-en.html</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/blog.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/blog-en.html"/>
-    <lastmod>2026-05-15</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <lastmod>2026-10-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
   </url>
   <url>
     <loc>https://vellumcosta.com/articulo-1.html</loc>
@@ -157,6 +157,126 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-8.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-8.html"/>
     <lastmod>2026-05-15</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-9.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-9.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-9.html"/>
+    <lastmod>2026-05-15</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-9.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-9.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-9.html"/>
+    <lastmod>2026-05-15</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-10.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-10.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-10.html"/>
+    <lastmod>2026-06-01</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-10.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-10.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-10.html"/>
+    <lastmod>2026-06-01</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-11.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-11.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-11.html"/>
+    <lastmod>2026-07-06</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-11.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-11.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-11.html"/>
+    <lastmod>2026-07-06</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-12.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-12.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-12.html"/>
+    <lastmod>2026-07-20</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-12.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-12.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-12.html"/>
+    <lastmod>2026-07-20</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-13.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-13.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-13.html"/>
+    <lastmod>2026-08-03</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-13.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-13.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-13.html"/>
+    <lastmod>2026-08-03</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-14.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-14.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-14.html"/>
+    <lastmod>2026-08-17</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-14.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-14.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-14.html"/>
+    <lastmod>2026-08-17</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-15.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-15.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-15.html"/>
+    <lastmod>2026-09-07</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-15.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-15.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-15.html"/>
+    <lastmod>2026-09-07</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-16.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-16.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-16.html"/>
+    <lastmod>2026-09-21</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-16.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-16.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-16.html"/>
+    <lastmod>2026-09-21</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-17.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-17.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-17.html"/>
+    <lastmod>2026-10-01</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-17.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-17.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-17.html"/>
+    <lastmod>2026-10-01</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/articulo-18.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-18.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-18.html"/>
+    <lastmod>2026-10-08</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vellumcosta.com/article-18.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://vellumcosta.com/articulo-18.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vellumcosta.com/article-18.html"/>
+    <lastmod>2026-10-08</lastmod><changefreq>yearly</changefreq><priority>0.7</priority>
   </url>
   <url>
     <loc>https://vellumcosta.com/area-marbella.html</loc>

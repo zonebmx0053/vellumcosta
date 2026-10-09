@@ -37,6 +37,7 @@
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <link rel="stylesheet" href="tailwind.css">
+    <link rel="stylesheet" href="blog.css">
 
     <script>
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -134,7 +135,113 @@
     </header>
 
     <main id="main-content" class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div id="blog-toolbar"></div>
+
+        <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=800&q=80" alt="Golf course" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Strategy</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">October 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-18.html">A profitable low season: golf, remote work and longer winter stays</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">Winter on the Costa del Sol is not a dead season. Which travellers arrive from October to March and how to adapt your home, prices and terms.</p>
+                    <a href="article-18.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="200">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=800&q=80" alt="Rain on a window" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Maintenance</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">October 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-17.html">Autumn on the Costa del Sol: preparing your home for rain and humidity</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">After dry months, the autumn rains arrive all at once. Drains, terraces, humidity and insurance: what to check in October to avoid damage.</p>
+                    <a href="article-17.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="300">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80" alt="Deep cleaning of the property" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Management</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">September 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-16.html">Summer wrap-up: what to check in your property after high season</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">After weeks of continuous occupancy it is time to inspect, restock and repair. The end-of-summer review that protects the value of your home.</p>
+                    <a href="article-16.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" alt="Quiet beach at sunset" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Market</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">September 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-15.html">September, the smart month: the shoulder season many owners overlook</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">Warm sea, quiet beaches and a different kind of traveller. Why the shoulder season is a real income opportunity and how to adapt your listing.</p>
+                    <a href="article-15.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="200">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=800&q=80" alt="Pool and garden" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Maintenance</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">August 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-14.html">Pool and garden in a heatwave: essential care for August</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">Extreme heat and heavy use put the pool and garden to the test. What to watch to avoid green water, scorched plants and soaring consumption.</p>
+                    <a href="article-14.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="300">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Data analytics dashboard" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Strategy</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">August 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-13.html">Last-minute bookings in August: how to adjust prices without underselling your property</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">Short gaps, minimum stays and discounts: which levers to pull to fill August without giving away the most valuable dates of the year.</p>
+                    <a href="article-13.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80" alt="Smart lock" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-dark text-white text-xs font-bold uppercase tracking-widest px-3 py-1">Guests</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">July 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-12.html">Seamless arrivals: the guest experience at the height of the season</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">Delayed flights, heat and late-night arrivals. A well-organised check-in and a fast response are what protect your reviews in summer.</p>
+                    <a href="article-12.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
+
+            <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="200">
+                <div class="relative h-60 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80" alt="Villa with pool" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Management</div>
+                </div>
+                <div class="p-8">
+                    <p class="text-brand-dark/50 dark:text-white/50 text-xs font-semibold mb-3">July 2026</p>
+                    <h3 class="font-serif text-xl font-bold text-brand-dark dark:text-white mb-3 group-hover:text-brand-gold transition-colors"><a href="article-11.html">High season on the Costa del Sol: how to prepare your property for July and August</a></h3>
+                    <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm line-clamp-3 mb-6">July and August bring the highest occupancy and the most wear. We review air conditioning, the pool and changeovers for a summer without emergencies.</p>
+                    <a href="article-11.html" class="text-brand-gold text-sm font-semibold uppercase tracking-wider hover:text-brand-dark dark:hover:text-white transition-colors">Read Article <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i></a>
+                </div>
+            </article>
 
             <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="100">
                 <div class="relative h-60 overflow-hidden">
@@ -177,7 +284,7 @@
 
             <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="200">
                 <div class="relative h-60 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="Property Inspection" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=800&q=80" alt="Inspection checklist" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Management</div>
                 </div>
                 <div class="p-8">
@@ -190,7 +297,7 @@
 
             <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="200">
                 <div class="relative h-60 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Luxury Villa" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="estepona.jpg" alt="Estepona marina" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Market</div>
                 </div>
                 <div class="p-8">
@@ -216,7 +323,7 @@
 
             <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="400">
                 <div class="relative h-60 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80" alt="Guests" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80" alt="Nordic-style living room" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute top-4 left-4 bg-brand-dark text-white text-xs font-bold uppercase tracking-widest px-3 py-1">Trends</div>
                 </div>
                 <div class="p-8">
@@ -229,7 +336,7 @@
 
             <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="500">
                 <div class="relative h-60 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Maintenance" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80" alt="Professional photography equipment" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Management</div>
                 </div>
                 <div class="p-8">
@@ -255,7 +362,7 @@
 
             <article class="bg-white dark:bg-brand-darkcard rounded-sm shadow-lg overflow-hidden group border border-brand-dark/5 dark:border-white/5" data-aos="fade-up" data-aos-delay="100">
                 <div class="relative h-60 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=800&q=80" alt="Marbella Beach" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="marbella.jpg" alt="Marbella coastline in summer" loading="lazy" width="800" height="600" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute top-4 left-4 bg-brand-gold text-brand-dark text-xs font-bold uppercase tracking-widest px-3 py-1">Analysis</div>
                 </div>
                 <div class="p-8">
@@ -267,6 +374,8 @@
             </article>
 
         </div>
+
+        <nav id="blog-pagination" aria-label="Blog pagination"></nav>
     </main>
 
     <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
@@ -334,6 +443,7 @@
         <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
 
+    <script src="blog.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>AOS.init({ once: true, offset: 100, duration: 800 });</script>
 

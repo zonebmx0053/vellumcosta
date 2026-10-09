@@ -1,0 +1,87 @@
+/* Blog: barra de vista (cuadrícula / lista) y paginación */
+
+.blog-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+}
+.dark .blog-toolbar { border-bottom-color: rgba(255, 255, 255, 0.1); }
+
+.blog-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(51, 51, 51, 0.6);
+}
+.dark .blog-count { color: rgba(255, 255, 255, 0.6); }
+
+.blog-view { display: none; align-items: center; gap: 0.5rem; }
+
+.blog-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 0.9rem;
+    border: 1px solid #C5A059;
+    background: transparent;
+    color: #C5A059;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+}
+.blog-btn:hover:not(:disabled),
+.blog-btn:focus-visible { background: #C5A059; color: #fff; outline: none; }
+.blog-btn.is-active,
+.blog-btn.is-active:hover { background: #C5A059; color: #333333; cursor: default; }
+.blog-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.blog-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 4rem;
+}
+.blog-pagination .blog-btn-label { display: none; }
+
+#blog-grid > article[hidden] { display: none; }
+
+@media (min-width: 640px) {
+    .blog-pagination .blog-btn-label { display: inline; }
+}
+
+@media (min-width: 768px) {
+    .blog-view { display: flex; }
+
+    /* Vista en lista: misma tarjeta, con la foto a la izquierda */
+    #blog-grid.is-list { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+    #blog-grid.is-list > article:not([hidden]) { display: flex; }
+    #blog-grid.is-list > article > div:first-child {
+        flex: 0 0 38%;
+        max-width: 26rem;
+        height: auto;
+        min-height: 16rem;
+    }
+    #blog-grid.is-list > article > div:first-child > img { position: absolute; inset: 0; }
+    #blog-grid.is-list > article > div:last-child {
+        flex: 1 1 0%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2.5rem;
+    }
+}
