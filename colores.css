@@ -1,0 +1,23 @@
+/* ══════════════════════════════════════════════════════════════════════
+   COLORES DE VELLUM COSTA
+   Este es el único archivo donde se eligen los colores de toda la web.
+   Para cambiar un color, sustituya el código (por ejemplo #404040) por
+   otro y guarde el archivo: se aplica en todas las páginas a la vez.
+   Puede elegir códigos de color en https://htmlcolorcodes.com/es/
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Letras (modo claro) ── */
+    --color-texto: #333333;               /* Títulos y texto principal */
+    --color-texto-secundario: #404040;    /* Párrafos y descripciones (el antiguo gris) */
+    --color-texto-tenue: #5E5E5E;         /* Detalles pequeños: fechas, notas, contadores */
+    --grosor-texto-secundario: 400;       /* Grosor de párrafos y descripciones: 300 = fina (como antes), 400 = normal, 500 = más gruesa */
+
+    /* ── Color de marca ── */
+    --color-dorado: #C5A059;              /* Botones, iconos, enlaces y detalles */
+
+    /* ── Fondos ── */
+    --color-fondo: #FAFAFA;               /* Fondo de la página en modo claro */
+    --color-oscuro-fondo: #121212;        /* Fondo de la página en modo oscuro */
+    --color-oscuro-tarjeta: #1E1E1E;      /* Tarjetas y recuadros en modo oscuro */
+}

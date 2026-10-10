@@ -5,3 +5,6 @@ tailwindcss.exe
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Configuración local de Claude Code
+.claude/settings.local.json

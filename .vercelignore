@@ -1,0 +1,10 @@
+# Archivos internos que no deben publicarse en la web
+contexto-vellum-propiedades.md
+portal-clientes
+tailwindcss.exe
+
+# Configuración local de Claude Code
+.claude
+
+# Fotos originales (en la web se usan las copias optimizadas de la carpeta fotos)
+Fotos CAMPO ARRIBA

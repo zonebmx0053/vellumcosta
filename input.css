@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Grises del texto en modo claro: se eligen en colores.css */
+.text-brand-dark\/70, .text-brand-dark\/75, .text-brand-dark\/80 { color: var(--color-texto-secundario); }
+.text-brand-dark\/30, .text-brand-dark\/40, .text-brand-dark\/50, .text-brand-dark\/60 { color: var(--color-texto-tenue); }
+/* Grosor de ese texto en modo claro: también se elige en colores.css */
+html:not(.dark) .font-light[class*="text-brand-dark/"] { font-weight:var(--grosor-texto-secundario,400); }
