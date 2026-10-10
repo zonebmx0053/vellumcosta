@@ -168,10 +168,12 @@
     function renderLogin(then) {
         root.innerHTML = '<form class="ad-login"><img src="LOGO.png" alt="Vellum Costa">' +
             '<h1>Panel de alojamientos</h1><p>Acceso privado. Introduzca su contraseña.</p>' +
+            // Campo de usuario oculto: los gestores de contraseñas lo necesitan para guardar el acceso.
+            '<input type="text" name="username" autocomplete="username" value="admin" hidden>' +
             '<input type="password" name="password" autocomplete="current-password" aria-label="Contraseña" placeholder="Contraseña" required>' +
             '<button type="submit" class="ad-btn ad-btn-solid">Entrar</button>' +
             '<p class="ad-error" role="alert" hidden></p></form>';
-        var form = root.querySelector('form'), password = form.querySelector('input'), error = form.querySelector('.ad-error'), button = form.querySelector('button');
+        var form = root.querySelector('form'), password = form.querySelector('input[type="password"]'), error = form.querySelector('.ad-error'), button = form.querySelector('button');
         password.focus();
         form.addEventListener('submit', function (e) {
             e.preventDefault();
