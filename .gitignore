@@ -8,3 +8,6 @@ desktop.ini
 
 # Configuración local de Claude Code
 .claude/settings.local.json
+
+# Fotos originales sin optimizar (la web usa las copias de la carpeta fotos)
+Fotos CAMPO ARRIBA/
