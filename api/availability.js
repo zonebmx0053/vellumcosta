@@ -3,8 +3,8 @@
 // y devuelve las noches ocupadas. Las URLs iCal son privadas: se leen de variables de
 // entorno de Vercel (ICAL_CASA_1_AIRBNB, ICAL_CASA_1_VRBO, ICAL_CASA_1_BOOKING, ...) o,
 // si se han escrito en el panel (/admin), de los datos guardados, que tienen prioridad.
-// A las noches de las plataformas se suman las fechas bloqueadas a mano en el panel
-// (con ?manual=0 se devuelven solo las de las plataformas).
+// A las noches de las plataformas se suman las reservas directas y los bloqueos anotados
+// en el panel (con ?manual=0 se devuelven solo las de las plataformas).
 
 const { loadData } = require('./_lib');
 
@@ -16,8 +16,11 @@ const DAY_MS = 86400000;
 const envKey = (id, source) => `ICAL_${id}_${source}`.toUpperCase().replace(/-/g, '_');
 const toIso = ms => new Date(ms).toISOString().slice(0, 10);
 const toMs = iso => Date.parse(iso + 'T00:00:00Z');
+const unescape = text => text.replace(/\\n/gi, ' ').replace(/\\([,;\\])/g, '$1').trim();
 
-// Devuelve [{ start, end }] en formato YYYY-MM-DD; "end" es el día de salida (no incluido).
+// Devuelve [{ start, end, summary, url }] con fechas YYYY-MM-DD; "end" es el día de salida
+// (no incluido). "summary" es el texto que pone la plataforma ("Reserved", "CLOSED - Not
+// available"…) y "url", el enlace a la reserva cuando Airbnb lo incluye.
 function parseIcal(text) {
     if (typeof text !== 'string' || !text.includes('BEGIN:VCALENDAR')) throw new Error('not_ical');
     const lines = text.replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
@@ -30,7 +33,7 @@ function parseIcal(text) {
             if (event.start && !event.cancelled) {
                 let end = event.end;
                 if (!end || end <= event.start) end = toIso(toMs(event.start) + DAY_MS);
-                ranges.push({ start: event.start, end });
+                ranges.push({ start: event.start, end, summary: event.summary || '', url: event.url || '' });
             }
             event = null;
             continue;
@@ -44,6 +47,11 @@ function parseIcal(text) {
             if (m) event[name === 'DTSTART' ? 'start' : 'end'] = `${m[1]}-${m[2]}-${m[3]}`;
         } else if (name === 'STATUS' && value.toUpperCase() === 'CANCELLED') {
             event.cancelled = true;
+        } else if (name === 'SUMMARY') {
+            event.summary = unescape(value).slice(0, 80);
+        } else if (name === 'DESCRIPTION') {
+            const m = /https:\/\/www\.airbnb\.[a-z.]{2,7}\/hosting\/reservations\/details\/[A-Za-z0-9]+/.exec(value);
+            if (m) event.url = m[0];
         }
     }
     return ranges;
@@ -77,6 +85,25 @@ async function fetchIcal(url) {
     }
 }
 
+// Lee los calendarios configurados de una propiedad ("saved" son sus datos del panel, si
+// existen). Devuelve el estado de cada plataforma y todos sus eventos, cada uno con su origen.
+async function loadCalendars(id, saved) {
+    const sources = {};
+    const events = [];
+    await Promise.all(SOURCES.map(async source => {
+        const url = (saved && saved.ical && saved.ical[source]) || process.env[envKey(id, source)];
+        if (!url) { sources[source] = 'not_configured'; return; }
+        try {
+            for (const event of await fetchIcal(url)) events.push({ source, ...event });
+            sources[source] = 'ok';
+        } catch (e) {
+            console.error(`iCal ${id}/${source}: ${e.message}`);
+            sources[source] = 'error';
+        }
+    }));
+    return { sources, events };
+}
+
 async function handler(req, res) {
     if (req.method !== 'GET') {
         res.setHeader('Allow', 'GET');
@@ -84,7 +111,7 @@ async function handler(req, res) {
     }
     const id = String((req.query && req.query.property) || '');
 
-    // Datos del panel: propiedades añadidas, URLs iCal y bloqueos manuales.
+    // Datos del panel: propiedades añadidas, URLs iCal, reservas directas y bloqueos.
     let saved = null, storeFailed = false;
     try {
         const data = await loadData();
@@ -95,34 +122,25 @@ async function handler(req, res) {
     }
     if (!PROPERTIES.includes(id) && !saved) return res.status(400).json({ error: 'unknown_property' });
 
-    const sources = {};
-    const all = [];
-    await Promise.all(SOURCES.map(async source => {
-        const url = (saved && saved.ical && saved.ical[source]) || process.env[envKey(id, source)];
-        if (!url) { sources[source] = 'not_configured'; return; }
-        try {
-            all.push(...await fetchIcal(url));
-            sources[source] = 'ok';
-        } catch (e) {
-            console.error(`iCal ${id}/${source}: ${e.message}`);
-            sources[source] = 'error';
-        }
-    }));
+    const { sources, events } = await loadCalendars(id, saved);
 
-    // Si falla cualquier calendario configurado (o la lectura de los bloqueos manuales) no se
+    // Si falla cualquier calendario configurado (o la lectura de los datos del panel) no se
     // puede garantizar la disponibilidad: "complete" va a false y la web no debe afirmar que
     // las fechas están libres.
     const states = Object.values(sources);
     const complete = states.includes('ok') && !states.includes('error') && !storeFailed;
-    const bufferDays = Math.max(0, parseInt(process.env.ICAL_BUFFER_DAYS, 10) || 0);
     const manual = saved && String((req.query && req.query.manual) || '') !== '0' ? saved.blocked || [] : [];
+    // Noches de margen alrededor de cada reserva (de plataforma o directa), no de los bloqueos.
+    const bufferDays = Math.max(parseInt(process.env.ICAL_BUFFER_DAYS, 10) || 0, (saved && saved.stay && saved.stay.prep) || 0, 0);
+    const reservations = [...events, ...manual.filter(b => b.type === 'booking')];
+    const blocks = manual.filter(b => b.type !== 'booking');
 
     res.setHeader('Cache-Control', complete ? 'public, max-age=60, s-maxage=600' : 'no-store');
     return res.status(200).json({
         property: id,
         complete,
         sources,
-        busy: complete ? mergeRanges([...mergeRanges(all, { bufferDays }), ...manual]) : [],
+        busy: complete ? mergeRanges([...mergeRanges(reservations, { bufferDays }), ...blocks]) : [],
         updatedAt: new Date().toISOString(),
     });
 }
@@ -131,3 +149,4 @@ module.exports = handler;
 module.exports.parseIcal = parseIcal;
 module.exports.mergeRanges = mergeRanges;
 module.exports.envKey = envKey;
+module.exports.loadCalendars = loadCalendars;

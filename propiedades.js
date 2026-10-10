@@ -1,9 +1,10 @@
 // Página de Propiedades: fichas, panel de contacto y calendario de disponibilidad.
 (function () {
     var cfg = window.VELLUM_PROPERTIES;
+    var PR = window.VELLUM_PRICING;                 // precios.js
     var listRoot = document.getElementById('prop-list');
     var detailRoot = document.getElementById('prop-detail');
-    if (!cfg || (!listRoot && !detailRoot)) return;
+    if (!cfg || !PR || (!listRoot && !detailRoot)) return;
 
     var lang = (document.documentElement.lang || '').indexOf('en') === 0 ? 'en' : 'es';
     var T = {
@@ -17,7 +18,7 @@
             locationTitle: 'Ubicación', mapLink: 'Abrir en Google Maps', maxGuests: 'Máximo {n} huéspedes',
             availability: 'Disponibilidad y precio', notFound: 'No hemos encontrado esta propiedad.',
             gridView: 'Vista en cuadrícula', listView: 'Vista en lista', count1: '1 propiedad', countN: '{n} propiedades',
-            tabInfo: 'Información', tabRates: 'Tarifas', tabPets: 'Mascotas', tabContact: 'Contacto', tabCancel: 'Cancelación',
+            tabInfo: 'Información', tabRates: 'Tarifas', tabOffers: 'Descuentos', tabPets: 'Mascotas', tabContact: 'Contacto', tabCancel: 'Cancelación',
             entry: 'Hora de entrada', exit: 'Hora de salida', perNight: 'por noche', highlightsTitle: 'De un vistazo',
             loadMap: 'Mostrar mapa', mapTitle: 'Mapa de la ubicación', thumbsLabel: 'Todas las fotos',
             mapNote: 'El mapa es de Google Maps: al mostrarlo, Google puede usar cookies.', license: 'Nº de registro',
@@ -39,8 +40,17 @@
             clear: 'Borrar selección', noRoom: 'Desde este día no quedan {n} noches libres seguidas. Elija otra fecha de entrada.', prev: 'Mes anterior', next: 'Mes siguiente',
             legendFree: 'Libre', legendBusy: 'Ocupado', legendSel: 'Su selección',
             days: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
-            msg: 'Hola, me interesa {name} del {in} al {out} ({n} noches). ¿Me confirman disponibilidad?',
-            subject: 'Reserva {name}: {in} - {out}', subjectInfo: 'Información sobre {name}'
+            msg: 'Hola, me interesa {name} del {in} al {out} ({n} noches{g}). ¿Me confirman disponibilidad?',
+            subject: 'Reserva {name}: {in} - {out}', subjectInfo: 'Información sobre {name}',
+            guest: 'huésped', guestsLabel: 'Huéspedes', fewerGuests: 'Menos huéspedes', moreGuests: 'Más huéspedes',
+            brExtra: 'Huéspedes adicionales ({n})', brCleaning: 'Limpieza',
+            discounts: { weekly: 'Descuento semanal', monthly: 'Descuento mensual', early: 'Descuento por reserva anticipada', last: 'Descuento de última hora' },
+            weeklyRate: '{p} % de descuento en estancias de 7 noches o más', monthlyRate: '{p} % de descuento en estancias de 28 noches o más',
+            earlyRate: '{p} % de descuento al reservar con {n} días de antelación o más', lastRate: '{p} % de descuento en llegadas dentro de los próximos {n} días',
+            extraRate: 'Hasta {n} huéspedes incluidos; {fee} por noche por cada huésped adicional', depositRate: 'Fianza: {fee}',
+            maxNightsLabel: 'Estancia máxima de {n} noches', arriveOn: 'Días de entrada: {days}',
+            notice1: 'Reservas con al menos 1 día de antelación', noticeN: 'Reservas con al menos {n} días de antelación',
+            weekdays: ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'], sleepTitle: 'Distribución de camas'
         },
         en: {
             demo: 'Page in preparation: the booked dates shown in the calendar are samples.',
@@ -52,7 +62,7 @@
             locationTitle: 'Location', mapLink: 'Open in Google Maps', maxGuests: 'Maximum {n} guests',
             availability: 'Availability and price', notFound: 'We could not find this property.',
             gridView: 'Grid view', listView: 'List view', count1: '1 property', countN: '{n} properties',
-            tabInfo: 'Information', tabRates: 'Rates', tabPets: 'Pets', tabContact: 'Contact', tabCancel: 'Cancellation',
+            tabInfo: 'Information', tabRates: 'Rates', tabOffers: 'Discounts', tabPets: 'Pets', tabContact: 'Contact', tabCancel: 'Cancellation',
             entry: 'Check-in time', exit: 'Check-out time', perNight: 'per night', highlightsTitle: 'At a glance',
             loadMap: 'Show map', mapTitle: 'Location map', thumbsLabel: 'All photos',
             mapNote: 'The map is provided by Google Maps: showing it may let Google use cookies.', license: 'Registration no.',
@@ -74,8 +84,17 @@
             clear: 'Clear selection', noRoom: 'There are not {n} free nights in a row from this day. Please choose another check-in date.', prev: 'Previous month', next: 'Next month',
             legendFree: 'Free', legendBusy: 'Booked', legendSel: 'Your selection',
             days: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-            msg: 'Hello, I am interested in {name} from {in} to {out} ({n} nights). Could you confirm availability?',
-            subject: 'Booking {name}: {in} - {out}', subjectInfo: 'Information about {name}'
+            msg: 'Hello, I am interested in {name} from {in} to {out} ({n} nights{g}). Could you confirm availability?',
+            subject: 'Booking {name}: {in} - {out}', subjectInfo: 'Information about {name}',
+            guest: 'guest', guestsLabel: 'Guests', fewerGuests: 'Fewer guests', moreGuests: 'More guests',
+            brExtra: 'Additional guests ({n})', brCleaning: 'Cleaning',
+            discounts: { weekly: 'Weekly discount', monthly: 'Monthly discount', early: 'Early booking discount', last: 'Last-minute discount' },
+            weeklyRate: '{p}% off stays of 7 nights or more', monthlyRate: '{p}% off stays of 28 nights or more',
+            earlyRate: '{p}% off when booking {n} days or more in advance', lastRate: '{p}% off arrivals within the next {n} days',
+            extraRate: 'Up to {n} guests included; {fee} per night for each additional guest', depositRate: 'Security deposit: {fee}',
+            maxNightsLabel: 'Maximum stay of {n} nights', arriveOn: 'Check-in days: {days}',
+            notice1: 'Bookings at least 1 day in advance', noticeN: 'Bookings at least {n} days in advance',
+            weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], sleepTitle: 'Sleeping arrangements'
         }
     }[lang];
 
@@ -91,48 +110,12 @@
     function diff(a, b) { return Math.round((date(b) - date(a)) / DAY); }
     function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function fill(s, v) { return s.replace(/\{(\w+)\}/g, function (m, k) { return v[k]; }); }
-    function money(n) { return new Intl.NumberFormat(lang === 'en' ? 'en-GB' : 'es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n); }
+    function money(n) { return new Intl.NumberFormat(lang === 'en' ? 'en-GB' : 'es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: n % 1 ? 2 : 0 }).format(n); }
     function human(s) { return date(s).toLocaleDateString(lang === 'en' ? 'en-GB' : 'es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }); }
     function monthName(s) { var m = date(s).toLocaleDateString(lang === 'en' ? 'en-GB' : 'es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' }); return m.charAt(0).toUpperCase() + m.slice(1); }
 
     function hasPrice(p) { return !!(p.price && p.price.base > 0); }
-    // Precios por fechas del panel: primera regla que incluye la noche "d" y define "key"
-    // (price o minNights). days: 0 = lunes … 6 = domingo; vacío = todas las noches.
-    function ruleFor(p, d, key) {
-        var rules = (p.price && p.price.rules) || [], dow = (date(d).getUTCDay() + 6) % 7, md = d.slice(5);
-        for (var i = 0; i < rules.length; i++) {
-            var r = rules[i], a = r.start.slice(5), b = r.end.slice(5);
-            if (!(r[key] > 0) || (r.days && r.days.length && r.days.indexOf(dow) < 0)) continue;
-            if (r.repeat ? (a <= b ? md >= a && md <= b : md >= a || md <= b) : d >= r.start && d <= r.end) return r;
-        }
-        return null;
-    }
-    // Estancia mínima según el día de entrada.
-    function minNights(p, d) {
-        var r = d && ruleFor(p, d, 'minNights');
-        return r ? r.minNights : (p.price && p.price.minNights) || p.minNights || 1;
-    }
-    function nightPrice(p, d) {
-        var rule = ruleFor(p, d, 'price');
-        if (rule) return rule.price;
-        var md = d.slice(5);
-        var seasons = p.price.seasons || [];
-        for (var i = 0; i < seasons.length; i++) {
-            var s = seasons[i];
-            var inside = s.from <= s.to ? (md >= s.from && md <= s.to) : (md >= s.from || md <= s.to);
-            if (inside) return s.price;
-        }
-        return p.price.base;
-    }
-    function stayPrice(p, a, b) {
-        var total = p.price.cleaningFee || 0;
-        for (var d = a; d < b; d = addDays(d, 1)) total += nightPrice(p, d);
-        return total;
-    }
-    function lowestPrice(p) {
-        var prices = (p.price.seasons || []).concat((p.price.rules || []).filter(function (r) { return r.price > 0 && (r.repeat || r.end >= today); }));
-        return prices.reduce(function (m, s) { return Math.min(m, s.price); }, p.price.base);
-    }
+    function weekdayNames(days) { return days.map(function (d) { return T.weekdays[d]; }).join(', '); }
     function busySet(ranges) {
         var set = {};
         var limit = addMonths(today, MAX_MONTHS + 2);
@@ -147,7 +130,7 @@
     }
     function contactButtons(p, range, short) {
         var c = cfg.contact, name = p.name[lang];
-        var v = range ? { name: name, in: human(range.a), out: human(range.b), n: diff(range.a, range.b) } : null;
+        var v = range ? { name: name, in: human(range.a), out: human(range.b), n: diff(range.a, range.b), g: range.g ? ', ' + range.g + ' ' + (range.g === 1 ? T.guest : T.guests) : '' } : null;
         var text = v ? fill(T.msg, v) : fill(T.subjectInfo, { name: name });
         var subject = v ? fill(T.subject, v) : fill(T.subjectInfo, { name: name });
         return '<div class="prop-buttons">' +
@@ -193,25 +176,30 @@
     });
 
     function calendar(p, panel) {
-        var st = { month: today.slice(0, 8) + '01', a: null, b: null, busy: null, verified: false };
+        var st = { month: today.slice(0, 8) + '01', a: null, b: null, busy: null, verified: false, guests: Math.min(2, p.guests || 2) };
         var firstMonth = st.month;
         var note = panel.querySelector('.prop-cal-note');
         var months = panel.querySelector('.prop-cal-months');
         var result = panel.querySelector('.prop-result');
-        var min = function () { return minNights(p, st.a); };
+        // Reglas de reserva del panel: estancia máxima, último día reservable y días de entrada.
+        var max = PR.maxNights(p), last = PR.lastDay(p, today), arrivalDays = (p.stay && p.stay.checkinDays) || [];
+        var lastMonth = last ? last.slice(0, 8) + '01' : addMonths(firstMonth, MAX_MONTHS);
+        var min = function () { return PR.minNights(p, st.a); };
         var minBox = function () { return min() > 1 ? '<p class="prop-min' + (st.flash ? ' is-flash' : '') + '"><i class="fa-solid fa-moon" aria-hidden="true"></i>' + fill(T.minNightsLabel, { n: min() }) + '</p>' : ''; };
+        var arrivalBox = function () { return arrivalDays.length ? '<p class="prop-min"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>' + esc(fill(T.arriveOn, { days: weekdayNames(arrivalDays) })) + '</p>' : ''; };
         var clearBtn = '<button type="button" class="prop-clear"><i class="fa-solid fa-xmark" aria-hidden="true"></i>' + T.clear + '</button>';
 
-        // Con entrada elegida: último día válido de salida (el primer día cuya noche está ocupada).
+        // Con entrada elegida: último día válido de salida (el primer día cuya noche está ocupada,
+        // la estancia máxima o el final del calendario abierto, lo que llegue antes).
         function limitAfter(a) {
-            var d = addDays(a, 1);
-            for (var i = 0; i < 366 && !st.busy[d]; i++) d = addDays(d, 1);
+            var d = addDays(a, 1), cap = max ? addDays(a, max) : '';
+            for (var i = 0; i < 366 && !st.busy[d] && d !== cap && (!last || d < last); i++) d = addDays(d, 1);
             return d;
         }
         function selectable(d) {
             if (d < today) return false;
             if (st.a && !st.b && d > st.a) return d <= limitAfter(st.a);
-            return !st.busy[d];
+            return !st.busy[d] && PR.canArrive(p, d, today);
         }
         function pick(d) {
             if (d === st.a) { st.a = st.b = null; }                                  // pulsar de nuevo la entrada borra la selección
@@ -246,19 +234,39 @@
             return html + '</div></div>';
         }
 
+        function guestsHtml() {
+            var top = p.guests || 1;
+            if (top < 2) return '';
+            return '<div class="prop-guests"><span>' + T.guestsLabel + '</span><span class="prop-stepper">' +
+                '<button type="button" class="prop-guest" data-step="-1" aria-label="' + T.fewerGuests + '"' + (st.guests <= 1 ? ' disabled' : '') + '>−</button>' +
+                '<output>' + st.guests + '</output>' +
+                '<button type="button" class="prop-guest" data-step="1" aria-label="' + T.moreGuests + '"' + (st.guests >= top ? ' disabled' : '') + '>+</button></span></div>';
+        }
+        // Desglose del precio: noches, huéspedes adicionales, descuento y limpieza.
+        function quoteHtml() {
+            var q = PR.quote(p, st.a, st.b, st.guests, today);
+            var rows = [[q.nights + ' ' + (q.nights === 1 ? T.night : T.nights), q.stay]];
+            if (q.extra) rows.push([fill(T.brExtra, { n: q.extraGuests }), q.extra]);
+            if (q.discount) rows.push([T.discounts[q.discount.type] + ' (−' + q.discount.percent + ' %)', -q.discount.amount]);
+            if (q.cleaning) rows.push([T.brCleaning, q.cleaning]);
+            return (rows.length > 1 ? '<dl class="prop-breakdown">' + rows.map(function (r) {
+                return '<div' + (r[1] < 0 ? ' class="is-off"' : '') + '><dt>' + esc(r[0]) + '</dt><dd>' + (r[1] < 0 ? '−' + money(-r[1]) : money(r[1])) + '</dd></div>';
+            }).join('') + '</dl>' : '') +
+                '<p class="prop-total">' + (p.price.approx ? T.totalFrom : T.total) + ': <strong>' + money(q.total) + '</strong></p>';
+        }
+
         function resultHtml() {
-            if (!st.a) return '<p class="prop-hint">' + T.pickIn + '</p>' + minBox();
+            if (!st.a) return '<p class="prop-hint">' + T.pickIn + '</p>' + minBox() + arrivalBox();
             if (!st.b) return '<p class="prop-hint"><strong>' + esc(human(st.a)) + '</strong> → ' + T.pickOut + '</p>' +
-                (limitAfter(st.a) < addDays(st.a, min()) ? '<p class="prop-warn">' + fill(T.noRoom, { n: min() }) + '</p>' : minBox()) + clearBtn;
+                (limitAfter(st.a) < addDays(st.a, min()) ? '<p class="prop-warn">' + fill(T.noRoom, { n: min() }) + '</p>'
+                    : minBox() + (max ? '<p class="prop-small">' + fill(T.maxNightsLabel, { n: max }) + '</p>' : '')) + clearBtn;
             var n = diff(st.a, st.b);
             var head = '<p class="prop-dates"><strong>' + esc(human(st.a)) + '</strong> → <strong>' + esc(human(st.b)) + '</strong> · ' + n + ' ' + (n === 1 ? T.night : T.nights) + '</p>' + clearBtn;
             if (n < min()) return head + '<p class="prop-warn">' + fill(T.minStay, { n: min() }) + '</p>';
-            var range = { a: st.a, b: st.b };
+            var range = { a: st.a, b: st.b, g: st.guests };
             return head +
                 '<p class="prop-status ' + (st.verified ? 'is-ok' : 'is-pending') + '"><i class="fa-solid ' + (st.verified ? 'fa-circle-check' : 'fa-circle-question') + '" aria-hidden="true"></i>' + (st.verified ? T.available : T.toConfirm) + '</p>' +
-                (hasPrice(p)
-                    ? '<p class="prop-total">' + (p.price.approx ? T.totalFrom : T.total) + ': <strong>' + money(stayPrice(p, st.a, st.b)) + '</strong>' + (p.price.cleaningFee ? ' <span>(' + T.cleaning + ')</span>' : '') + '</p>'
-                    : '<p class="prop-total">' + T.priceAsk + '</p>') +
+                (hasPrice(p) ? quoteHtml() : '<p class="prop-total">' + T.priceAsk + '</p>') +
                 contactButtons(p, range, true) +
                 '<p class="prop-small">' + T.confirmNote + '</p>' +
                 (platformButtons(p) ? '<p class="prop-sub">' + T.bookPlatform + '</p>' + platformButtons(p) : '');
@@ -272,18 +280,26 @@
             months.innerHTML =
                 '<div class="prop-cal-nav">' +
                 '<button type="button" class="prop-nav" data-step="-1" aria-label="' + T.prev + '"' + (st.month <= firstMonth ? ' disabled' : '') + '><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>' +
-                '<button type="button" class="prop-nav" data-step="1" aria-label="' + T.next + '"' + (st.month >= addMonths(firstMonth, MAX_MONTHS) ? ' disabled' : '') + '><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>' +
+                '<button type="button" class="prop-nav" data-step="1" aria-label="' + T.next + '"' + (st.month >= lastMonth ? ' disabled' : '') + '><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>' +
                 '</div><div class="prop-months-grid">' + monthHtml(st.month) + monthHtml(addMonths(st.month, 1)) + '</div>' +
                 '<p class="prop-legend"><span class="lg lg-free"></span>' + T.legendFree + '<span class="lg lg-busy"></span>' + T.legendBusy + '<span class="lg lg-sel"></span>' + T.legendSel + '</p>';
-            result.innerHTML = resultHtml();
+            result.innerHTML = guestsHtml() + resultHtml();
         }
 
         panel.addEventListener('click', function (e) {
             var day = e.target.closest('.prop-day');
             var nav = e.target.closest('.prop-nav');
+            var guest = e.target.closest('.prop-guest');
             if (day && !day.disabled) pick(day.getAttribute('data-date'));
             else if (nav && !nav.disabled) { st.month = addMonths(st.month, +nav.getAttribute('data-step')); draw(); }
             else if (e.target.closest('.prop-clear')) { st.a = st.b = null; draw(); }
+            else if (guest && !guest.disabled) {
+                var step = guest.getAttribute('data-step');
+                st.guests = Math.max(1, Math.min(p.guests || 1, st.guests + (+step)));
+                draw();
+                var again = result.querySelector('.prop-guest[data-step="' + step + '"]');
+                if (again && !again.disabled) again.focus();
+            }
         });
 
         function loaded(ranges, verified) { st.busy = busySet(ranges); st.verified = verified; draw(); }
@@ -379,7 +395,7 @@
     }
     function priceHtml(p, withCleaning) {
         if (!hasPrice(p)) return '<p class="prop-price">' + T.priceAsk + '</p>';
-        return '<p class="prop-price">' + T.from + ' <strong>' + money(lowestPrice(p)) + '</strong> / ' + T.night +
+        return '<p class="prop-price">' + T.from + ' <strong>' + money(PR.lowestPrice(p, today)) + '</strong> / ' + T.night +
             (withCleaning && p.price.cleaningFee ? ' <span>+ ' + money(p.price.cleaningFee) + ' ' + T.cleaningFee + '</span>' : '') + '</p>';
     }
     function detailUrl(p) {
@@ -494,13 +510,25 @@
         if (p.checkIn) info.push(T.entry + ': ' + p.checkIn);
         if (p.checkOut) info.push(T.exit + ': ' + p.checkOut);
         info.push(fill(T.maxGuests, { n: p.guests }));
+        var stay = p.stay || {};
+        if (stay.checkinDays && stay.checkinDays.length) info.push(fill(T.arriveOn, { days: weekdayNames(stay.checkinDays) }));
+        if (stay.notice > 0) info.push(fill(stay.notice === 1 ? T.notice1 : T.noticeN, { n: stay.notice }));
         ((p.houseRules && p.houseRules[lang]) || []).forEach(function (rule) { info.push(rule); });
         var infoHtml = block(T.tabInfo, 'fa-circle-info', '<ul class="prop-rule-list">' + info.map(check).join('') + '</ul>');
         if (hasPrice(p)) {
-            var rates = [T.from + ' ' + money(lowestPrice(p)) + ' ' + T.perNight];
+            var rates = [T.from + ' ' + money(PR.lowestPrice(p, today)) + ' ' + T.perNight], off = p.price.discounts || {};
             if (p.price.cleaningFee) rates.push(money(p.price.cleaningFee) + ' ' + T.cleaningFee);
+            if (p.price.extraGuestAfter > 0 && p.price.extraGuestFee > 0) rates.push(fill(T.extraRate, { n: p.price.extraGuestAfter, fee: money(p.price.extraGuestFee) }));
             if (p.price.minNights > 1) rates.push(fill(T.minNightsLabel, { n: p.price.minNights }));
+            if (PR.maxNights(p)) rates.push(fill(T.maxNightsLabel, { n: PR.maxNights(p) }));
+            if (p.price.deposit > 0) rates.push(fill(T.depositRate, { fee: money(p.price.deposit) }));
+            var offers = [];
+            if (off.weekly > 0) offers.push(fill(T.weeklyRate, { p: off.weekly }));
+            if (off.monthly > 0) offers.push(fill(T.monthlyRate, { p: off.monthly }));
+            if (off.earlyDays > 0 && off.earlyPercent > 0) offers.push(fill(T.earlyRate, { p: off.earlyPercent, n: off.earlyDays }));
+            if (off.lastDays > 0 && off.lastPercent > 0) offers.push(fill(T.lastRate, { p: off.lastPercent, n: off.lastDays }));
             infoHtml += block(T.tabRates, 'fa-tags', '<ul class="prop-rule-list">' + rates.map(check).join('') + '</ul>');
+            if (offers.length) infoHtml += block(T.tabOffers, 'fa-percent', '<ul class="prop-rule-list">' + offers.map(check).join('') + '</ul>');
         }
         if (p.pets && p.pets[lang]) infoHtml += block(T.tabPets, 'fa-paw', '<ul class="prop-rule-list">' + check(p.pets[lang]) + '</ul>');
         if (p.cancellationText && p.cancellationText[lang]) infoHtml += block(T.tabCancel, 'fa-calendar-xmark', '<ul class="prop-rule-list">' + check(p.cancellationText[lang]) + '</ul>');
@@ -511,6 +539,9 @@
         var amenities = (p.amenities || []).map(function (g) {
             return '<div class="prop-amen-group"><h3>' + icon(g.icon) + esc(g.title[lang]) + '</h3><ul>' +
                 g.items[lang].map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+        }).join('');
+        var sleeping = (p.sleeping || []).map(function (r) {
+            return '<div class="prop-bedroom">' + icon(r.icon || 'fa-bed') + '<h3>' + esc(r.title[lang]) + '</h3><p>' + esc(r.beds[lang]) + '</p></div>';
         }).join('');
         var mapUrl = p.mapQuery ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.mapQuery) : '';
         var locationHtml = (place ? '<p class="prop-loc-line">' + icon('fa-location-dot') + esc(place) + '</p>' : '') +
@@ -543,6 +574,7 @@
             '<div class="prop-main">' + tilesHtml +
             '<p class="prop-desc prop-lead">' + esc(p.description[lang]) + '</p>' +
             '<div class="prop-info">' + infoHtml + '</div>' +
+            (sleeping ? section(T.sleepTitle, '<div class="prop-bedrooms">' + sleeping + '</div>') : '') +
             (amenities ? section(T.included, '<div class="prop-amen">' + amenities + '</div>') : '') +
             (reviewsHtml ? section(T.reviewsTitle, reviewsHtml) : '') +
             (locationHtml ? section(T.locationTitle, locationHtml) : '') +

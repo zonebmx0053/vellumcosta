@@ -1,10 +1,12 @@
 // /api/admin — servidor del panel privado (/admin).
 //   GET                            -> datos guardados (requiere sesión)
+//   GET ?events=1                  -> eventos de los calendarios de las plataformas (requiere sesión)
 //   POST { action: 'login', password }
 //   POST { action: 'logout' }
 //   POST { action: 'save', data }  -> valida y guarda (requiere sesión)
 
 const { loadData, saveData, hasSession, sessionCookie, login, sameOrigin, clean, adminPassword } = require('./_lib');
+const { loadCalendars } = require('./availability');
 
 module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
@@ -14,7 +16,14 @@ module.exports = async function handler(req, res) {
 
         if (req.method === 'GET') {
             if (!hasSession(req)) return res.status(401).json({ error: 'unauthorized' });
-            return res.status(200).json({ data: await loadData() });
+            const data = await loadData();
+            // ?events=1 -> reservas y bloqueos de las plataformas, por alojamiento y con su origen.
+            if (req.query && req.query.events) {
+                const events = {};
+                await Promise.all(((data && data.properties) || []).map(async p => { events[p.id] = await loadCalendars(p.id, p); }));
+                return res.status(200).json({ events, at: new Date().toISOString() });
+            }
+            return res.status(200).json({ data });
         }
         if (req.method !== 'POST') {
             res.setHeader('Allow', 'GET, POST');

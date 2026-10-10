@@ -379,3 +379,24 @@ html:not(.dark) .prop-rule-list li { opacity: 1; color: var(--color-texto-secund
 html:not(.dark) .prop-small, html:not(.dark) .prop-price span, html:not(.dark) .prop-total span, html:not(.dark) .prop-count,
 html:not(.dark) .prop-license, html:not(.dark) .prop-dow, html:not(.dark) .prop-score span, html:not(.dark) .prop-score em,
 html:not(.dark) .prop-review-meta, html:not(.dark) .prop-review-text.is-empty, html:not(.dark) .prop-review-score small { opacity: 1; color: var(--color-texto-tenue); }
+
+/* Huéspedes, desglose del precio y distribución de camas */
+.prop-guests { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.6rem; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(128, 128, 128, 0.2); font-size: 0.78rem; font-weight: 600; }
+.prop-stepper { display: inline-flex; align-items: center; border: 1px solid color-mix(in srgb,var(--color-dorado) 50%,transparent); }
+.prop-stepper output { min-width: 1.9rem; text-align: center; font-size: 0.85rem; }
+.prop-guest { width: 1.9rem; height: 1.9rem; border: 0; background: transparent; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+.prop-guest:hover:not(:disabled), .prop-guest:focus-visible { background: var(--color-dorado); color: var(--color-texto); outline: none; }
+.prop-guest:disabled { opacity: 0.3; cursor: not-allowed; }
+.prop-breakdown { margin-top: 0.6rem; font-size: 0.8rem; }
+.prop-breakdown div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.12rem 0; }
+.prop-breakdown dd { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.prop-breakdown .is-off { color: #2E8B57; font-weight: 600; }
+.dark .prop-breakdown .is-off { color: #5FCF8F; }
+.prop-breakdown + .prop-total { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid rgba(128, 128, 128, 0.25); }
+.prop-bedrooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.5rem; }
+.prop-bedroom { padding: 1rem 1.1rem; background: #fff; border: 1px solid color-mix(in srgb,var(--color-texto) 8%,transparent); }
+.dark .prop-bedroom { background: var(--color-oscuro-tarjeta); border-color: rgba(255, 255, 255, 0.08); }
+.prop-bedroom i { color: var(--color-dorado); font-size: 1.2rem; }
+.prop-bedroom h3 { margin: 0.6rem 0 0.2rem; font-size: 0.85rem; font-weight: 700; }
+.prop-bedroom p { font-size: 0.85rem; font-weight: 300; opacity: 0.85; }
+html:not(.dark) .prop-bedroom p { opacity: 1; color: var(--color-texto-secundario); font-weight: var(--grosor-texto-secundario, 400); }

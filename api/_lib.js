@@ -119,6 +119,12 @@ function cleanProperty(p) {
     const price = p.price || {};
     const gallery = list(p.gallery, 200).map(photo).filter(Boolean);
     const ical = p.ical || {}, links = p.links || {}, house = p.house || {};
+    const stay = p.stay || {}, discounts = price.discounts || {};
+    const minNights = int(price.minNights, 1, 365, 1), maxNights = int(stay.maxNights, 0, 365);
+    const weekdays = v => [...new Set(list(v, 7).map(Number).filter(d => Number.isInteger(d) && d >= 0 && d <= 6))].sort();
+    const oneOf = (options, v, fallback) => (catalog.find(options, v) ? v : fallback);
+    // Las reservas directas se conservan dos años para el historial; los bloqueos, solo mientras están vigentes.
+    const keepFrom = new Date(Date.now() - 730 * 86400000).toISOString().slice(0, 10);
 
     // Servicios: se guardan los identificadores elegidos en el panel. Si llegan datos del
     // formato antiguo (textos libres), se convierten a la selección equivalente del catálogo.
@@ -131,6 +137,11 @@ function cleanProperty(p) {
         extraServices: list(legacy ? legacy.extras : p.extraServices, 30).map(x => pair(x, 120)).filter(x => x.es),
         house: Object.fromEntries(catalog.house.map(h => [h.id, catalog.find(h.options, house[h.id]) ? house[h.id] : ''])),
         cancellation: catalog.find(catalog.cancellation, p.cancellation) ? p.cancellation : '',
+        // Distribución de camas: una entrada por estancia, con cuántas camas hay de cada tipo.
+        rooms: list(p.rooms, 20).map(r => ({
+            kind: oneOf(catalog.roomKinds, r && r.kind, 'bedroom'),
+            beds: Object.fromEntries(catalog.beds.map(b => [b.id, int(r && r.beds && r.beds[b.id], 0, 9)])),
+        })),
     };
     // Precios por fechas. Las temporadas antiguas (mes-día) se convierten a este formato.
     const rules = Array.isArray(price.rules) ? price.rules : catalog.seasonsToRules(price.seasons);
@@ -156,7 +167,7 @@ function cleanProperty(p) {
         // Lo que se elige en el panel...
         ...selection,
         // ...y lo que se calcula a partir de ello para la web: highlights, amenities,
-        // typeLabel, houseRules y cancellationText.
+        // typeLabel, houseRules, cancellationText y sleeping.
         ...catalog.derive(selection),
         locationText: pair(p.locationText, 2000),
         mapQuery: str(p.mapQuery, 160),
@@ -177,13 +188,37 @@ function cleanProperty(p) {
                     end: r.end,
                     price: num(r.price, 0, 100000),
                     minNights: int(r.minNights, 0, 365),
-                    days: [...new Set(list(r.days, 7).map(Number).filter(d => Number.isInteger(d) && d >= 0 && d <= 6))].sort(),
+                    days: weekdays(r.days),
                     repeat: !!r.repeat,
                 })),
             seasons: [],
             cleaningFee: num(price.cleaningFee, 0, 100000),
-            minNights: int(price.minNights, 1, 365, 1),
+            minNights,
             approx: !!price.approx,
+            // Descuentos en % (0 = sin descuento): por semana (7 noches o más), por mes (28 o más),
+            // por reservar con "earlyDays" días de antelación o para los próximos "lastDays" días.
+            discounts: {
+                weekly: int(discounts.weekly, 0, 90),
+                monthly: int(discounts.monthly, 0, 90),
+                earlyDays: int(discounts.earlyDays, 0, 365),
+                earlyPercent: int(discounts.earlyPercent, 0, 90),
+                lastDays: int(discounts.lastDays, 0, 60),
+                lastPercent: int(discounts.lastPercent, 0, 90),
+            },
+            // Suplemento por noche por cada huésped a partir de "extraGuestAfter" (0 = no se cobra).
+            extraGuestAfter: int(price.extraGuestAfter, 0, 99),
+            extraGuestFee: num(price.extraGuestFee, 0, 10000),
+            deposit: num(price.deposit, 0, 100000),
+        },
+        // Reglas de reserva: estancia máxima (0 = sin límite), días de antelación, meses de
+        // calendario abierto (0 = todo), noches de margen entre reservas y días de entrada
+        // permitidos (0 = lunes … 6 = domingo; vacío = cualquiera).
+        stay: {
+            maxNights: maxNights && maxNights < minNights ? minNights : maxNights,
+            notice: int(stay.notice, 0, 60),
+            window: int(stay.window, 0, 24),
+            prep: int(stay.prep, 0, 7),
+            checkinDays: weekdays(stay.checkinDays),
         },
         reviews: list(p.reviews, 200).filter(r => r && SOURCES.includes(r.source)).map(r => {
             const max = Number(r.max) === 10 ? 10 : 5;
@@ -199,10 +234,15 @@ function cleanProperty(p) {
         links: { airbnb: link(links.airbnb), vrbo: link(links.vrbo), booking: link(links.booking) },
         // Privado: no se envía a la web pública.
         ical: { airbnb: link(ical.airbnb), vrbo: link(ical.vrbo), booking: link(ical.booking) },
-        blocked: list(p.blocked, 500)
-            .filter(b => b && ISO.test(b.start) && ISO.test(b.end) && b.end > b.start && b.end > today)
-            .map(b => ({ start: b.start, end: b.end, note: str(b.note, 120) }))
-            .sort((a, b) => (a.start < b.start ? -1 : 1)),
+        // Fechas cerradas a mano: bloqueos ("block") y reservas directas ("booking").
+        blocked: list(p.blocked, 800)
+            .filter(b => b && ISO.test(b.start) && ISO.test(b.end) && b.end > b.start && b.end > (b.type === 'booking' ? keepFrom : today))
+            .map(b => (b.type === 'booking' ? {
+                type: 'booking', start: b.start, end: b.end,
+                guest: str(b.guest, 80), phone: str(b.phone, 40), guests: int(b.guests, 0, 99), total: num(b.total, 0, 1000000),
+                paid: oneOf(catalog.payments, b.paid, 'pending'), channel: oneOf(catalog.channels, b.channel, 'other'), note: str(b.note, 300),
+            } : { type: 'block', start: b.start, end: b.end, note: str(b.note, 300) }))
+            .sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0)),
         demoBusy: list(p.demoBusy, 50).filter(r => Array.isArray(r) && r.length === 2).map(r => [int(r[0], 0, 3650), int(r[1], 0, 3650)]),
     };
 }

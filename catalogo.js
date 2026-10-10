@@ -149,6 +149,29 @@
         { id: 'ask', label: 'A consultar', es: 'Condiciones de cancelación a consultar al reservar.', en: 'Cancellation terms on request when booking.' }
     ];
 
+    // Estancias y camas (singular, plural) para la distribución de camas.
+    var roomKinds = [
+        { id: 'bedroom', icon: 'fa-bed', es: 'Dormitorio', en: 'Bedroom' },
+        { id: 'living', icon: 'fa-couch', es: 'Salón', en: 'Living room' },
+        { id: 'other', icon: 'fa-door-open', es: 'Otra estancia', en: 'Other room' }
+    ];
+    var beds = [
+        { id: 'double', label: 'Matrimonio', es: ['cama de matrimonio', 'camas de matrimonio'], en: ['double bed', 'double beds'] },
+        { id: 'single', label: 'Individual', es: ['cama individual', 'camas individuales'], en: ['single bed', 'single beds'] },
+        { id: 'bunk', label: 'Litera', es: ['litera', 'literas'], en: ['bunk bed', 'bunk beds'] },
+        { id: 'sofa', label: 'Sofá cama', es: ['sofá cama', 'sofás cama'], en: ['sofa bed', 'sofa beds'] },
+        { id: 'cot', label: 'Cuna', es: ['cuna', 'cunas'], en: ['cot', 'cots'] }
+    ];
+
+    // Reservas directas: por dónde llegó y cómo va el pago.
+    var channels = [
+        { id: 'web', label: 'Web' }, { id: 'whatsapp', label: 'WhatsApp' }, { id: 'phone', label: 'Teléfono' },
+        { id: 'email', label: 'Email' }, { id: 'repeat', label: 'Cliente habitual' }, { id: 'other', label: 'Otro' }
+    ];
+    var payments = [
+        { id: 'pending', label: 'Pendiente de pago' }, { id: 'deposit', label: 'Señal pagada' }, { id: 'paid', label: 'Pagada' }
+    ];
+
     // Nombres sugeridos para los precios por fechas.
     var ruleNames = ['Temporada alta', 'Temporada media', 'Temporada baja', 'Fines de semana', 'Festivos y puentes', 'Navidad', 'Semana Santa', 'Evento especial', 'Oferta'];
 
@@ -209,7 +232,24 @@
             if (option) { rules.es.push(option.es); rules.en.push(option.en); }
         });
         var type = find(types, p.type), policy = find(cancellation, p.cancellation);
+
+        // Distribución de camas: "Dormitorio 1 · 1 cama de matrimonio y 1 cuna".
+        var perKind = {}, seen = {};
+        var join = function (items, and) { return items.length > 1 ? items.slice(0, -1).join(', ') + and + items[items.length - 1] : items[0]; };
+        (p.rooms || []).forEach(function (r) { perKind[r.kind] = (perKind[r.kind] || 0) + 1; });
+        var sleeping = (p.rooms || []).map(function (r) {
+            var kind = find(roomKinds, r.kind) || roomKinds[0], es = [], en = [];
+            seen[r.kind] = (seen[r.kind] || 0) + 1;
+            var number = perKind[r.kind] > 1 ? ' ' + seen[r.kind] : '';
+            beds.forEach(function (b) {
+                var n = (r.beds || {})[b.id] || 0;
+                if (n) { es.push(n + ' ' + b.es[n > 1 ? 1 : 0]); en.push(n + ' ' + b.en[n > 1 ? 1 : 0]); }
+            });
+            return es.length ? { icon: kind.icon, title: { es: kind.es + number, en: kind.en + number }, beds: { es: join(es, ' y '), en: join(en, ' and ') } } : null;
+        }).filter(Boolean);
+
         return {
+            sleeping: sleeping,
             amenities: amenities,
             highlights: (p.featured || []).filter(function (id) { return services[id] && on.indexOf(id) >= 0; })
                 .map(function (id) { return { icon: services[id].icon, es: services[id].es, en: services[id].en }; }),
@@ -220,6 +260,7 @@
     }
 
     var api = { categories: categories, services: services, types: types, house: house, cancellation: cancellation, ruleNames: ruleNames,
+        roomKinds: roomKinds, beds: beds, channels: channels, payments: payments,
         find: find, fromLegacy: fromLegacy, seasonsToRules: seasonsToRules, derive: derive };
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     else root.VELLUM_CATALOG = api;
