@@ -11,3 +11,6 @@ desktop.ini
 
 # Fotos originales sin optimizar (la web usa las copias de la carpeta fotos)
 Fotos CAMPO ARRIBA/
+
+# Imágenes que la web no usa (se conservan solo en el ordenador)
+sin-usar/

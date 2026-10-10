@@ -1,5 +1,17 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/area-benahavis(.html)?",
+      "destination": "/areas",
+      "permanent": true
+    },
+    {
+      "source": "/area-benahavis-en(.html)?",
+      "destination": "/areas-en",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
