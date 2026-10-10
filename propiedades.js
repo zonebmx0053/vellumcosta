@@ -288,15 +288,19 @@
 
         function loaded(ranges, verified) { st.busy = busySet(ranges); st.verified = verified; draw(); }
         draw();
-        if (cfg.demo) {
-            loaded((p.demoBusy || []).map(function (r) { return { start: addDays(today, r[0]), end: addDays(today, r[1]) }; }), true);
-        } else {
-            // "rev" cambia cada vez que se guarda en el panel: así no se sirve un calendario antiguo
-            fetch('/api/availability?property=' + encodeURIComponent(p.id) + (cfg.rev ? '&v=' + cfg.rev : ''))
-                .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-                .then(function (d) { if (!d.complete) throw new Error(); loaded(d.busy, true); })
-                .catch(function () { loaded([], false); });
-        }
+        // Siempre se consulta el calendario real. Las fechas de ejemplo del modo demostración solo
+        // se usan si el alojamiento todavía no tiene ningún calendario conectado.
+        // "rev" cambia cada vez que se guarda en el panel: así no se sirve un calendario antiguo.
+        fetch('/api/availability?property=' + encodeURIComponent(p.id) + (cfg.rev ? '&v=' + cfg.rev : ''))
+            .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+            .then(function (d) {
+                var unconnected = Object.keys(d.sources || {}).every(function (k) { return d.sources[k] === 'not_configured'; });
+                if (d.complete) return loaded(d.busy, true);
+                if (!cfg.demo || !unconnected) throw new Error();
+                note.insertAdjacentHTML('beforebegin', '<p class="prop-demo">' + T.demo + '</p>');
+                loaded((p.demoBusy || []).map(function (r) { return { start: addDays(today, r[0]), end: addDays(today, r[1]) }; }), true);
+            })
+            .catch(function () { loaded([], false); });
     }
 
     // Galería a pantalla completa con tira de miniaturas para saltar a cualquier foto
@@ -469,7 +473,7 @@
             (place ? '<span>' + icon('fa-location-dot') + esc(place) + '</span>' : '') +
             (p.license ? '<span class="prop-license" title="' + T.license + '">' + esc(p.license) + '</span>' : '') + '</p></div>' +
             '<div class="prop-side-card">' + priceHtml(p, true) +
-            (cfg.demo ? '<p class="prop-demo">' + T.demo + '</p>' : '') + '<p class="prop-cal-note" aria-live="polite"></p>' +
+            '<p class="prop-cal-note" aria-live="polite"></p>' +
             '<div class="prop-cal"><div class="prop-cal-months"></div><div class="prop-result" aria-live="polite"></div></div></div>' +
             '</div></aside>';
 

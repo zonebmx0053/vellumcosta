@@ -5,8 +5,10 @@
 // de partida del panel y como respaldo si el almacén de datos no está disponible, así que
 // los cambios del día a día se hacen en el panel, no aquí.
 //
-// demo: true  -> la página usa fechas ocupadas de ejemplo y muestra un aviso de "demostración".
-// demo: false -> la página consulta los calendarios reales (función /api/availability).
+// La página consulta siempre los calendarios reales (función /api/availability).
+// demo: true  -> si un alojamiento aún no tiene ningún calendario conectado, se muestran fechas
+//                ocupadas de ejemplo con un aviso de "demostración".
+// demo: false -> sin calendario conectado, la página dice que la disponibilidad está por confirmar.
 window.VELLUM_PROPERTIES = {
     demo: true,
 

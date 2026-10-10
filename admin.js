@@ -401,7 +401,13 @@
                 tools(P + 'blocked', i, p.blocked.length, false) + '</div>';
         }).join('') : '<p class="ad-empty">No hay fechas bloqueadas a mano.</p>';
 
-        return (st.data.demo ? '<p class="ad-banner"><strong>La web está en modo demostración:</strong> el calendario público muestra fechas de ejemplo y no tiene en cuenta los bloqueos. Se desactiva en <em>Ajustes generales</em>.</p>' : '') +
+        // Sin ningún calendario conectado, la web no puede asegurar qué fechas están libres.
+        var info = st.platform[p.id], connected = !info || info.loading || Object.keys(info.sources).some(function (k) { return info.sources[k] === 'ok'; });
+        var broken = info && !info.loading && Object.keys(info.sources).some(function (k) { return info.sources[k] === 'error'; });
+        return (broken ? '<p class="ad-banner"><strong>Un calendario de plataforma está fallando:</strong> mientras dure, la web muestra «disponibilidad por confirmar» en lugar de las fechas libres. Revise los enlaces en <em>iCal y enlaces</em>.</p>'
+            : connected ? '' : '<p class="ad-banner"><strong>Este alojamiento no tiene ningún calendario conectado:</strong> ' + (st.data.demo
+                ? 'la web muestra fechas ocupadas de ejemplo (modo demostración) y no tiene en cuenta sus bloqueos.'
+                : 'la web muestra «disponibilidad por confirmar» y no marca fechas como libres.') + ' Conecte al menos uno en <em>iCal y enlaces</em>.</p>') +
             card('Tarifa general',
                 grid(field('Precio base por noche', P + 'price.base', { kind: 'number', unit: '€', help: 'Con 0 la web muestra «Precio a consultar».' }),
                     field('Limpieza por estancia', P + 'price.cleaningFee', { kind: 'number', unit: '€' }),
@@ -554,7 +560,7 @@
                 grid(field('Teléfono (como se muestra)', 'contact.phone', { placeholder: '+34 600 000 000' }), field('Teléfono para llamar', 'contact.tel', { placeholder: '+34600000000', help: 'Sin espacios.' }),
                     field('WhatsApp', 'contact.whatsapp', { placeholder: '34600000000', help: 'Solo números, con el prefijo del país.' }), field('Email', 'contact.email')),
                 'Datos de contacto que aparecen en todas las fichas de alojamiento.', 'fa-phone') +
-            card('Calendario público', field('Modo demostración', 'demo', { kind: 'check', help: 'Activado: la web muestra fechas ocupadas de ejemplo y un aviso de «página en preparación». Desactivado: usa los calendarios reales de las plataformas y sus bloqueos.' }), '', 'fa-calendar-days') +
+            card('Calendario público', field('Modo demostración', 'demo', { kind: 'check', help: 'Solo afecta a los alojamientos que aún no tienen ningún calendario conectado. Activado: la web muestra fechas de ejemplo y un aviso de «página en preparación». Desactivado: dice que la disponibilidad está por confirmar. Con algún calendario conectado, la web usa siempre las fechas reales y sus bloqueos.' }), '', 'fa-calendar-days') +
             card('Copia de seguridad', '<button type="button" class="ad-btn" data-act="export">' + fa('fa-download') + 'Descargar copia de los datos</button>',
                 'Descarga un archivo con todos los datos tal como están ahora en el panel.', 'fa-download');
     }
