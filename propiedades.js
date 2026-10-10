@@ -17,7 +17,7 @@
             locationTitle: 'Ubicación', mapLink: 'Abrir en Google Maps', maxGuests: 'Máximo {n} huéspedes',
             availability: 'Disponibilidad y precio', notFound: 'No hemos encontrado esta propiedad.',
             gridView: 'Vista en cuadrícula', listView: 'Vista en lista', count1: '1 propiedad', countN: '{n} propiedades',
-            tabInfo: 'Información', tabRates: 'Tarifas', tabPets: 'Mascotas', tabContact: 'Contacto',
+            tabInfo: 'Información', tabRates: 'Tarifas', tabPets: 'Mascotas', tabContact: 'Contacto', tabCancel: 'Cancelación',
             entry: 'Hora de entrada', exit: 'Hora de salida', perNight: 'por noche', highlightsTitle: 'De un vistazo',
             loadMap: 'Mostrar mapa', mapTitle: 'Mapa de la ubicación', thumbsLabel: 'Todas las fotos',
             mapNote: 'El mapa es de Google Maps: al mostrarlo, Google puede usar cookies.', license: 'Nº de registro',
@@ -52,7 +52,7 @@
             locationTitle: 'Location', mapLink: 'Open in Google Maps', maxGuests: 'Maximum {n} guests',
             availability: 'Availability and price', notFound: 'We could not find this property.',
             gridView: 'Grid view', listView: 'List view', count1: '1 property', countN: '{n} properties',
-            tabInfo: 'Information', tabRates: 'Rates', tabPets: 'Pets', tabContact: 'Contact',
+            tabInfo: 'Information', tabRates: 'Rates', tabPets: 'Pets', tabContact: 'Contact', tabCancel: 'Cancellation',
             entry: 'Check-in time', exit: 'Check-out time', perNight: 'per night', highlightsTitle: 'At a glance',
             loadMap: 'Show map', mapTitle: 'Location map', thumbsLabel: 'All photos',
             mapNote: 'The map is provided by Google Maps: showing it may let Google use cookies.', license: 'Registration no.',
@@ -96,7 +96,25 @@
     function monthName(s) { var m = date(s).toLocaleDateString(lang === 'en' ? 'en-GB' : 'es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' }); return m.charAt(0).toUpperCase() + m.slice(1); }
 
     function hasPrice(p) { return !!(p.price && p.price.base > 0); }
+    // Precios por fechas del panel: primera regla que incluye la noche "d" y define "key"
+    // (price o minNights). days: 0 = lunes … 6 = domingo; vacío = todas las noches.
+    function ruleFor(p, d, key) {
+        var rules = (p.price && p.price.rules) || [], dow = (date(d).getUTCDay() + 6) % 7, md = d.slice(5);
+        for (var i = 0; i < rules.length; i++) {
+            var r = rules[i], a = r.start.slice(5), b = r.end.slice(5);
+            if (!(r[key] > 0) || (r.days && r.days.length && r.days.indexOf(dow) < 0)) continue;
+            if (r.repeat ? (a <= b ? md >= a && md <= b : md >= a || md <= b) : d >= r.start && d <= r.end) return r;
+        }
+        return null;
+    }
+    // Estancia mínima según el día de entrada.
+    function minNights(p, d) {
+        var r = d && ruleFor(p, d, 'minNights');
+        return r ? r.minNights : (p.price && p.price.minNights) || p.minNights || 1;
+    }
     function nightPrice(p, d) {
+        var rule = ruleFor(p, d, 'price');
+        if (rule) return rule.price;
         var md = d.slice(5);
         var seasons = p.price.seasons || [];
         for (var i = 0; i < seasons.length; i++) {
@@ -112,7 +130,8 @@
         return total;
     }
     function lowestPrice(p) {
-        return (p.price.seasons || []).reduce(function (m, s) { return Math.min(m, s.price); }, p.price.base);
+        var prices = (p.price.seasons || []).concat((p.price.rules || []).filter(function (r) { return r.price > 0 && (r.repeat || r.end >= today); }));
+        return prices.reduce(function (m, s) { return Math.min(m, s.price); }, p.price.base);
     }
     function busySet(ranges) {
         var set = {};
@@ -179,8 +198,8 @@
         var note = panel.querySelector('.prop-cal-note');
         var months = panel.querySelector('.prop-cal-months');
         var result = panel.querySelector('.prop-result');
-        var min = (p.price && p.price.minNights) || p.minNights || 1;
-        var minBox = function () { return min > 1 ? '<p class="prop-min' + (st.flash ? ' is-flash' : '') + '"><i class="fa-solid fa-moon" aria-hidden="true"></i>' + fill(T.minNightsLabel, { n: min }) + '</p>' : ''; };
+        var min = function () { return minNights(p, st.a); };
+        var minBox = function () { return min() > 1 ? '<p class="prop-min' + (st.flash ? ' is-flash' : '') + '"><i class="fa-solid fa-moon" aria-hidden="true"></i>' + fill(T.minNightsLabel, { n: min() }) + '</p>' : ''; };
         var clearBtn = '<button type="button" class="prop-clear"><i class="fa-solid fa-xmark" aria-hidden="true"></i>' + T.clear + '</button>';
 
         // Con entrada elegida: último día válido de salida (el primer día cuya noche está ocupada).
@@ -197,7 +216,7 @@
         function pick(d) {
             if (d === st.a) { st.a = st.b = null; }                                  // pulsar de nuevo la entrada borra la selección
             else if (!st.a || st.b || d < st.a) { st.a = d; st.b = null; }
-            else if (diff(st.a, d) < min) { st.flash = true; }                      // menos noches que el mínimo: no se acepta
+            else if (diff(st.a, d) < min()) { st.flash = true; }                      // menos noches que el mínimo: no se acepta
             else { st.b = d; }
             draw();
             st.flash = false;
@@ -210,7 +229,7 @@
             var html = '<div class="prop-month"><p class="prop-month-name">' + esc(monthName(first)) + '</p><div class="prop-days">';
             T.days.forEach(function (n) { html += '<span class="prop-dow">' + n + '</span>'; });
             for (var i = 0; i < offset; i++) html += '<span></span>';
-            var minEnd = st.a && !st.b ? addDays(st.a, min) : '';
+            var minEnd = st.a && !st.b ? addDays(st.a, min()) : '';
             for (var n = 1; n <= count; n++) {
                 var d = first.slice(0, 8) + (n < 10 ? '0' + n : n);
                 var ok = selectable(d);
@@ -222,7 +241,7 @@
                 if (d === st.a) cls += ' is-start';
                 if (d === st.b) cls += ' is-end';
                 if (st.a && st.b && d > st.a && d < st.b) cls += ' is-range';
-                html += '<button type="button" class="' + cls + '" data-date="' + d + '"' + (ok ? '' : ' disabled') + (short ? ' aria-disabled="true" title="' + esc(fill(T.minStay, { n: min })) + '"' : '') + ' aria-label="' + esc(human(d)) + '">' + n + '</button>';
+                html += '<button type="button" class="' + cls + '" data-date="' + d + '"' + (ok ? '' : ' disabled') + (short ? ' aria-disabled="true" title="' + esc(fill(T.minStay, { n: min() })) + '"' : '') + ' aria-label="' + esc(human(d)) + '">' + n + '</button>';
             }
             return html + '</div></div>';
         }
@@ -230,10 +249,10 @@
         function resultHtml() {
             if (!st.a) return '<p class="prop-hint">' + T.pickIn + '</p>' + minBox();
             if (!st.b) return '<p class="prop-hint"><strong>' + esc(human(st.a)) + '</strong> → ' + T.pickOut + '</p>' +
-                (limitAfter(st.a) < addDays(st.a, min) ? '<p class="prop-warn">' + fill(T.noRoom, { n: min }) + '</p>' : minBox()) + clearBtn;
+                (limitAfter(st.a) < addDays(st.a, min()) ? '<p class="prop-warn">' + fill(T.noRoom, { n: min() }) + '</p>' : minBox()) + clearBtn;
             var n = diff(st.a, st.b);
             var head = '<p class="prop-dates"><strong>' + esc(human(st.a)) + '</strong> → <strong>' + esc(human(st.b)) + '</strong> · ' + n + ' ' + (n === 1 ? T.night : T.nights) + '</p>' + clearBtn;
-            if (n < min) return head + '<p class="prop-warn">' + fill(T.minStay, { n: min }) + '</p>';
+            if (n < min()) return head + '<p class="prop-warn">' + fill(T.minStay, { n: min() }) + '</p>';
             var range = { a: st.a, b: st.b };
             return head +
                 '<p class="prop-status ' + (st.verified ? 'is-ok' : 'is-pending') + '"><i class="fa-solid ' + (st.verified ? 'fa-circle-check' : 'fa-circle-question') + '" aria-hidden="true"></i>' + (st.verified ? T.available : T.toConfirm) + '</p>' +
@@ -446,7 +465,8 @@
         var side = '<aside class="prop-side"><div class="prop-side-inner">' +
             '<div class="prop-head"><h1 class="prop-name">' + esc(parts[0]) + '</h1>' +
             (parts.length > 1 ? '<p class="prop-tagline">' + esc(parts.slice(1).join(' | ')) + '</p>' : '') +
-            '<p class="prop-loc">' + (place ? '<span>' + icon('fa-location-dot') + esc(place) + '</span>' : '') +
+            '<p class="prop-loc">' + (p.typeLabel && p.typeLabel[lang] ? '<span>' + icon('fa-house') + esc(p.typeLabel[lang]) + '</span>' : '') +
+            (place ? '<span>' + icon('fa-location-dot') + esc(place) + '</span>' : '') +
             (p.license ? '<span class="prop-license" title="' + T.license + '">' + esc(p.license) + '</span>' : '') + '</p></div>' +
             '<div class="prop-side-card">' + priceHtml(p, true) +
             (cfg.demo ? '<p class="prop-demo">' + T.demo + '</p>' : '') + '<p class="prop-cal-note" aria-live="polite"></p>' +
@@ -470,6 +490,7 @@
         if (p.checkIn) info.push(T.entry + ': ' + p.checkIn);
         if (p.checkOut) info.push(T.exit + ': ' + p.checkOut);
         info.push(fill(T.maxGuests, { n: p.guests }));
+        ((p.houseRules && p.houseRules[lang]) || []).forEach(function (rule) { info.push(rule); });
         var infoHtml = block(T.tabInfo, 'fa-circle-info', '<ul class="prop-rule-list">' + info.map(check).join('') + '</ul>');
         if (hasPrice(p)) {
             var rates = [T.from + ' ' + money(lowestPrice(p)) + ' ' + T.perNight];
@@ -478,6 +499,7 @@
             infoHtml += block(T.tabRates, 'fa-tags', '<ul class="prop-rule-list">' + rates.map(check).join('') + '</ul>');
         }
         if (p.pets && p.pets[lang]) infoHtml += block(T.tabPets, 'fa-paw', '<ul class="prop-rule-list">' + check(p.pets[lang]) + '</ul>');
+        if (p.cancellationText && p.cancellationText[lang]) infoHtml += block(T.tabCancel, 'fa-calendar-xmark', '<ul class="prop-rule-list">' + check(p.cancellationText[lang]) + '</ul>');
         infoHtml += block(T.tabContact, 'fa-phone', '<div class="prop-contact-row">' + contactButtons(p) + platformButtons(p) + '</div>' +
             (hasPrice(p) && p.price.approx ? '<p class="prop-small">' + T.approxNote + '</p>' : ''), true);
 

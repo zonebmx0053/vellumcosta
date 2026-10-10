@@ -4,6 +4,7 @@
 // - Sesión del panel: contraseña en la variable ADMIN_PASSWORD (mínimo 10 caracteres).
 
 const crypto = require('crypto');
+const catalog = require('../catalogo');
 
 const DATA_KEY = 'vellum:properties';
 const COOKIE = 'vc_admin';
@@ -92,7 +93,6 @@ function sameOrigin(req) {
 
 // ── Validación de los datos que guarda el panel ──
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
-const MONTH_DAY = /^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 const TIME = /^([01]?\d|2[0-3]):[0-5]\d$/;
 
 const str = (v, max = 300) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -104,7 +104,6 @@ const int = (v, min, max, fallback = 0) => Math.round(num(v, min, max, fallback)
 const list = (v, max = 100) => (Array.isArray(v) ? v.slice(0, max) : []);
 const pair = (v, max) => ({ es: str(v && v.es, max), en: str(v && v.en, max) });
 const link = v => { const s = str(v, 600); return /^https:\/\//i.test(s) ? s : ''; };
-const icon = v => { const s = str(v, 60); return /^[a-z0-9 -]+$/.test(s) ? s : 'fa-check'; };
 const photo = v => {
     const s = str(v, 300);
     return /^https:\/\/[^<>"'\s]+$/i.test(s) || /^[^:<>"'\\]+\.(jpe?g|png|webp|avif)$/i.test(s) ? s : '';
@@ -119,7 +118,23 @@ function cleanProperty(p) {
     const today = new Date().toISOString().slice(0, 10);
     const price = p.price || {};
     const gallery = list(p.gallery, 200).map(photo).filter(Boolean);
-    const ical = p.ical || {}, links = p.links || {};
+    const ical = p.ical || {}, links = p.links || {}, house = p.house || {};
+
+    // Servicios: se guardan los identificadores elegidos en el panel. Si llegan datos del
+    // formato antiguo (textos libres), se convierten a la selección equivalente del catálogo.
+    const legacy = Array.isArray(p.services) ? null : catalog.fromLegacy(p);
+    const services = [...new Set(list(legacy ? legacy.services : p.services, 200).filter(id => catalog.services[id]))];
+    const selection = {
+        type: catalog.find(catalog.types, p.type) ? p.type : '',
+        services,
+        featured: [...new Set(list(legacy ? legacy.featured : p.featured, 50).filter(id => services.includes(id)))].slice(0, 6),
+        extraServices: list(legacy ? legacy.extras : p.extraServices, 30).map(x => pair(x, 120)).filter(x => x.es),
+        house: Object.fromEntries(catalog.house.map(h => [h.id, catalog.find(h.options, house[h.id]) ? house[h.id] : ''])),
+        cancellation: catalog.find(catalog.cancellation, p.cancellation) ? p.cancellation : '',
+    };
+    // Precios por fechas. Las temporadas antiguas (mes-día) se convierten a este formato.
+    const rules = Array.isArray(price.rules) ? price.rules : catalog.seasonsToRules(price.seasons);
+
     return {
         id,
         slug: slugify(p.slug) || id,
@@ -138,15 +153,11 @@ function cleanProperty(p) {
         bathrooms: int(p.bathrooms, 0, 99),
         toilets: int(p.toilets, 0, 99),
         description: pair(p.description, 5000),
-        highlights: list(p.highlights, 20).map(h => ({ icon: icon(h && h.icon), es: str(h && h.es, 80), en: str(h && h.en, 80) })),
-        amenities: list(p.amenities, 30).map(g => ({
-            icon: icon(g && g.icon),
-            title: pair(g && g.title, 80),
-            items: {
-                es: list(g && g.items && g.items.es, 40).map(x => str(x, 120)).filter(Boolean),
-                en: list(g && g.items && g.items.en, 40).map(x => str(x, 120)).filter(Boolean),
-            },
-        })),
+        // Lo que se elige en el panel...
+        ...selection,
+        // ...y lo que se calcula a partir de ello para la web: highlights, amenities,
+        // typeLabel, houseRules y cancellationText.
+        ...catalog.derive(selection),
         locationText: pair(p.locationText, 2000),
         mapQuery: str(p.mapQuery, 160),
         mapZoom: int(p.mapZoom, 1, 20, 14),
@@ -155,9 +166,21 @@ function cleanProperty(p) {
         pets: pair(p.pets, 600),
         price: {
             base: num(price.base, 0, 100000),
-            seasons: list(price.seasons, 40)
-                .filter(s => s && MONTH_DAY.test(s.from) && MONTH_DAY.test(s.to))
-                .map(s => ({ from: s.from, to: s.to, price: num(s.price, 0, 100000) })),
+            // Cada regla: fechas (ambas incluidas), precio por noche (0 = el precio base),
+            // estancia mínima (0 = la general), noches de la semana a las que se aplica
+            // (0 = lunes … 6 = domingo; vacío = todas) y si se repite cada año.
+            rules: list(rules, 60)
+                .filter(r => r && ISO.test(r.start) && ISO.test(r.end) && r.end >= r.start)
+                .map(r => ({
+                    name: str(r.name, 60),
+                    start: r.start,
+                    end: r.end,
+                    price: num(r.price, 0, 100000),
+                    minNights: int(r.minNights, 0, 365),
+                    days: [...new Set(list(r.days, 7).map(Number).filter(d => Number.isInteger(d) && d >= 0 && d <= 6))].sort(),
+                    repeat: !!r.repeat,
+                })),
+            seasons: [],
             cleaningFee: num(price.cleaningFee, 0, 100000),
             minNights: int(price.minNights, 1, 365, 1),
             approx: !!price.approx,
