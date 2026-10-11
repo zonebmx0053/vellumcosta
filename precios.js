@@ -10,8 +10,8 @@
     function weekday(s) { return (date(s).getUTCDay() + 6) % 7; }           // 0 = lunes … 6 = domingo
     function round(n) { return Math.round(n * 100) / 100; }
 
-    // Precios por fechas: primera regla que incluye la noche "d" y define "key" (price o
-    // minNights). days: noches de la semana a las que se aplica; vacío = todas.
+    // Precios por fechas: primera regla que incluye la noche "d" y define "key" (price,
+    // discount o minNights). days: noches de la semana a las que se aplica; vacío = todas.
     function ruleFor(p, d, key) {
         var rules = (p.price && p.price.rules) || [], dow = weekday(d), md = d.slice(5);
         for (var i = 0; i < rules.length; i++) {
@@ -22,7 +22,13 @@
         }
         return null;
     }
+    // Precio de una noche: el de su regla (o el base) menos el descuento por fechas, si lo hay.
+    // El precio y el descuento pueden venir de reglas distintas: una oferta sobre una temporada.
     function nightPrice(p, d) {
+        var off = ruleFor(p, d, 'discount'), price = listPrice(p, d);
+        return off ? round(price * (100 - off.discount) / 100) : price;
+    }
+    function listPrice(p, d) {
         var rule = ruleFor(p, d, 'price');
         if (rule) return rule.price;
         // Temporadas del formato antiguo (mes-día), por si los datos aún no se han guardado desde el panel.
@@ -35,9 +41,11 @@
     }
     // Precio más bajo que se puede llegar a pagar por noche (para el "Desde …").
     function lowestPrice(p, today) {
-        var price = p.price || {};
-        var prices = (price.seasons || []).concat((price.rules || []).filter(function (r) { return r.price > 0 && (r.repeat || r.end >= today); }));
-        return prices.reduce(function (m, s) { return Math.min(m, s.price); }, price.base || 0);
+        // Se mira noche a noche el periodo reservable (18 meses), porque el precio y el descuento
+        // de una noche pueden venir de reglas distintas.
+        var low = (p.price && p.price.base) || 0, d = today;
+        for (var n = 0; n < 550; n++, d = addDays(d, 1)) low = Math.min(low, nightPrice(p, d));
+        return low;
     }
     // Estancia mínima según el día de entrada, y máxima (0 = sin límite).
     function minNights(p, d) {

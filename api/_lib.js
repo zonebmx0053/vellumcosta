@@ -178,7 +178,7 @@ function cleanProperty(p) {
         price: {
             base: num(price.base, 0, 100000),
             // Cada regla: fechas (ambas incluidas), precio por noche (0 = el precio base),
-            // estancia mínima (0 = la general), noches de la semana a las que se aplica
+            // descuento en % sobre el precio de esas noches (0 = sin descuento), estancia mínima (0 = la general), noches de la semana a las que se aplica
             // (0 = lunes … 6 = domingo; vacío = todas) y si se repite cada año.
             rules: list(rules, 60)
                 .filter(r => r && ISO.test(r.start) && ISO.test(r.end) && r.end >= r.start)
@@ -187,6 +187,7 @@ function cleanProperty(p) {
                     start: r.start,
                     end: r.end,
                     price: num(r.price, 0, 100000),
+                    discount: int(r.discount, 0, 90),
                     minNights: int(r.minNights, 0, 365),
                     days: weekdays(r.days),
                     repeat: !!r.repeat,
