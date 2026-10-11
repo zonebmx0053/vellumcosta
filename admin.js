@@ -11,6 +11,7 @@
         page: 'alojamientos', prop: null, tab: 'general', menu: false,   // prop: alojamiento elegido (null = ninguno)
         when: 'active', kind: 'all',                         // filtros de Reservas
         month: null, pick: null, range: null, seg: null,     // Calendario: mes visible, selección y tramo abierto
+        side: null, draft: null,                             // Calendario: apartado abierto del panel lateral y su borrador
         form: null,                                          // reserva directa o bloqueo que se está editando
         rule: null, table: {}, sim: null                     // precio por fechas abierto, gráficos en tabla, simulador
     };
@@ -34,6 +35,10 @@
         direct: { label: 'Reserva directa' }, block: { label: 'Bloqueo' }, held: { label: 'No disponible' }
     };
     var CHANNELS = ['booking', 'airbnb', 'vrbo', 'direct'];
+    var CUSTOM = 'Fechas personalizadas';                     // nombre de los periodos que se crean eligiendo días en el calendario
+    var MAX_RULES = 200;                                      // el servidor no guarda más periodos que estos
+    var NOTICES = [[0, 'Se puede reservar para el mismo día'], [1, '1 día'], [2, '2 días'], [3, '3 días'], [5, '5 días'], [7, '7 días'], [14, '14 días']];
+    var WINDOWS = [[0, 'Todo el calendario (18 meses)'], [3, 'Próximos 3 meses'], [6, 'Próximos 6 meses'], [9, 'Próximos 9 meses'], [12, 'Próximos 12 meses']];
     var OFFERS = { weekly: 'Descuento semanal', monthly: 'Descuento mensual', early: 'Descuento por reserva anticipada', last: 'Descuento de última hora' };
     // El panel tiene dos niveles. Primero se elige un alojamiento (página "alojamientos") y después se
     // trabaja solo con él: su gestión (MANAGE) y las secciones de su anuncio (TABS, página "editor").
@@ -347,6 +352,10 @@
     function problem() {
         for (var i = 0; i < st.data.properties.length; i++) {
             var p = st.data.properties[i];
+            if (p.price.rules.length > MAX_RULES) {
+                st.page = 'calendario'; st.prop = i;
+                return '«' + propName(p) + '» tiene ' + p.price.rules.length + ' periodos de precio y el máximo es ' + MAX_RULES + '. Elimine los que ya no necesite en «Periodos y temporadas».';
+            }
             for (var j = 0; j < p.price.rules.length; j++) {
                 if (!ruleOk(p.price.rules[j])) {
                     st.page = 'calendario'; st.prop = i; st.rule = j;
@@ -736,71 +745,163 @@
         }
         return html + '</div></div>';
     }
-    function calendarBody(p) {
+    function calendarGrid(p) {
         var month = st.month || today.slice(0, 8) + '01', map = nightMap(p), months = '';
         for (var k = 0; k < 6; k++) months += monthHtml(p, addMonths(month, k), map);
-        var action = '';
-        if (st.range) {
-            action = '<div class="ad-action"><div><strong>' + nights(diff(st.range.a, st.range.b) + 1) + ': del ' + esc(human(st.range.a, true)) + ' al ' + esc(human(st.range.b)) + '</strong><span>Salida el ' + esc(human(addDays(st.range.b, 1))) + '. ¿Qué quiere hacer con estas fechas?</span></div>' +
-                '<button type="button" class="ad-btn ad-btn-solid" data-act="range-price">' + fa('fa-tags') + 'Precio y condiciones</button>' +
-                '<button type="button" class="ad-btn" data-act="range-book">' + fa('fa-handshake') + 'Reserva directa</button>' +
-                '<button type="button" class="ad-btn" data-act="range-block">' + fa('fa-ban') + 'Bloquear</button>' +
-                '<button type="button" class="ad-btn ad-btn-ghost" data-act="range-cancel">Cancelar</button></div>';
-        } else if (st.pick) {
-            action = '<div class="ad-action"><div><strong>Primer día: ' + esc(human(st.pick)) + '</strong><span>Pulse ahora el último día (o el mismo para una sola noche).</span></div>' +
-                '<button type="button" class="ad-btn ad-btn-ghost" data-act="range-cancel">Cancelar</button></div>';
-        } else if (st.seg) {
-            var s = segmentsOf(p).filter(function (x) { return x.start === st.seg.start && x.src === st.seg.src; })[0];
-            if (s) {
-                var mine = s.src === 'direct' || s.src === 'block', b = mine ? p.blocked[s.ref] : null;
-                action = '<div class="ad-action"><div><strong>' + srcTag(s.src, s.src === 'held' ? 'No disponible en ' + SRC[s.platform].label : SRC[s.src].label) + '</strong>' +
-                    '<span>' + esc(human(s.start)) + ' → ' + esc(human(s.end)) + ' · ' + nights(diff(s.start, s.end)) + (s.label ? ' · ' + esc(s.label) : '') +
-                    (b && b.type === 'booking' ? ' · ' + money(b.total) + ' · ' + (C.find(C.payments, b.paid) || {}).label : '') + '</span></div>' +
-                    (mine ? '<button type="button" class="ad-btn" data-act="form-edit" data-ref="' + s.ref + '">' + fa('fa-pen') + 'Editar</button>' +
-                        '<button type="button" class="ad-btn ad-btn-danger" data-act="row-del" data-ref="' + s.ref + '">' + fa('fa-trash') + 'Eliminar</button>'
-                        : s.src === 'airbnb' && /^https:\/\/www\.airbnb\./.test(s.url || '') ? '<a class="ad-btn" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + fa('fa-arrow-up-right-from-square') + 'Abrir en Airbnb</a>' : '') +
-                    '<button type="button" class="ad-btn ad-btn-ghost" data-act="range-cancel">Cerrar</button></div>';
-            }
+        return '<div class="ad-months">' + months + '</div>';
+    }
+    function rangeLabel(a, b) {
+        var noYear = b.slice(0, 4) === today.slice(0, 4);
+        if (a === b) return human(a, noYear);
+        return (a.slice(0, 7) === b.slice(0, 7) ? date(a).getUTCDate() + '–' : human(a, true) + ' – ') + human(b, noYear);
+    }
+    // Las noches elegidas: cuántas están libres, bloqueadas por usted o con reserva, y entre qué precios.
+    function selection(p) {
+        var a = st.range.a, end = addDays(st.range.b, 1), map = nightMap(p);
+        var s = { a: a, end: end, n: diff(a, end), free: 0, blocked: 0, taken: 0, min: Infinity, max: 0 };
+        for (var d = a; d < end; d = addDays(d, 1)) {
+            var seg = map[d], price = PR.nightPrice(p, d);
+            if (!seg) s.free++; else if (seg.src === 'block') s.blocked++; else s.taken++;
+            s.min = Math.min(s.min, price);
+            s.max = Math.max(s.max, price);
         }
-        return action + '<div class="ad-months">' + months + '</div>';
+        return s;
     }
-    // Lo que se aplica a las fechas que no tienen nada propio. Solo se muestra: se cambia en su sección.
-    function generalTerms(p) {
-        var c = p.price.discounts, chips = [['Precio base', p.price.base > 0 ? money(p.price.base) + ' / noche' : 'a consultar'], ['Estancia mínima', nights(p.price.minNights)]];
-        if (c.weekly > 0) chips.push(['Descuento semanal', '−' + c.weekly + ' %']);
-        if (c.monthly > 0) chips.push(['Descuento mensual', '−' + c.monthly + ' %']);
-        if (c.earlyPercent > 0) chips.push(['Reserva anticipada', '−' + c.earlyPercent + ' %']);
-        if (c.lastPercent > 0) chips.push(['Última hora', '−' + c.lastPercent + ' %']);
-        return '<div class="ad-chips">' + chips.map(function (x) { return '<span class="ad-chip">' + x[0] + ': <strong>' + x[1] + '</strong></span>'; }).join('') + '</div>' +
-            '<p class="ad-help">Es lo que se aplica cuando una fecha no tiene precio ni condiciones propias. Se cambia en ' +
-            '<button type="button" class="ad-link" data-act="go" data-page="editor" data-tab="precios">Precios</button> y en ' +
-            '<button type="button" class="ad-link" data-act="go" data-page="editor" data-tab="disponibilidad">Disponibilidad</button>.</p>';
+    // Lo que se pone desde el calendario se guarda como un periodo con este nombre y esas fechas exactas.
+    function customRule(p, a, b) {
+        return p.price.rules.filter(function (r) { return r.name === CUSTOM && r.start === a && r.end === b && !r.repeat && !r.days.length; })[0] || null;
     }
+    // Abre (o cierra, sin valor) un apartado del panel lateral. Los de las fechas elegidas se
+    // editan sobre un borrador que no toca los datos hasta pulsar "Guardar".
+    function openSide(p, value) {
+        st.side = value || null;
+        st.draft = null;
+        if (!/^sel-/.test(st.side || '') || !st.range) return;
+        var s = selection(p), r = customRule(p, st.range.a, st.range.b);
+        st.draft = { price: r && r.price > 0 ? r.price : s.min === s.max && s.max > 0 && !PR.ruleFor(p, s.a, 'discount') ? s.min : '',
+            minNights: r ? r.minNights : 0, discount: r ? r.discount : 0 };
+    }
+    function sideItem(value, title, lines, icon) {
+        return '<button type="button" class="ad-side-item" data-act="side" data-value="' + value + '"><span><strong>' + title + '</strong>' +
+            lines.filter(Boolean).map(function (l) { return '<span>' + esc(l) + '</span>'; }).join('') + '</span>' + fa(icon || 'fa-chevron-right') + '</button>';
+    }
+    function sideHead(title) {
+        return '<div class="ad-side-head"><button type="button" class="ad-icon-btn" data-act="side" data-value="" aria-label="Volver">' + fa('fa-arrow-left') + '</button><strong>' + title + '</strong></div>';
+    }
+    function sideDone() { return '<button type="button" class="ad-btn ad-btn-solid" data-act="side" data-value="">' + fa('fa-check') + 'Listo</button>'; }
+    // Sin fechas elegidas: lo que vale para todo el calendario.
+    function generalPanel(P, p) {
+        var price = p.price, c = price.discounts, stay = p.stay, policy = C.find(C.cancellation, p.cancellation);
+        if (st.side === 'precio') return sideHead('Precios') + '<section class="ad-card ad-side-fields">' +
+            field('Precio base por noche', P + 'price.base', { kind: 'number', unit: '€', help: 'El de las noches que no tienen un precio propio. Con 0 la web muestra «Precio a consultar».' }) +
+            field('Limpieza por estancia', P + 'price.cleaningFee', { kind: 'number', unit: '€' }) +
+            '<p class="ad-help">Fianza, huéspedes adicionales y simulador: en <button type="button" class="ad-link" data-act="go" data-page="editor" data-tab="precios">Precios</button>.</p>' + sideDone() + '</section>';
+        if (st.side === 'descuentos') return sideHead('Descuentos') + discountsHtml(P, c) +
+            '<p class="ad-help">Con 0 % no se aplica. Si a una estancia le corresponden varios, se aplica solo el mayor.</p>' + sideDone();
+        if (st.side === 'disponibilidad') return sideHead('Disponibilidad') + '<section class="ad-card ad-side-fields">' +
+            field('Estancia mínima (noches)', P + 'price.minNights', { kind: 'stepper', min: 1, max: 60 }) +
+            field('Estancia máxima (noches)', P + 'stay.maxNights', { kind: 'stepper', max: 365, zero: 'Sin límite' }) +
+            field('Antelación mínima para reservar', P + 'stay.notice', { kind: 'selectnum', options: NOTICES }) +
+            field('Hasta cuándo se puede reservar', P + 'stay.window', { kind: 'selectnum', options: WINDOWS }) +
+            '<p class="ad-help">Margen entre reservas y días de entrada: en <button type="button" class="ad-link" data-act="go" data-page="editor" data-tab="disponibilidad">Disponibilidad</button>.</p>' + sideDone() + '</section>';
+        if (st.side === 'cancelacion') return sideHead('Cancelaciones') + policyOptions(P, p) + sideDone();
+
+        var offers = [];
+        if (c.weekly > 0) offers.push('Descuento semanal del ' + c.weekly + ' %');
+        if (c.monthly > 0) offers.push('Descuento mensual del ' + c.monthly + ' %');
+        if (c.earlyPercent > 0) offers.push('Reserva anticipada: ' + c.earlyPercent + ' %');
+        if (c.lastPercent > 0) offers.push('Última hora: ' + c.lastPercent + ' %');
+        return '<p class="ad-help">Elija días en el calendario para cambiar su precio, bloquearlos o anotar una reserva.</p>' +
+            sideItem('precio', 'Precios', [price.base > 0 ? money(price.base) + ' por noche' : 'Precio a consultar', price.cleaningFee > 0 ? 'Limpieza: ' + money(price.cleaningFee) : '']) +
+            sideItem('descuentos', 'Descuentos', offers.length ? offers : ['Sin descuentos']) +
+            sideItem('disponibilidad', 'Disponibilidad', [stay.maxNights ? 'Estancias de ' + price.minNights + ' a ' + nights(stay.maxNights) : 'Estancia mínima de ' + nights(price.minNights),
+                stay.notice ? 'Preaviso mínimo de ' + stay.notice + (stay.notice === 1 ? ' día' : ' días') : 'Se puede reservar para el mismo día']) +
+            sideItem('cancelacion', 'Cancelaciones', [policy ? policy.label : 'No se muestra en la ficha']);
+    }
+    // Con fechas elegidas: disponibilidad, precio y ajustes solo de esas noches.
+    function selectionPanel(p) {
+        var s = selection(p), r = customRule(p, s.a, st.range.b), draft = st.draft || {};
+        var open = s.free > 0 && !s.blocked, closed = s.blocked > 0 && !s.free, full = s.taken === s.n;
+        var state = full ? 'Reservado' : closed ? 'Bloqueado' : s.blocked ? 'Bloqueado en parte' : 'Disponible';
+        var priceText = s.max > 0 ? (s.min === s.max ? money(s.min) : money(s.min) + ' – ' + money(s.max)) : 'A consultar';
+        var which = s.n === 1 ? 'esta noche' : 'las ' + s.n + ' noches elegidas';
+        var actions = '<div class="ad-side-actions"><button type="button" class="ad-btn ad-btn-ghost" data-act="side" data-value="">Cancelar</button>' +
+            '<button type="button" class="ad-btn ad-btn-solid" data-act="sel-save">Guardar</button></div>';
+        var number = function (label, key, unit, help) {
+            return '<label class="ad-field"><span class="ad-label">' + label + '</span><span class="ad-unit"><input type="number" inputmode="numeric" step="1" min="0" data-draft="' + key + '" value="' + esc(draft[key]) + '"><span>' + unit + '</span></span>' +
+                '<span class="ad-help">' + help + '</span></label>';
+        };
+        var minNow = PR.minNights(p, s.a), offNow = PR.ruleFor(p, s.a, 'discount');
+
+        return '<div class="ad-side-head"><span class="ad-side-chip">' + esc(rangeLabel(s.a, st.range.b)) + '</span><span class="ad-help">' + nights(s.n) + '</span>' +
+            '<button type="button" class="ad-icon-btn" data-act="range-cancel" aria-label="Quitar la selección" title="Quitar la selección">' + fa('fa-xmark') + '</button></div>' +
+            (st.pick ? '<p class="ad-help">Pulse otro día para ampliar el tramo.</p>' : '') +
+            '<section class="ad-card"><div class="ad-side-row"><div><strong>' + state + '<i class="ad-dot' + (open ? '' : ' is-off') + '"></i></strong>' +
+            (s.taken ? '<span class="ad-help">' + (full ? 'Estas noches ya tienen reserva.' : nights(s.taken) + ' con reserva no ' + (s.taken === 1 ? 'cambia.' : 'cambian.')) + '</span>' : '') + '</div>' +
+            (full ? '' : '<div class="ad-seg" role="group" aria-label="Disponibilidad">' +
+                '<button type="button" class="' + (closed ? 'is-on' : '') + '" aria-pressed="' + closed + '" data-act="sel-block" aria-label="Bloquear estas fechas" title="Bloquear">' + fa('fa-xmark') + '</button>' +
+                '<button type="button" class="' + (open ? 'is-on' : '') + '" aria-pressed="' + open + '" data-act="sel-open" aria-label="Dejar disponibles estas fechas" title="Disponible">' + fa('fa-check') + '</button></div>') + '</div></section>' +
+            (st.side === 'sel-price'
+                ? '<section class="ad-card"><label class="ad-field"><span class="ad-label">Precio por noche</span><span class="ad-unit ad-side-price"><input type="number" inputmode="decimal" step="any" min="0" data-draft="price" value="' + esc(draft.price) + '"><span>€</span></span>' +
+                    '<span class="ad-help">Para ' + which + '. Ahora: ' + priceText + '.</span></label>' + actions + '</section>'
+                : '<button type="button" class="ad-side-item" data-act="side" data-value="sel-price"><span><span class="ad-label">Precio por noche</span><strong class="ad-side-big">' + priceText + '</strong></span>' + fa('fa-pen') + '</button>') +
+            (st.side === 'sel-more'
+                ? '<section class="ad-card ad-side-fields"><strong>Ajustes personalizados</strong>' +
+                    number('Estancia mínima', 'minNights', 'noches', '0 = la general (' + nights(p.price.minNights) + '). Cuenta para las estancias que empiezan en estas fechas.') +
+                    number('Descuento', 'discount', '%', 'Se resta del precio de ' + which + '. 0 = sin descuento.') + actions + '</section>'
+                : sideItem('sel-more', 'Ajustes personalizados', ['Estancia mínima: ' + nights(minNow), offNow ? 'Descuento: ' + offNow.discount + ' %' : 'Sin descuento'], 'fa-plus')) +
+            (full ? '' : '<button type="button" class="ad-btn" data-act="range-book">' + fa('fa-handshake') + 'Anotar reserva directa</button>') +
+            (r ? '<button type="button" class="ad-link" data-act="sel-reset">Quitar el precio y los ajustes propios de estas fechas</button>' : '');
+    }
+    // Una reserva o un bloqueo pulsado en el calendario.
+    function segPanel(p, s) {
+        var mine = s.src === 'direct' || s.src === 'block', b = mine ? p.blocked[s.ref] : null;
+        return '<div class="ad-side-head"><span class="ad-side-chip">' + esc(rangeLabel(s.start, addDays(s.end, -1))) + '</span><span class="ad-help">' + nights(diff(s.start, s.end)) + '</span>' +
+            '<button type="button" class="ad-icon-btn" data-act="range-cancel" aria-label="Cerrar" title="Cerrar">' + fa('fa-xmark') + '</button></div>' +
+            '<section class="ad-card ad-side-fields"><strong>' + srcTag(s.src, s.src === 'held' ? 'No disponible en ' + SRC[s.platform].label : SRC[s.src].label) + '</strong>' +
+            '<p>' + esc(human(s.start)) + ' → ' + esc(human(s.end)) + (s.label ? '<br>' + esc(s.label) : '') +
+            (b && b.type === 'booking' ? '<br>' + money(b.total) + ' · ' + esc((C.find(C.payments, b.paid) || {}).label || '') : '') + '</p>' +
+            (mine ? '<div class="ad-side-actions"><button type="button" class="ad-btn" data-act="form-edit" data-ref="' + s.ref + '">' + fa('fa-pen') + 'Editar</button>' +
+                '<button type="button" class="ad-btn ad-btn-danger" data-act="row-del" data-ref="' + s.ref + '">' + fa('fa-trash') + (s.src === 'block' ? 'Desbloquear' : 'Eliminar') + '</button></div>'
+                : s.src === 'airbnb' && /^https:\/\/www\.airbnb\./.test(s.url || '') ? '<a class="ad-btn" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + fa('fa-arrow-up-right-from-square') + 'Abrir en Airbnb</a>'
+                    : '<p class="ad-help">Llega del calendario de la plataforma: se cambia allí.</p>') + '</section>';
+    }
+    function sidePanel(p) {
+        if (st.form) return formCard();
+        var s = st.seg && segmentsOf(p).filter(function (x) { return x.start === st.seg.start && x.src === st.seg.src; })[0];
+        if (s) return segPanel(p, s);
+        if (st.range) return selectionPanel(p);
+        return generalPanel('properties.' + st.prop + '.', p);
+    }
+    function sideClass() { return 'ad-side' + (st.form || st.seg || st.range ? ' is-sel' : ''); }
     function rulesList(P, p) {
         var n = p.price.rules.length;
         return (n ? p.price.rules.map(function (r, i) { return ruleHtml(P, r, i, n); }).join('') : '<p class="ad-empty">Sin precios por fechas: se aplica la tarifa general todo el año.</p>') +
-            '<button type="button" class="ad-btn ad-btn-small ad-add" data-act="add" data-list="' + P + 'price.rules" data-new="rule">' + fa('fa-plus') + 'Añadir precio por fechas</button>';
+            '<button type="button" class="ad-btn ad-btn-small ad-add" data-act="add" data-list="' + P + 'price.rules" data-new="rule">' + fa('fa-plus') + 'Añadir periodo</button>';
     }
+    // Calendario a un lado y, al otro, el panel de lo elegido: como en los paneles de las plataformas.
     function pageCalendario() {
         var p = current(), month = st.month || today.slice(0, 8) + '01';
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Calendario</h2><p>Pulse un día libre y después otro para poner precio y condiciones a ese tramo, anotar una reserva o bloquearlo.</p></div></div>' +
-            formCard() +
-            '<section class="ad-card"><div class="ad-cal-bar">' +
+        return '<div class="ad-head"><div class="ad-head-text"><h2>Calendario</h2><p>Pulse un día, y después otro si quiere un tramo, para cambiar su precio, bloquearlo o anotar una reserva.</p></div></div>' +
+            '<div class="ad-cal-layout"><section class="ad-card"><div class="ad-cal-bar">' +
             '<button type="button" class="ad-icon-btn" data-act="nav" data-step="-1" aria-label="Mes anterior"' + (month <= addMonths(today, -12) ? ' disabled' : '') + '>' + fa('fa-chevron-left') + '</button>' +
             '<button type="button" class="ad-btn ad-btn-small" data-act="today">Hoy</button>' +
             '<button type="button" class="ad-icon-btn" data-act="nav" data-step="1" aria-label="Mes siguiente"' + (month >= addMonths(today, 18) ? ' disabled' : '') + '>' + fa('fa-chevron-right') + '</button>' +
             (st.sync === 'loading' ? '<span class="ad-help">' + fa('fa-spinner fa-spin') + ' Leyendo los calendarios…</span>' : '') +
             '<p class="ad-legend">' + CHANNELS.concat(['block', 'held']).map(function (k) { return '<span><i class="ad-key is-' + k + '"></i>' + SRC[k].label + '</span>'; }).join('') + '</p></div>' +
-            '<div id="ad-cal">' + calendarBody(p) + '</div></section>' +
-            '<p class="ad-help" style="margin-bottom:16px">Los días libres muestran su precio por noche; en dorado, los que tienen un precio o un descuento propio. La ficha pública cierra todas las fechas ocupadas, sea cual sea su origen' +
-            (p.stay.prep ? ', más ' + nights(p.stay.prep) + ' de margen alrededor de cada reserva' : '') + '.</p>' +
-            card('Precios y condiciones por fechas', rulesList('properties.' + st.prop + '.', p),
-                'Precio por noche, descuento y estancia mínima de cada periodo: temporadas, fines de semana, festivos u ofertas. Si dos periodos coinciden en una noche, manda el que esté más arriba en la lista.', 'fa-calendar-plus') +
-            card('Tarifa general', generalTerms(p), '', 'fa-tag');
+            '<div id="ad-cal">' + calendarGrid(p) + '</div>' +
+            '<p class="ad-help" style="margin-top:16px">Los días libres muestran su precio por noche; en dorado, los que tienen un precio o un descuento propio. La ficha pública cierra todas las fechas ocupadas, sea cual sea su origen' +
+            (p.stay.prep ? ', más ' + nights(p.stay.prep) + ' de margen alrededor de cada reserva' : '') + '.</p></section>' +
+            '<aside id="ad-side" class="' + sideClass() + '" aria-label="Precio y disponibilidad">' + sidePanel(p) + '</aside></div>' +
+            card('Periodos y temporadas', rulesList('properties.' + st.prop + '.', p),
+                'Todos los precios por fechas, también los que pone desde el calendario. Aquí puede crear temporadas que se repiten cada año o que solo afectan a ciertas noches de la semana. Si dos coinciden en una noche, manda el que esté más arriba.', 'fa-calendar-plus');
     }
-    function refreshCalendar() {
-        var el = document.getElementById('ad-cal');
-        if (el && current()) el.innerHTML = calendarBody(current());
+    // Repinta el calendario y, salvo que se esté escribiendo en él, el panel lateral.
+    function refreshCalendar(keepSide) {
+        var el = document.getElementById('ad-cal'), side = document.getElementById('ad-side');
+        if (!el || !current()) return;
+        el.innerHTML = calendarGrid(current());
+        if (side && !keepSide) { side.className = sideClass(); side.innerHTML = sidePanel(current()); }
     }
 
     // ══ Alojamientos: aquí se elige con cuál se va a trabajar ══
@@ -880,6 +981,24 @@
     function offer(icon, title, text, on, fields) {
         return '<div class="ad-offer' + (on ? ' is-on' : '') + '"><h4>' + fa(icon) + title + '</h4><p>' + text + '</p>' + fields + '</div>';
     }
+    // Los cuatro descuentos por estancia. Se editan en Precios y en el panel lateral del Calendario.
+    function discountsHtml(P, c) {
+        var percent = function (key) { return field('Descuento', P + 'price.discounts.' + key, { kind: 'number', unit: '%', max: 90 }); };
+        return '<div class="ad-offers">' +
+            offer('fa-calendar-week', 'Semanal', 'Estancias de 7 noches o más.', c.weekly > 0, percent('weekly')) +
+            offer('fa-calendar', 'Mensual', 'Estancias de 28 noches o más.', c.monthly > 0, percent('monthly')) +
+            offer('fa-hourglass-start', 'Reserva anticipada', 'Para quien reserva con mucha antelación.', c.earlyPercent > 0, percent('earlyPercent') +
+                field('Antelación', P + 'price.discounts.earlyDays', { kind: 'selectnum', options: [30, 60, 90, 120, 180].map(function (d) { return [d, d + ' días o más']; }) })) +
+            offer('fa-bolt', 'Última hora', 'Para llenar huecos cercanos.', c.lastPercent > 0, percent('lastPercent') +
+                field('Llegadas en', P + 'price.discounts.lastDays', { kind: 'selectnum', options: [1, 2, 3, 5, 7, 14].map(function (d) { return [d, 'los próximos ' + d + (d === 1 ? ' día' : ' días')]; }) })) +
+            '</div>';
+    }
+    function policyOptions(P, p) {
+        return '<div class="ad-options">' + [{ id: '', label: 'No mostrar', es: 'La ficha no incluye el apartado de cancelación.' }].concat(C.cancellation).map(function (c) {
+            var on = (p.cancellation || '') === c.id;
+            return '<button type="button" class="ad-option' + (on ? ' is-on' : '') + '" aria-pressed="' + on + '" data-act="set" data-path="' + P + 'cancellation" data-value="' + c.id + '" data-keep="1"><strong>' + esc(c.label) + '</strong><span>' + esc(c.es) + '</span></button>';
+        }).join('') + '</div>';
+    }
     // Lo que vería un huésped en la ficha, con las tarifas tal como están ahora en el panel.
     function quoteHtml(p) {
         var s = st.sim;
@@ -905,7 +1024,7 @@
             grid(stepper('Noches', 'nights', 1, 90), stepper('Huéspedes', 'guests', 1, p.guests)) + '</div><div id="ad-sim-out">' + quoteHtml(p) + '</div></div>';
     }
     function tabPrecios(P, p) {
-        var c = p.price.discounts, percent = function (key) { return field('Descuento', P + 'price.discounts.' + key, { kind: 'number', unit: '%', max: 90 }); };
+        var c = p.price.discounts;
         if (!st.sim) st.sim = { start: addDays(today, 30), nights: Math.max(7, p.price.minNights), guests: 2 };
         st.sim.guests = Math.max(1, Math.min(st.sim.guests, p.guests));
         return card('Tarifa general',
@@ -917,14 +1036,7 @@
                 grid(field('Huéspedes incluidos en el precio', P + 'price.extraGuestAfter', { kind: 'stepper', max: p.guests, zero: 'Todos', help: 'A partir de este número se cobra el suplemento.' }),
                     field('Suplemento por huésped y noche', P + 'price.extraGuestFee', { kind: 'number', unit: '€' })),
                 'Útil si el precio base es para un grupo pequeño y quiere cobrar algo más por cada persona extra.', 'fa-user-plus') +
-            card('Descuentos', '<div class="ad-offers">' +
-                offer('fa-calendar-week', 'Semanal', 'Estancias de 7 noches o más.', c.weekly > 0, percent('weekly')) +
-                offer('fa-calendar', 'Mensual', 'Estancias de 28 noches o más.', c.monthly > 0, percent('monthly')) +
-                offer('fa-hourglass-start', 'Reserva anticipada', 'Para quien reserva con mucha antelación.', c.earlyPercent > 0, percent('earlyPercent') +
-                    field('Antelación', P + 'price.discounts.earlyDays', { kind: 'selectnum', options: [30, 60, 90, 120, 180].map(function (d) { return [d, d + ' días o más']; }) })) +
-                offer('fa-bolt', 'Última hora', 'Para llenar huecos cercanos.', c.lastPercent > 0, percent('lastPercent') +
-                    field('Llegadas en', P + 'price.discounts.lastDays', { kind: 'selectnum', options: [1, 2, 3, 5, 7, 14].map(function (d) { return [d, 'los próximos ' + d + (d === 1 ? ' día' : ' días')]; }) })) +
-                '</div>', 'Con 0 % el descuento no se aplica. Si a una estancia le corresponden varios, se aplica solo el mayor. Se calculan sobre las noches, no sobre la limpieza.', 'fa-percent') +
+            card('Descuentos', discountsHtml(P, c), 'Con 0 % el descuento no se aplica. Si a una estancia le corresponden varios, se aplica solo el mayor. Se calculan sobre las noches, no sobre la limpieza.', 'fa-percent') +
             '<p class="ad-help" style="margin-bottom:16px">Los precios, descuentos y estancias mínimas de unas fechas concretas (' + p.price.rules.length + ') se ponen en el ' +
             '<button type="button" class="ad-link" data-act="go" data-page="calendario">Calendario</button>, eligiendo los días.</p>' +
             card('Simulador de precio', '<div id="ad-sim">' + simulator(p) + '</div>', 'Lo que vería un huésped en la ficha con las tarifas de esta pestaña, también antes de guardar.', 'fa-calculator');
@@ -934,8 +1046,8 @@
             grid(field('Estancia mínima (noches)', P + 'price.minNights', { kind: 'stepper', min: 1, max: 60, help: 'Los precios por fechas pueden fijar otra para su periodo.' }),
                 field('Estancia máxima (noches)', P + 'stay.maxNights', { kind: 'stepper', max: 365, zero: 'Sin límite' })), '', 'fa-moon') +
             card('Antelación y calendario abierto',
-                grid(field('Antelación mínima para reservar', P + 'stay.notice', { kind: 'selectnum', options: [[0, 'Se puede reservar para el mismo día'], [1, '1 día'], [2, '2 días'], [3, '3 días'], [5, '5 días'], [7, '7 días'], [14, '14 días']] }),
-                    field('Hasta cuándo se puede reservar', P + 'stay.window', { kind: 'selectnum', options: [[0, 'Todo el calendario (18 meses)'], [3, 'Próximos 3 meses'], [6, 'Próximos 6 meses'], [9, 'Próximos 9 meses'], [12, 'Próximos 12 meses']] })),
+                grid(field('Antelación mínima para reservar', P + 'stay.notice', { kind: 'selectnum', options: NOTICES }),
+                    field('Hasta cuándo se puede reservar', P + 'stay.window', { kind: 'selectnum', options: WINDOWS })),
                 'Evita reservas de última hora que no pueda preparar y fechas demasiado lejanas.', 'fa-hourglass-half') +
             card('Margen entre reservas',
                 seg('Noches cerradas antes y después de cada reserva', P + 'stay.prep', [[0, 'Ninguna'], [1, '1 noche'], [2, '2 noches']], { num: true, keep: true,
@@ -988,10 +1100,6 @@
                 field('Usar miniaturas', P + 'thumbs', { kind: 'check', help: 'Actívelo solo si cada foto tiene una copia pequeña con el mismo nombre en la subcarpeta <code>thumbs</code>.' }), '', 'fa-sliders');
     }
     function tabNormas(P, p) {
-        var policies = [{ id: '', label: 'No mostrar', es: 'La ficha no incluye el apartado de cancelación.' }].concat(C.cancellation).map(function (c) {
-            var on = (p.cancellation || '') === c.id;
-            return '<button type="button" class="ad-option' + (on ? ' is-on' : '') + '" aria-pressed="' + on + '" data-act="set" data-path="' + P + 'cancellation" data-value="' + c.id + '" data-keep="1"><strong>' + esc(c.label) + '</strong><span>' + esc(c.es) + '</span></button>';
-        }).join('');
         return card('Horarios', grid(field('Hora de entrada (a partir de)', P + 'checkIn', { kind: 'select', options: times() }),
             field('Hora de salida (antes de)', P + 'checkOut', { kind: 'select', options: times() })), '', 'fa-clock') +
             card('Normas de la casa', '<div class="ad-grid is-wide">' + C.house.map(function (h) {
@@ -999,7 +1107,7 @@
             }).join('') + '</div>' +
                 bi('Detalles sobre mascotas (opcional)', P + 'pets', { kind: 'area', rows: 2, help: 'Por ejemplo, número máximo o suplementos.' }),
                 'Lo que marque aparece en la ficha; lo que deje sin marcar no se menciona.', 'fa-clipboard-list') +
-            card('Política de cancelación', '<div class="ad-options">' + policies + '</div>', 'El texto se publica tal cual en la ficha, en español e inglés.', 'fa-calendar-xmark') +
+            card('Política de cancelación', policyOptions(P, p), 'El texto se publica tal cual en la ficha, en español e inglés.', 'fa-calendar-xmark') +
             card('Ubicación',
                 bi('Texto de la ubicación', P + 'locationText', { kind: 'area', rows: 3 }) +
                 grid(field('Coordenadas o búsqueda para el mapa', P + 'mapQuery', { placeholder: '36.711145,-4.731890', help: 'Latitud y longitud separadas por una coma, o un nombre de lugar.' }),
@@ -1148,13 +1256,13 @@
         if (o.tab) st.tab = o.tab;
         if (page === 'alojamientos') st.prop = null;
         if (st.prop !== before) st.sim = null;
-        st.pick = st.range = st.seg = st.form = st.rule = st.month = null;
+        st.pick = st.range = st.seg = st.form = st.rule = st.month = st.side = st.draft = null;
         st.menu = false;
         render();
         remember();
         window.scrollTo(0, 0);
     }
-    window.addEventListener('popstate', function () { if (st.data) { route(); st.pick = st.range = st.seg = st.form = st.rule = st.month = st.sim = null; st.menu = false; render(); } });
+    window.addEventListener('popstate', function () { if (st.data) { route(); st.pick = st.range = st.seg = st.form = st.rule = st.month = st.sim = st.side = st.draft = null; st.menu = false; render(); } });
     function setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         try { localStorage.setItem('vc-admin-theme', theme); } catch (e) { }
@@ -1215,6 +1323,11 @@
             if (info) info.innerHTML = formInfo();
             return;
         }
+        // Precio y ajustes de las fechas elegidas en el calendario: borrador hasta pulsar "Guardar".
+        if (el.hasAttribute('data-draft')) {
+            if (st.draft) st.draft[el.getAttribute('data-draft')] = Number(el.value) || 0;
+            return;
+        }
         if (el.hasAttribute('data-sim')) {
             st.sim.start = el.value;
             var out = document.getElementById('ad-sim-out');
@@ -1251,9 +1364,11 @@
             syncBedrooms(current());
         } else if (/\.hidden$/.test(path) || /\.price\.rules\.\d+\.repeat$/.test(path)) {
             renderMain();
-        } else if (st.page === 'calendario' && /\.price\.rules\./.test(path)) {
-            // Los precios del calendario siguen a lo que se escribe en el periodo abierto.
-            refreshCalendar();
+        } else if (st.page === 'calendario' && /\.price\.|\.stay\./.test(path)) {
+            // Los precios del calendario siguen a lo que se escribe, sin repintar el campo en uso.
+            var offerBox = el.closest('.ad-offer');
+            if (offerBox && /Percent$|weekly$|monthly$/.test(path)) offerBox.classList.toggle('is-on', v > 0);
+            refreshCalendar(true);
         } else if (st.page === 'editor' && st.tab === 'precios' && /\.price\./.test(path)) {
             // El simulador y el aspecto de los descuentos siguen a lo que se escribe.
             var box = el.closest('.ad-offer');
@@ -1287,13 +1402,17 @@
     document.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S') && st.data) { e.preventDefault(); save(); }
         if (e.key === 'Escape') hideTip();
+        if (e.key === 'Enter' && e.target.hasAttribute && e.target.hasAttribute('data-draft')) {
+            var saveDraft = root.querySelector('[data-act="sel-save"]');
+            if (saveDraft) { e.preventDefault(); saveDraft.click(); }
+        }
     });
 
     // ── Eventos: botones ──
     function focusForm() {
         var el = document.getElementById('ad-form');
         if (!el) return;
-        window.scrollTo(0, 0);                      // el formulario es lo primero de la página
+        el.scrollIntoView({ block: 'nearest' });
         var firstField = el.querySelector('input, select');
         if (firstField) firstField.focus({ preventScroll: true });
     }
@@ -1347,29 +1466,70 @@
         // Calendario
         if (act === 'nav') { st.month = addMonths(st.month || today.slice(0, 8) + '01', +b.getAttribute('data-step')); renderMain(); return refocus(b); }
         if (act === 'today') { st.month = null; return renderMain(); }
-        if (act === 'range-cancel') { st.pick = st.range = st.seg = null; return refreshCalendar(); }
+        if (act === 'range-cancel') { st.pick = st.range = st.seg = st.side = st.draft = null; return refreshCalendar(); }
         if (act === 'day') {
+            // Un día libre queda elegido al pulsarlo; el siguiente que se pulse cierra el tramo.
+            // Un día ocupado, si no se está eligiendo un tramo, enseña su reserva o bloqueo.
             var d = b.getAttribute('data-date'), seg = nightMap(p)[d];
-            if (!st.pick && seg) { st.range = null; st.seg = { start: seg.start, src: seg.src }; }
-            else if (!st.pick) { if (d < today) return; st.seg = st.range = null; st.pick = d; }
-            else { st.range = { a: d < st.pick ? d : st.pick, b: d < st.pick ? st.pick : d }; st.pick = null; }
+            if (st.pick) { st.range = { a: d < st.pick ? d : st.pick, b: d < st.pick ? st.pick : d }; st.pick = null; }
+            else if (seg) { st.range = null; st.seg = { start: seg.start, src: seg.src }; }
+            else { if (d < today) return; st.seg = null; st.range = { a: d, b: d }; st.pick = d; }
+            st.side = st.draft = st.form = null;
             refreshCalendar();
             return refocus(b);
         }
-        if (act === 'range-price') {
-            // Precio y condiciones para el tramo elegido: se crea arriba del todo, para que mande
-            // sobre los periodos que ya hubiera en esas fechas, y se abre para rellenarlo.
-            p.price.rules.unshift(copy(NEW.rule(p), { start: st.range.a, end: st.range.b }));
-            st.rule = 0;
-            st.pick = st.range = st.seg = st.form = null;
-            touch();
-            renderMain();
-            var opened = root.querySelector('.ad-rule.is-open'), priceBox = opened && opened.querySelector('[data-path$=".price"]');
-            if (opened) opened.scrollIntoView({ block: 'center' });
-            if (priceBox) { priceBox.focus({ preventScroll: true }); priceBox.select(); }
+        if (act === 'side') {
+            openSide(p, value);
+            refreshCalendar();
+            var first = root.querySelector('#ad-side input[data-draft], #ad-side input[data-path]');
+            if (first && st.side) { first.focus({ preventScroll: true }); if (first.select) first.select(); }
             return;
         }
-        if (act === 'range-book' || act === 'range-block') { openForm(st.prop, act === 'range-book' ? 'booking' : 'block', null, st.range); renderMain(); return focusForm(); }
+        if (act === 'sel-block' || act === 'sel-open') {
+            // Bloquear o abrir las noches elegidas. Los bloqueos que ya hubiera se recortan a lo
+            // que quede fuera del tramo; las reservas no se tocan.
+            var from = st.range.a, to = addDays(st.range.b, 1), kept = [];
+            p.blocked.forEach(function (x) {
+                if (x.type !== 'block' || x.end <= from || x.start >= to) return kept.push(x);
+                if (x.start < from) kept.push(copy(x, { end: from }));
+                if (x.end > to) kept.push(copy(x, { start: to }));
+            });
+            if (act === 'sel-block') kept.push({ type: 'block', start: from, end: to, note: '' });
+            p.blocked = kept.sort(function (x, y) { return x.start < y.start ? -1 : x.start > y.start ? 1 : 0; });
+            st.form = st.side = st.draft = null;
+            touch();
+            renderMain();
+            return refocus(b);
+        }
+        if (act === 'sel-save') {
+            var a = st.range.a, z = st.range.b, draft = st.draft || {}, own = customRule(p, a, z);
+            if (st.side === 'sel-price' && !(draft.price > 0)) return toast('Escriba un precio por noche mayor que 0.', true);
+            if (own) p.price.rules.splice(p.price.rules.indexOf(own), 1);
+            else own = { name: CUSTOM, start: a, end: z, price: 0, discount: 0, minNights: 0, days: [], repeat: false };
+            if (st.side === 'sel-price') own.price = draft.price;
+            else {
+                own.minNights = Math.max(0, Math.min(365, Math.round(draft.minNights) || 0));
+                own.discount = Math.max(0, Math.min(90, Math.round(draft.discount) || 0));
+            }
+            // Los periodos de calendario anteriores que quedan tapados por completo ya no hacen nada: se quitan.
+            p.price.rules = p.price.rules.filter(function (r) {
+                return !(r.name === CUSTOM && !r.repeat && !r.days.length && r.start >= a && r.end <= z &&
+                    (!(r.price > 0) || own.price > 0) && (!(r.minNights > 0) || own.minNights > 0) && (!(r.discount > 0) || own.discount > 0));
+            });
+            // Va arriba del todo para que mande sobre las temporadas que hubiera en esas fechas.
+            if (own.price > 0 || own.minNights > 0 || own.discount > 0) p.price.rules.unshift(own);
+            st.side = st.draft = st.rule = null;
+            touch();
+            return renderMain();
+        }
+        if (act === 'sel-reset') {
+            var mine = customRule(p, st.range.a, st.range.b);
+            if (mine) p.price.rules.splice(p.price.rules.indexOf(mine), 1);
+            st.side = st.draft = st.rule = null;
+            touch();
+            return renderMain();
+        }
+        if (act === 'range-book') { openForm(st.prop, 'booking', null, st.range); renderMain(); return focusForm(); }
 
         // Reservas directas y bloqueos
         if (act === 'form-new') { openForm(st.prop, b.getAttribute('data-type'), null); renderMain(); return focusForm(); }

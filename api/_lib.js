@@ -180,7 +180,7 @@ function cleanProperty(p) {
             // Cada regla: fechas (ambas incluidas), precio por noche (0 = el precio base),
             // descuento en % sobre el precio de esas noches (0 = sin descuento), estancia mínima (0 = la general), noches de la semana a las que se aplica
             // (0 = lunes … 6 = domingo; vacío = todas) y si se repite cada año.
-            rules: list(rules, 60)
+            rules: list(rules, 200)
                 .filter(r => r && ISO.test(r.start) && ISO.test(r.end) && r.end >= r.start)
                 .map(r => ({
                     name: str(r.name, 60),

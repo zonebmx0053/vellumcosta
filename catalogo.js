@@ -173,7 +173,7 @@
     ];
 
     // Nombres sugeridos para los precios por fechas.
-    var ruleNames = ['Temporada alta', 'Temporada media', 'Temporada baja', 'Fines de semana', 'Festivos y puentes', 'Navidad', 'Semana Santa', 'Evento especial', 'Oferta'];
+    var ruleNames = ['Temporada alta', 'Temporada media', 'Temporada baja', 'Fines de semana', 'Festivos y puentes', 'Navidad', 'Semana Santa', 'Evento especial', 'Oferta', 'Fechas personalizadas'];
 
     var services = {}, byText = {};
     function key(text) { return String(text || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
