@@ -8,7 +8,7 @@
     var st = {
         data: null, dirty: false, fresh: false, saving: false, failed: false,
         events: {}, eventsAt: '', sync: 'idle',              // calendarios de las plataformas: idle | loading | ok | error
-        page: 'panel', prop: 0, tab: 'general', scope: 'all', menu: false,
+        page: 'alojamientos', prop: null, tab: 'general', menu: false,   // prop: alojamiento elegido (null = ninguno)
         when: 'active', kind: 'all',                         // filtros de Reservas
         month: null, pick: null, range: null, seg: null,     // Calendario: mes visible, selección y tramo abierto
         form: null,                                          // reserva directa o bloqueo que se está editando
@@ -35,18 +35,27 @@
     };
     var CHANNELS = ['booking', 'airbnb', 'vrbo', 'direct'];
     var OFFERS = { weekly: 'Descuento semanal', monthly: 'Descuento mensual', early: 'Descuento por reserva anticipada', last: 'Descuento de última hora' };
-    var TABS = [['general', 'General', 'fa-circle-info'], ['precios', 'Precios', 'fa-tags'], ['disponibilidad', 'Disponibilidad', 'fa-calendar-check'],
-        ['servicios', 'Servicios', 'fa-bell-concierge'], ['fotos', 'Fotos', 'fa-images'], ['normas', 'Normas y ubicación', 'fa-clipboard-list'],
-        ['opiniones', 'Opiniones', 'fa-star'], ['sync', 'iCal y enlaces', 'fa-rotate']];
-    var PAGES = { panel: ['Resumen', 'fa-chart-pie'], reservas: ['Reservas', 'fa-book'], calendario: ['Calendario', 'fa-calendar-days'],
-        alojamientos: ['Alojamientos', 'fa-house'], ajustes: ['Ajustes', 'fa-gear'] };
+    // El panel tiene dos niveles. Primero se elige un alojamiento (página "alojamientos") y después se
+    // trabaja solo con él: su gestión (MANAGE) y las secciones de su anuncio (TABS, página "editor").
+    // Lo que es común a todos los alojamientos está en "ajustes".
+    var MANAGE = ['panel', 'reservas', 'calendario'];
+    var TABS = [['general', 'General', 'fa-circle-info', 'Nombre, tipo, capacidad, camas, textos y publicación en la web.'],
+        ['precios', 'Precios', 'fa-tags', 'Tarifa general, descuentos y precios por fechas.'],
+        ['disponibilidad', 'Disponibilidad', 'fa-calendar-check', 'Duración de las estancias, antelación y días de entrada.'],
+        ['servicios', 'Servicios', 'fa-bell-concierge', 'Lo que ofrece el alojamiento y lo que se destaca en la ficha.'],
+        ['fotos', 'Fotos', 'fa-images', 'Galería y foto de portada.'],
+        ['normas', 'Normas y ubicación', 'fa-clipboard-list', 'Horarios, normas de la casa, cancelación y mapa.'],
+        ['opiniones', 'Opiniones', 'fa-star', 'Valoraciones copiadas de sus anuncios en las plataformas.'],
+        ['sync', 'iCal y enlaces', 'fa-rotate', 'Calendarios de Airbnb, Vrbo y Booking y enlaces a sus anuncios.']];
+    var PAGES = { alojamientos: ['Alojamientos', 'fa-house'], ajustes: ['Ajustes generales', 'fa-gear'],
+        panel: ['Resumen', 'fa-chart-pie'], reservas: ['Reservas', 'fa-book'], calendario: ['Calendario', 'fa-calendar-days'] };
     var ERRORS = {
         wrong_password: 'Contraseña incorrecta.',
         too_many_attempts: 'Demasiados intentos. Espere 15 minutos y vuelva a probar.',
         invalid_data: 'Los datos no tienen el formato esperado.',
         invalid_id: 'Hay un alojamiento con un identificador no válido.',
         duplicate_id: 'Hay dos alojamientos con el mismo identificador.',
-        duplicate_slug: 'Hay dos alojamientos con la misma dirección web. Cambie una de ellas en la pestaña General.',
+        duplicate_slug: 'Hay dos alojamientos con la misma dirección web. Cambie una de ellas en la sección General del alojamiento.',
         too_large: 'Los datos ocupan demasiado. Reduzca textos u opiniones.',
         store_error: 'No se ha podido conectar con el almacén de datos. Inténtelo de nuevo en unos minutos.',
         network: 'No hay conexión con el servidor. Compruebe su conexión e inténtelo de nuevo.'
@@ -79,11 +88,14 @@
         target[last] = value;
     }
     function propName(p) { return (p.name.es || 'Sin nombre').split(' | ')[0]; }
-    function current() { return st.data.properties[st.prop]; }
-    // Alojamientos del filtro actual, con su posición en la lista.
-    function scoped() {
-        return st.data.properties.map(function (p, i) { return { p: p, i: i }; }).filter(function (x) { return st.scope === 'all' || x.i === st.scope; });
+    // Alojamiento elegido, o null si todavía no se ha elegido ninguno.
+    function current() { return st.prop == null ? null : st.data.properties[st.prop] || null; }
+    function indexOfId(id) {
+        for (var i = 0; i < st.data.properties.length; i++) if (st.data.properties[i].id === id) return i;
+        return null;
     }
+    function tabOf(id) { return TABS.filter(function (t) { return t[0] === id; })[0]; }
+    function thumb(p, src) { return p.thumbs && !/^https:/i.test(src) ? src.replace(/([^\/]+)$/, 'thumbs/$1') : src; }
     function ruleOk(r) { return isDate(r.start) && isDate(r.end) && r.end >= r.start; }
     function srcTag(src, text) { return '<span class="ad-src is-' + src + '">' + esc(text || SRC[src].label) + '</span>'; }
 
@@ -312,12 +324,16 @@
         });
     }
     // Reservas y cierres de Airbnb, Vrbo y Booking (se leen de sus calendarios iCal).
+    var eventsRun = 0;
     function loadEvents() {
+        // Si se pide otra lectura antes de que termine esta, solo cuenta la última.
+        var run = ++eventsRun;
         st.sync = 'loading';
         fetch('/api/admin?events=1&t=' + Date.now(), { credentials: 'same-origin' })
             .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-            .then(function (d) { st.events = d.events || {}; st.eventsAt = d.at || ''; st.sync = 'ok'; }, function () { st.sync = 'error'; })
+            .then(function (d) { if (run === eventsRun) { st.events = d.events || {}; st.eventsAt = d.at || ''; st.sync = 'ok'; } }, function () { if (run === eventsRun) st.sync = 'error'; })
             .then(function () {
+                if (run !== eventsRun) return;
                 invalidate();
                 if (!st.data || !root.querySelector('.ad-main')) return;
                 renderNav();
@@ -346,7 +362,7 @@
     function save() {
         if (st.saving || !st.dirty) return;
         var issue = problem();
-        if (issue) { render(); return toast(issue, true); }
+        if (issue) { render(); remember(true); return toast(issue, true); }
         st.saving = true;
         st.failed = false;
         renderTop();
@@ -354,12 +370,14 @@
             st.saving = false;
             if (res.status === 401) return renderLogin(function () { render(); save(); });
             if (res.status !== 200) { st.failed = true; renderTop(); return toast(message(res), true); }
+            // El alojamiento abierto se busca de nuevo por su identificador en lo que devuelve el servidor.
+            var open = current() ? current().id : null;
             st.data = res.data;
             normalize(st.data);
             st.dirty = st.fresh = false;
             st.rule = st.form = null;
+            st.prop = open == null ? null : indexOfId(open);
             invalidate();
-            if (!st.data.properties[st.prop]) { st.prop = 0; if (st.page === 'editor' || st.page === 'calendario') st.page = 'alojamientos'; }
             render();
             toast('Guardado. Los cambios se verán en la web en un minuto aproximadamente.');
             loadEvents();
@@ -455,9 +473,9 @@
     }
 
     // ══ Resumen ══
-    function metrics() {
-        var list = scoped(), end30 = addDays(today, 30), end365 = addDays(today, 365), year = today.slice(0, 4), first = today.slice(0, 8) + '01';
-        var m = { props: list.length, booked30: 0, nights: 0, bookings: 0, next: null, byChannel: {}, direct: 0, directCount: 0, unpaid: 0, moves: [], months: [] };
+    function metrics(p) {
+        var end30 = addDays(today, 30), end365 = addDays(today, 365), year = today.slice(0, 4), first = today.slice(0, 8) + '01';
+        var m = { booked30: 0, nights: 0, bookings: 0, next: null, byChannel: {}, direct: 0, directCount: 0, unpaid: 0, moves: [], months: [] };
         CHANNELS.forEach(function (k) { m.byChannel[k] = 0; });
         for (var k = 0; k < 12; k++) {
             var month = { start: addMonths(first, k), values: {} };
@@ -465,23 +483,21 @@
             CHANNELS.forEach(function (c) { month.values[c] = 0; });
             m.months.push(month);
         }
-        list.forEach(function (x) {
-            segmentsOf(x.p).forEach(function (s) {
-                if (!isChannel(s.src)) return;
-                m.booked30 += overlap(s, today, end30);
-                var n = overlap(s, today, end365);
-                if (n) { m.nights += n; m.bookings++; m.byChannel[s.src] += n; }
-                m.months.forEach(function (mo) { mo.values[s.src] += overlap(s, mo.start, mo.end); });
-                if (s.start >= today && (!m.next || s.start < m.next.s.start)) m.next = { s: s, p: x.p };
-                if (s.start >= today && s.start <= end30) m.moves.push({ date: s.start, arrival: true, s: s, p: x.p });
-                if (s.end >= today && s.end <= end30) m.moves.push({ date: s.end, arrival: false, s: s, p: x.p });
-            });
-            x.p.blocked.forEach(function (b) {
-                if (b.type !== 'booking' || String(b.start).slice(0, 4) !== year) return;
-                m.direct += Number(b.total) || 0;
-                m.directCount++;
-                if (b.paid !== 'paid') m.unpaid++;
-            });
+        segmentsOf(p).forEach(function (s) {
+            if (!isChannel(s.src)) return;
+            m.booked30 += overlap(s, today, end30);
+            var n = overlap(s, today, end365);
+            if (n) { m.nights += n; m.bookings++; m.byChannel[s.src] += n; }
+            m.months.forEach(function (mo) { mo.values[s.src] += overlap(s, mo.start, mo.end); });
+            if (s.start >= today && (!m.next || s.start < m.next.start)) m.next = s;
+            if (s.start >= today && s.start <= end30) m.moves.push({ date: s.start, arrival: true, s: s });
+            if (s.end >= today && s.end <= end30) m.moves.push({ date: s.end, arrival: false, s: s });
+        });
+        p.blocked.forEach(function (b) {
+            if (b.type !== 'booking' || String(b.start).slice(0, 4) !== year) return;
+            m.direct += Number(b.total) || 0;
+            m.directCount++;
+            if (b.paid !== 'paid') m.unpaid++;
         });
         m.moves.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (a.arrival === b.arrival ? 0 : a.arrival ? 1 : -1); });
         return m;
@@ -498,10 +514,10 @@
     }
     // Noches reservadas por mes, apiladas por canal.
     function occupancyChart(m) {
-        var scale = Math.max(1, m.props), top = 31 * scale, ticks = [0, 10, 20, 30].map(function (t) { return t * scale; });
+        var top = 31, ticks = [0, 10, 20, 30];
         var abbr = function (mo, i) { var d = date(mo.start), name = MONTHS[d.getUTCMonth()][0].slice(0, 3); return name + (i === 0 || d.getUTCMonth() === 0 ? ' ' + String(d.getUTCFullYear()).slice(2) : ''); };
         var totalOf = function (mo) { return CHANNELS.reduce(function (n, c) { return n + mo.values[c]; }, 0); };
-        var share = function (mo) { return Math.round(totalOf(mo) / (diff(mo.start, mo.end) * scale) * 100); };
+        var share = function (mo) { return Math.round(totalOf(mo) / diff(mo.start, mo.end) * 100); };
         var body;
         if (st.table.occ) {
             body = '<div class="ad-table-wrap" style="margin:0"><table class="ad-table"><thead><tr><th>Mes</th>' + CHANNELS.map(function (c) { return '<th class="num">' + SRC[c].label + '</th>'; }).join('') + '<th class="num">Noches</th><th class="num">Ocupación</th></tr></thead><tbody>' +
@@ -541,37 +557,28 @@
             '<div class="ad-donut-center"><strong>' + total + '</strong><span>noches</span></div></div>' + list + '</div></section>';
     }
     function movesCard(m) {
-        var many = m.props > 1;
         var items = m.moves.slice(0, 7).map(function (x) {
             var d = date(x.date);
             return '<div class="ad-move"><div class="ad-move-date"><strong>' + d.getUTCDate() + '</strong><span>' + MONTHS[d.getUTCMonth()][0].slice(0, 3) + '</span></div>' +
-                '<div class="ad-move-body"><strong>' + fa(x.arrival ? 'fa-right-to-bracket' : 'fa-right-from-bracket') + (x.arrival ? 'Llegada' : 'Salida') + (many ? ' · ' + esc(propName(x.p)) : '') + '</strong>' +
+                '<div class="ad-move-body"><strong>' + fa(x.arrival ? 'fa-right-to-bracket' : 'fa-right-from-bracket') + (x.arrival ? 'Llegada' : 'Salida') + '</strong>' +
                 '<span>' + relative(x.date) + ' · ' + nights(diff(x.s.start, x.s.end)) + (x.s.src === 'direct' ? ' · ' + esc(x.s.label) : '') + '</span></div>' + srcTag(x.s.src) + '</div>';
         }).join('');
         return '<section class="ad-card span-7"><div class="ad-card-head"><h3>' + fa('fa-right-left') + 'Próximas llegadas y salidas</h3>' +
             '<button type="button" class="ad-link" data-act="go" data-page="reservas">Ver todas las reservas</button><p class="ad-help">Próximos 30 días.</p></div>' +
             (items ? '<div class="ad-moves">' + items + '</div>' : '<p class="ad-empty">No hay llegadas ni salidas en los próximos 30 días.</p>') + '</section>';
     }
-    function qualityCard() {
-        var list = scoped(), html;
-        if (list.length === 1) {
-            var q = quality(list[0].p), pending = q.checks.filter(function (c) { return !c[1]; });
-            html = '<div class="ad-big"><strong>' + q.percent + ' %</strong><span>' + q.done + ' de ' + q.total + ' puntos</span></div>' + meter(q.percent) +
-                (pending.length ? '<ul class="ad-todo">' + pending.slice(0, 4).map(function (c) {
-                    return '<li>' + fa('fa-circle') + '<span>' + c[0] + '</span><button type="button" class="ad-link" data-act="go" data-page="editor" data-prop="' + list[0].i + '" data-tab="' + c[2] + '">Completar</button></li>';
-                }).join('') + '</ul>' + (pending.length > 4 ? '<p class="ad-help">Y ' + (pending.length - 4) + ' más.</p>' : '')
-                    : '<p class="ad-help">' + fa('fa-circle-check') + ' Anuncio completo.</p>');
-        } else {
-            html = '<div class="ad-rows">' + list.map(function (x) {
-                var q = quality(x.p);
-                return '<div><button type="button" class="ad-link" data-act="go" data-page="editor" data-prop="' + x.i + '" data-tab="general">' + esc(propName(x.p)) + '</button><strong>' + q.percent + ' %</strong></div>';
-            }).join('') + '</div>';
-        }
-        return '<section class="ad-card"><div class="ad-card-head"><h3>' + fa('fa-list-check') + 'Calidad del anuncio</h3></div>' + html + '</section>';
+    function qualityCard(p) {
+        var q = quality(p), pending = q.checks.filter(function (c) { return !c[1]; });
+        return '<section class="ad-card"><div class="ad-card-head"><h3>' + fa('fa-list-check') + 'Calidad del anuncio</h3></div>' +
+            '<div class="ad-big"><strong>' + q.percent + ' %</strong><span>' + q.done + ' de ' + q.total + ' puntos</span></div>' + meter(q.percent) +
+            (pending.length ? '<ul class="ad-todo">' + pending.slice(0, 4).map(function (c) {
+                return '<li>' + fa('fa-circle') + '<span>' + c[0] + '</span><button type="button" class="ad-link" data-act="go" data-page="editor" data-tab="' + c[2] + '">Completar</button></li>';
+            }).join('') + '</ul>' + (pending.length > 4 ? '<p class="ad-help">Y ' + (pending.length - 4) + ' más.</p>' : '')
+                : '<p class="ad-help">' + fa('fa-circle-check') + ' Anuncio completo.</p>') + '</section>';
     }
-    function ratingCard() {
+    function ratingCard(p) {
         var all = [], by = {};
-        scoped().forEach(function (x) { x.p.reviews.forEach(function (r) { all.push(r.rating / r.max * 5); (by[r.source] = by[r.source] || []).push(r); }); });
+        p.reviews.forEach(function (r) { all.push(r.rating / r.max * 5); (by[r.source] = by[r.source] || []).push(r); });
         var avg = all.length ? all.reduce(function (a, b) { return a + b; }, 0) / all.length : 0;
         var html = all.length ? '<div class="ad-big"><strong>' + decimal(avg) + '</strong><span>sobre 5 · ' + all.length + (all.length === 1 ? ' opinión' : ' opiniones') + '</span></div>' +
             '<div class="ad-rows">' + Object.keys(by).map(function (k) {
@@ -580,37 +587,27 @@
             }).join('') + '</div>' : '<p class="ad-empty">Todavía no ha copiado ninguna opinión.</p>';
         return '<section class="ad-card"><div class="ad-card-head"><h3>' + fa('fa-star') + 'Valoraciones</h3></div>' + html + '</section>';
     }
-    function syncCard() {
-        var list = scoped(), when = st.eventsAt ? new Date(st.eventsAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+    function syncCard(p) {
+        var when = st.eventsAt ? new Date(st.eventsAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
         return '<section class="ad-card"><div class="ad-card-head"><h3>' + fa('fa-rotate') + 'Calendarios conectados</h3>' +
             '<button type="button" class="ad-btn ad-btn-small" data-act="sync"' + (st.sync === 'loading' ? ' disabled' : '') + '>' + fa(st.sync === 'loading' ? 'fa-spinner fa-spin' : 'fa-rotate') + 'Sincronizar</button></div>' +
-            list.map(function (x) { return (list.length > 1 ? '<p class="ad-label">' + esc(propName(x.p)) + '</p>' : '') + '<div class="ad-chips">' + syncChips(x.p) + '</div>'; }).join('') +
-            '<p class="ad-help">' + (st.sync === 'error' ? 'No se han podido leer los calendarios. Vuelva a intentarlo.' : st.sync === 'loading' ? 'Leyendo los calendarios…' : 'Última lectura a las ' + when + '.') + '</p></section>';
-    }
-    function scopeSelect() {
-        if (st.data.properties.length < 2) return '';
-        return '<select data-ui="scope" aria-label="Alojamiento"><option value="all"' + (st.scope === 'all' ? ' selected' : '') + '>Todos los alojamientos</option>' + st.data.properties.map(function (p, i) {
-            return '<option value="' + i + '"' + (st.scope === i ? ' selected' : '') + '>' + esc(propName(p)) + '</option>';
-        }).join('') + '</select>';
+            '<div class="ad-chips">' + syncChips(p) + '</div>' +
+            '<p class="ad-help">' + (st.sync === 'error' ? 'No se han podido leer los calendarios. Vuelva a intentarlo.' : st.sync === 'loading' ? 'Leyendo los calendarios…' : when ? 'Última lectura a las ' + when + '.' : 'Todavía no se han leído.') + '</p></section>';
     }
     function pagePanel() {
-        if (!st.data.properties.length) return emptyState();
-        var m = metrics(), total30 = 30 * m.props, share = total30 ? Math.round(m.booked30 / total30 * 100) : 0;
-        var next = m.next ? '<small>' + esc(date(m.next.s.start).toLocaleDateString('es-ES', { weekday: 'short', timeZone: 'UTC' })) + '</small> ' + esc(human(m.next.s.start, true)) : 'Sin llegadas';
+        var p = current(), m = metrics(p), total30 = 30, share = Math.round(m.booked30 / total30 * 100);
+        var next = m.next ? '<small>' + esc(date(m.next.start).toLocaleDateString('es-ES', { weekday: 'short', timeZone: 'UTC' })) + '</small> ' + esc(human(m.next.start, true)) : 'Sin llegadas';
         var loading = st.sync === 'loading' && !st.eventsAt;
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Resumen</h2><p>' + esc(date(today).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })) + '</p></div>' + scopeSelect() + '</div>' +
+        return '<div class="ad-head"><div class="ad-head-text"><h2>Resumen</h2><p>' + esc(date(today).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })) + '</p></div>' +
+            (p.hidden ? '<span class="ad-tag">' + fa('fa-eye-slash') + 'Oculto en la web</span>' : '<span class="ad-tag is-ok">' + fa('fa-circle-check') + 'Visible en la web</span>') + '</div>' +
             (st.sync === 'error' ? '<p class="ad-banner is-bad">' + fa('fa-triangle-exclamation') + '<span>No se han podido leer los calendarios de las plataformas, así que estos datos solo incluyen sus reservas directas. Pulse <strong>Sincronizar</strong> para reintentarlo.</span></p>' : '') +
             '<div class="ad-dash' + (st.sync === 'loading' ? ' is-stale' : '') + '"><div class="ad-kpis">' +
             kpi('blue', 'fa-bed', 'Ocupación (30 días)', loading ? '…' : share + ' %', loading ? 'Leyendo los calendarios…' : m.booked30 + ' de ' + total30 + ' noches reservadas', meter(loading ? 0 : share, 'is-blue')) +
-            kpi('green', 'fa-right-to-bracket', 'Próxima llegada', loading ? '…' : next, m.next ? relative(m.next.s.start) + ' · ' + SRC[m.next.s.src].label + ' · ' + nights(diff(m.next.s.start, m.next.s.end)) : 'No hay reservas futuras') +
+            kpi('green', 'fa-right-to-bracket', 'Próxima llegada', loading ? '…' : next, loading ? 'Leyendo los calendarios…' : m.next ? relative(m.next.start) + ' · ' + SRC[m.next.src].label + ' · ' + nights(diff(m.next.start, m.next.end)) : 'No hay reservas futuras') +
             kpi('violet', 'fa-moon', 'Noches reservadas (12 meses)', loading ? '…' : String(m.nights), m.bookings + (m.bookings === 1 ? ' reserva' : ' reservas') + ' en los calendarios') +
             kpi('gold', 'fa-sack-dollar', 'Reservas directas (' + today.slice(0, 4) + ')', money(m.direct), m.directCount ? m.directCount + (m.directCount === 1 ? ' reserva' : ' reservas') + (m.unpaid ? ' · ' + m.unpaid + ' sin cobrar del todo' : ' · todo cobrado') : 'Ninguna anotada todavía') +
             '</div><div class="ad-dash-grid">' + occupancyChart(m) + channelChart(m) + movesCard(m) +
-            '<div class="ad-stack-col span-5">' + qualityCard() + ratingCard() + syncCard() + '</div></div></div>';
-    }
-    function emptyState() {
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Empiece por su primer alojamiento</h2><p>Todavía no hay ninguno en el panel.</p></div>' +
-            '<button type="button" class="ad-btn ad-btn-solid" data-act="go" data-page="alojamientos">' + fa('fa-plus') + 'Añadir alojamiento</button></div>';
+            '<div class="ad-stack-col span-5">' + qualityCard(p) + ratingCard(p) + syncCard(p) + '</div></div></div>';
     }
 
     // ══ Reservas directas y bloqueos ══
@@ -646,11 +643,9 @@
                 return '<option value="' + esc(o.id) + '"' + (String(d[key]) === String(o.id) ? ' selected' : '') + '>' + esc(o.label) + '</option>';
             }).join('') + '</select></label>';
         };
-        var which = st.data.properties.length > 1 && f.ref == null
-            ? '<label class="ad-field"><span class="ad-label">Alojamiento</span><select data-form="pi">' + st.data.properties.map(function (p, i) { return '<option value="' + i + '"' + (i === f.pi ? ' selected' : '') + '>' + esc(propName(p)) + '</option>'; }).join('') + '</select></label>' : '';
         return '<section class="ad-card" id="ad-form"><div class="ad-card-head"><h3>' + fa(booking ? 'fa-handshake' : 'fa-ban') + (f.ref == null ? (booking ? 'Nueva reserva directa' : 'Bloquear fechas') : (booking ? 'Editar reserva directa' : 'Editar bloqueo')) + '</h3>' +
             '<p class="ad-help">' + (booking ? 'Para reservas que le llegan por teléfono, WhatsApp o la web. Las fechas quedan ocupadas en la ficha pública.' : 'Cierra las fechas en la ficha pública sin anotar una reserva (uso propio, obras…).') + '</p></div>' +
-            grid(which, input('Entrada', 'start', 'date'), input(booking ? 'Salida' : 'Hasta (día de reapertura)', 'end', 'date')) +
+            grid(input('Entrada', 'start', 'date'), input(booking ? 'Salida' : 'Hasta (día de reapertura)', 'end', 'date')) +
             (booking ? grid(input('Nombre del huésped', 'guest'), input('Teléfono', 'phone', 'tel'), input('Huéspedes', 'guests', 'number', ' min="1" inputmode="numeric"')) +
                 grid('<label class="ad-field"><span class="ad-label">Importe total</span><span class="ad-unit"><input type="number" step="any" min="0" inputmode="decimal" data-form="total" value="' + esc(d.total) + '"><span>€</span></span></label>',
                     select('Pago', 'paid', C.payments), select('Cómo llegó', 'channel', C.channels)) : '') +
@@ -660,21 +655,19 @@
             (booking ? '<button type="button" class="ad-btn" data-act="form-quote">' + fa('fa-calculator') + 'Usar el precio de tarifa</button>' : '') +
             '<button type="button" class="ad-btn ad-btn-ghost" data-act="form-cancel">Cancelar</button></div></section>';
     }
-    function reservationRows() {
+    function reservationRows(p) {
         var out = [];
-        scoped().forEach(function (x) {
-            x.p.blocked.forEach(function (b, i) {
-                if (!isDate(b.start) || !isDate(b.end)) return;
-                var channel = C.find(C.channels, b.channel);
-                out.push(b.type === 'booking'
-                    ? { x: x, src: 'direct', start: b.start, end: b.end, ref: i, title: b.guest || 'Reserva directa', sub: [channel ? channel.label : '', b.guests ? b.guests + ' huésp.' : '', b.phone, b.note].filter(Boolean).join(' · '), total: b.total, paid: b.paid }
-                    : { x: x, src: 'block', start: b.start, end: b.end, ref: i, title: 'Fechas bloqueadas', sub: b.note });
-            });
-            segmentsOf(x.p).forEach(function (s) {
-                if (s.src === 'direct' || s.src === 'block') return;
-                var held = s.src === 'held';
-                out.push({ x: x, src: s.src, start: s.start, end: s.end, url: s.url, title: held ? 'No disponible en ' + SRC[s.platform].label : s.src === 'booking' ? 'Reserva o cierre en Booking' : 'Reserva en ' + SRC[s.src].label, sub: s.label });
-            });
+        p.blocked.forEach(function (b, i) {
+            if (!isDate(b.start) || !isDate(b.end)) return;
+            var channel = C.find(C.channels, b.channel);
+            out.push(b.type === 'booking'
+                ? { src: 'direct', start: b.start, end: b.end, ref: i, title: b.guest || 'Reserva directa', sub: [channel ? channel.label : '', b.guests ? b.guests + ' huésp.' : '', b.phone, b.note].filter(Boolean).join(' · '), total: b.total, paid: b.paid }
+                : { src: 'block', start: b.start, end: b.end, ref: i, title: 'Fechas bloqueadas', sub: b.note });
+        });
+        segmentsOf(p).forEach(function (s) {
+            if (s.src === 'direct' || s.src === 'block') return;
+            var held = s.src === 'held';
+            out.push({ src: s.src, start: s.start, end: s.end, url: s.url, title: held ? 'No disponible en ' + SRC[s.platform].label : s.src === 'booking' ? 'Reserva o cierre en Booking' : 'Reserva en ' + SRC[s.src].label, sub: s.label });
         });
         out = out.filter(function (r) {
             if (st.when === 'active' && r.end <= today) return false;
@@ -693,14 +686,12 @@
         }).join('') + '</div>';
     }
     function pageReservas() {
-        if (!st.data.properties.length) return emptyState();
-        var list = reservationRows(), many = st.data.properties.length > 1;
-        var first = st.scope === 'all' ? 0 : st.scope;
+        var list = reservationRows(current());
         var body = list.length ? '<div class="ad-table-wrap"><table class="ad-table"><thead><tr><th>Reserva</th><th>Canal</th><th>Entrada</th><th>Salida</th><th class="num">Noches</th><th class="num">Importe</th><th>Pago</th><th></th></tr></thead><tbody>' +
             list.map(function (r) {
-                var mine = r.src === 'direct' || r.src === 'block', path = 'properties.' + r.x.i + '.blocked.' + r.ref;
+                var mine = r.src === 'direct' || r.src === 'block', path = 'properties.' + st.prop + '.blocked.' + r.ref;
                 var state = r.end <= today ? 'finalizada' : r.start <= today ? 'en curso' : relative(r.start);
-                return '<tr><td><strong>' + esc(r.title) + '</strong><small>' + esc([many ? propName(r.x.p) : '', r.sub].filter(Boolean).join(' · ')) + '</small></td>' +
+                return '<tr><td><strong>' + esc(r.title) + '</strong><small>' + esc(r.sub || '') + '</small></td>' +
                     '<td data-label="Canal">' + srcTag(r.src) + '</td>' +
                     '<td class="nowrap" data-label="Entrada"><span>' + esc(human(r.start)) + '<small>' + state + '</small></span></td>' +
                     '<td class="nowrap" data-label="Salida">' + esc(human(r.end)) + '</td>' +
@@ -708,16 +699,16 @@
                     '<td class="num" data-label="Importe">' + (r.src === 'direct' ? money(r.total) : '—') + '</td>' +
                     '<td data-label="Pago">' + (r.src === 'direct' ? '<select class="ad-pill-select is-' + r.paid + '" data-path="' + path + '.paid" data-kind="select" aria-label="Estado del pago">' + C.payments.map(function (o) {
                         return '<option value="' + o.id + '"' + (o.id === r.paid ? ' selected' : '') + '>' + o.label + '</option>'; }).join('') + '</select>' : '—') + '</td>' +
-                    '<td data-label="Acciones"><div class="ad-row-tools">' + (mine ? '<button type="button" class="ad-icon-btn" data-act="form-edit" data-pi="' + r.x.i + '" data-ref="' + r.ref + '" aria-label="Editar">' + fa('fa-pen') + '</button>' +
-                        '<button type="button" class="ad-icon-btn is-danger" data-act="row-del" data-pi="' + r.x.i + '" data-ref="' + r.ref + '" aria-label="Eliminar">' + fa('fa-trash') + '</button>'
+                    '<td data-label="Acciones"><div class="ad-row-tools">' + (mine ? '<button type="button" class="ad-icon-btn" data-act="form-edit" data-ref="' + r.ref + '" aria-label="Editar">' + fa('fa-pen') + '</button>' +
+                        '<button type="button" class="ad-icon-btn is-danger" data-act="row-del" data-ref="' + r.ref + '" aria-label="Eliminar">' + fa('fa-trash') + '</button>'
                         : r.src === 'airbnb' && /^https:\/\/www\.airbnb\./.test(r.url || '') ? '<a class="ad-icon-btn" href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer" aria-label="Abrir en Airbnb" title="Abrir en Airbnb">' + fa('fa-arrow-up-right-from-square') + '</a>' : '—') + '</div></td></tr>';
             }).join('') + '</tbody></table></div>'
             : '<p class="ad-empty">No hay nada que mostrar con estos filtros.</p>';
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Reservas</h2><p>Todo lo que ocupa sus calendarios: plataformas, reservas directas y bloqueos.</p></div>' +
-            '<button type="button" class="ad-btn" data-act="form-new" data-type="block" data-pi="' + first + '">' + fa('fa-ban') + 'Bloquear fechas</button>' +
-            '<button type="button" class="ad-btn ad-btn-solid" data-act="form-new" data-type="booking" data-pi="' + first + '">' + fa('fa-plus') + 'Nueva reserva directa</button></div>' +
+        return '<div class="ad-head"><div class="ad-head-text"><h2>Reservas</h2><p>Todo lo que ocupa el calendario de este alojamiento: plataformas, reservas directas y bloqueos.</p></div>' +
+            '<button type="button" class="ad-btn" data-act="form-new" data-type="block">' + fa('fa-ban') + 'Bloquear fechas</button>' +
+            '<button type="button" class="ad-btn ad-btn-solid" data-act="form-new" data-type="booking">' + fa('fa-plus') + 'Nueva reserva directa</button></div>' +
             formCard() +
-            '<div class="ad-filters">' + scopeSelect() + filterSeg('when', [['active', 'Próximas y en curso'], ['past', 'Pasadas'], ['all', 'Todas']]) +
+            '<div class="ad-filters">' + filterSeg('when', [['active', 'Próximas y en curso'], ['past', 'Pasadas'], ['all', 'Todas']]) +
             filterSeg('kind', [['all', 'Todos los canales'], ['direct', 'Directas'], ['platform', 'Plataformas'], ['block', 'Bloqueos']]) + '</div>' +
             '<section class="ad-card"><div class="ad-card-head"><h3>' + fa('fa-book') + list.length + (list.length === 1 ? ' resultado' : ' resultados') + '</h3>' +
             (st.sync === 'loading' ? '<span class="ad-help">' + fa('fa-spinner fa-spin') + ' Leyendo los calendarios…</span>' : '') + '</div>' + body + '</section>' +
@@ -763,8 +754,8 @@
                 action = '<div class="ad-action"><div><strong>' + srcTag(s.src, s.src === 'held' ? 'No disponible en ' + SRC[s.platform].label : SRC[s.src].label) + '</strong>' +
                     '<span>' + esc(human(s.start)) + ' → ' + esc(human(s.end)) + ' · ' + nights(diff(s.start, s.end)) + (s.label ? ' · ' + esc(s.label) : '') +
                     (b && b.type === 'booking' ? ' · ' + money(b.total) + ' · ' + (C.find(C.payments, b.paid) || {}).label : '') + '</span></div>' +
-                    (mine ? '<button type="button" class="ad-btn" data-act="form-edit" data-pi="' + st.prop + '" data-ref="' + s.ref + '">' + fa('fa-pen') + 'Editar</button>' +
-                        '<button type="button" class="ad-btn ad-btn-danger" data-act="row-del" data-pi="' + st.prop + '" data-ref="' + s.ref + '">' + fa('fa-trash') + 'Eliminar</button>'
+                    (mine ? '<button type="button" class="ad-btn" data-act="form-edit" data-ref="' + s.ref + '">' + fa('fa-pen') + 'Editar</button>' +
+                        '<button type="button" class="ad-btn ad-btn-danger" data-act="row-del" data-ref="' + s.ref + '">' + fa('fa-trash') + 'Eliminar</button>'
                         : s.src === 'airbnb' && /^https:\/\/www\.airbnb\./.test(s.url || '') ? '<a class="ad-btn" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + fa('fa-arrow-up-right-from-square') + 'Abrir en Airbnb</a>' : '') +
                     '<button type="button" class="ad-btn ad-btn-ghost" data-act="range-cancel">Cerrar</button></div>';
             }
@@ -772,11 +763,8 @@
         return action + '<div class="ad-months">' + months + '</div>';
     }
     function pageCalendario() {
-        if (!st.data.properties.length) return emptyState();
         var p = current(), month = st.month || today.slice(0, 8) + '01';
-        var which = st.data.properties.length > 1 ? '<select data-ui="prop" aria-label="Alojamiento">' + st.data.properties.map(function (x, i) { return '<option value="' + i + '"' + (i === st.prop ? ' selected' : '') + '>' + esc(propName(x)) + '</option>'; }).join('') + '</select>' : '';
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Calendario</h2><p>' + esc(propName(p)) + ' · pulse un día libre y después otro para reservar o bloquear ese tramo.</p></div>' + which +
-            '<button type="button" class="ad-btn" data-act="go" data-page="editor" data-prop="' + st.prop + '" data-tab="precios">' + fa('fa-tags') + 'Precios</button></div>' +
+        return '<div class="ad-head"><div class="ad-head-text"><h2>Calendario</h2><p>Pulse un día libre y después otro para reservar o bloquear ese tramo.</p></div></div>' +
             formCard() +
             '<section class="ad-card"><div class="ad-cal-bar">' +
             '<button type="button" class="ad-icon-btn" data-act="nav" data-step="-1" aria-label="Mes anterior"' + (month <= addMonths(today, -12) ? ' disabled' : '') + '>' + fa('fa-chevron-left') + '</button>' +
@@ -790,13 +778,14 @@
     }
     function refreshCalendar() {
         var el = document.getElementById('ad-cal');
-        if (el && st.data.properties.length) el.innerHTML = calendarBody(current());
+        if (el && current()) el.innerHTML = calendarBody(current());
     }
 
-    // ══ Alojamientos ══
+    // ══ Alojamientos: aquí se elige con cuál se va a trabajar ══
     function pageAlojamientos() {
+        var count = st.data.properties.length;
         var cards = st.data.properties.map(function (p, i) {
-            var q = quality(p), src = p.image ? (p.thumbs && !/^https:/i.test(p.image) ? p.image.replace(/([^\/]+)$/, 'thumbs/$1') : p.image) : '';
+            var q = quality(p), src = p.image ? thumb(p, p.image) : '';
             var type = C.find(C.types, p.type), place = [type ? type.es : '', p.location.es, p.province].filter(Boolean).join(' · ');
             return '<article class="ad-prop"><div class="ad-prop-media">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy">' : '') +
                 (p.hidden ? '<span class="ad-tag">' + fa('fa-eye-slash') + 'Oculto</span>' : '<span class="ad-tag is-ok">' + fa('fa-circle-check') + 'Visible</span>') + '</div>' +
@@ -804,11 +793,11 @@
                 '<div class="ad-prop-stats"><div><strong>' + (p.price.base > 0 ? money(PR.lowestPrice(p, today)) : '—') + '</strong><span>desde / noche</span></div>' +
                 '<div><strong>' + Math.round(occupancy30(p) / 30 * 100) + ' %</strong><span>ocupación 30 días</span></div>' +
                 '<div><strong>' + q.percent + ' %</strong><span>calidad del anuncio</span></div></div>' +
-                '<div class="ad-prop-actions"><button type="button" class="ad-btn ad-btn-solid" data-act="go" data-page="editor" data-prop="' + i + '" data-tab="general">' + fa('fa-pen') + 'Editar</button>' +
-                '<button type="button" class="ad-btn" data-act="go" data-page="calendario" data-prop="' + i + '">' + fa('fa-calendar-days') + 'Calendario</button>' +
+                '<div class="ad-prop-actions"><button type="button" class="ad-btn ad-btn-solid" data-act="go" data-page="panel" data-prop="' + i + '">' + fa('fa-arrow-right') + 'Gestionar</button>' +
                 '<a class="ad-icon-btn" style="height:38px;width:38px" target="_blank" rel="noopener" href="propiedad.html?casa=' + encodeURIComponent(p.slug) + '" aria-label="Ver en la web" title="Ver en la web">' + fa('fa-arrow-up-right-from-square') + '</a></div></div></article>';
         }).join('');
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Alojamientos</h2><p>' + st.data.properties.length + (st.data.properties.length === 1 ? ' alojamiento' : ' alojamientos') + ' en el panel.</p></div></div>' +
+        return '<div class="ad-head"><div class="ad-head-text"><h2>' + (count ? 'Elija un alojamiento' : 'Empiece por su primer alojamiento') + '</h2><p>' +
+            (count ? 'Al elegirlo verá su resumen, sus reservas, su calendario y todas las secciones de su anuncio.' : 'Todavía no hay ninguno en el panel.') + '</p></div></div>' +
             '<div class="ad-props">' + cards + '<article class="ad-prop is-new"><h3>' + fa('fa-plus') + 'Añadir alojamiento</h3><p class="ad-help">Se crea oculto, para completarlo con calma antes de publicarlo.</p>' +
             '<div class="ad-inline"><label class="ad-field"><span class="ad-label">Nombre</span><input type="text" id="ad-new-prop" placeholder="Casa…"></label>' +
             '<button type="button" class="ad-btn ad-btn-solid" data-act="add-prop">Crear</button></div></article></div>';
@@ -931,9 +920,7 @@
             card('Días de entrada',
                 seg('Días en los que puede empezar una estancia', P + 'stay.checkinDays', ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map(function (d, k) { return [k, d]; }),
                     { num: true, help: p.stay.checkinDays.length ? 'Solo se puede entrar los días marcados.' : 'Sin marcar ninguno = se puede entrar cualquier día.' }), '', 'fa-right-to-bracket') +
-            card('Fechas ocupadas', '<div class="ad-chips">' + syncChips(p) + '</div>' +
-                '<button type="button" class="ad-btn" data-act="go" data-page="calendario" data-prop="' + st.prop + '">' + fa('fa-calendar-days') + 'Abrir el calendario</button>',
-                'Las reservas de las plataformas llegan solas por iCal. Las directas y los bloqueos se anotan en el calendario.', 'fa-calendar-days');
+            '<p class="ad-help">Las fechas ocupadas no se editan aquí: las reservas directas y los bloqueos se anotan en <strong>Calendario</strong> o en <strong>Reservas</strong>, y las de las plataformas llegan solas desde <strong>iCal y enlaces</strong>.</p>';
     }
     function tabServicios(P, p) {
         var featured = p.featured.map(function (id) { return C.services[id]; }).filter(Boolean);
@@ -959,7 +946,7 @@
     function tabFotos(P, p) {
         var n = p.gallery.length;
         var photos = n ? '<div class="ad-photos">' + p.gallery.map(function (src, i) {
-            var shown = p.thumbs && !/^https:/i.test(src) ? src.replace(/([^\/]+)$/, 'thumbs/$1') : src;
+            var shown = thumb(p, src);
             return '<figure class="ad-photo' + (i === 0 ? ' is-cover' : '') + '">' + (i === 0 ? '<span class="ad-photo-tag">Portada</span>' : '') +
                 '<img src="' + esc(shown) + '" alt="" loading="lazy" title="' + esc(src) + '"><figcaption>' +
                 '<button type="button" class="ad-icon-btn" data-act="move" data-list="' + P + 'gallery" data-i="' + i + '" data-d="-1" aria-label="Mover antes"' + (i === 0 ? ' disabled' : '') + '>' + fa('fa-arrow-left') + '</button>' +
@@ -1029,21 +1016,15 @@
                 'Enlace público a cada anuncio (debe empezar por https://). Si se deja vacío, el botón no aparece en la ficha.', 'fa-arrow-up-right-from-square');
     }
     function pageEditor() {
-        var p = current(), P = 'properties.' + st.prop + '.', q = quality(p);
+        var p = current(), P = 'properties.' + st.prop + '.', tab = tabOf(st.tab);
         var body = { general: tabGeneral, precios: tabPrecios, disponibilidad: tabDisponibilidad, servicios: tabServicios, fotos: tabFotos, normas: tabNormas, opiniones: tabOpiniones, sync: tabSync }[st.tab](P, p);
-        return '<div class="ad-head"><div class="ad-head-text"><button type="button" class="ad-link ad-back" data-act="go" data-page="alojamientos">' + fa('fa-arrow-left') + 'Alojamientos</button>' +
-            '<h2>' + esc(propName(p)) + '</h2><p>Calidad del anuncio: ' + q.percent + ' % · ' + (p.hidden ? 'oculto en la web' : 'visible en la web') + '</p></div>' +
-            '<button type="button" class="ad-btn" data-act="go" data-page="calendario" data-prop="' + st.prop + '">' + fa('fa-calendar-days') + 'Calendario</button>' +
-            '<a class="ad-btn" target="_blank" rel="noopener" href="propiedad.html?casa=' + encodeURIComponent(p.slug) + '">' + fa('fa-arrow-up-right-from-square') + 'Ver en la web</a></div>' +
-            '<div class="ad-tabs" role="tablist">' + TABS.map(function (t) {
-                return '<button type="button" role="tab" class="ad-tab' + (t[0] === st.tab ? ' is-active' : '') + '" aria-selected="' + (t[0] === st.tab) + '" data-act="tab" data-t="' + t[0] + '">' + fa(t[2]) + t[1] + '</button>';
-            }).join('') + '</div>' + body;
+        return '<div class="ad-head"><div class="ad-head-text"><h2>' + tab[1] + '</h2><p>' + tab[3] + '</p></div></div>' + body;
     }
 
     // ══ Ajustes ══
     function pageAjustes() {
         var light = document.documentElement.getAttribute('data-theme') === 'light';
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Ajustes</h2><p>Datos comunes a todos los alojamientos y opciones del panel.</p></div></div>' +
+        return '<div class="ad-head"><div class="ad-head-text"><h2>Ajustes generales</h2><p>Lo que es común a todos los alojamientos y las opciones del panel.</p></div></div>' +
             card('Contacto',
                 grid(field('Teléfono (como se muestra)', 'contact.phone', { placeholder: '+34 600 000 000' }), field('Teléfono para llamar', 'contact.tel', { placeholder: '+34600000000', help: 'Sin espacios.' }),
                     field('WhatsApp', 'contact.whatsapp', { placeholder: '34600000000', help: 'Solo números, con el prefijo del país.' }), field('Email', 'contact.email')),
@@ -1059,29 +1040,38 @@
     }
 
     // ══ Estructura ══
-    function upcoming() {
-        var end = addDays(today, 30), n = 0;
-        st.data.properties.forEach(function (p) { segmentsOf(p).forEach(function (s) { if (isChannel(s.src) && s.start >= today && s.start <= end) n++; }); });
-        return n;
+    function upcoming(p) {
+        var end = addDays(today, 30);
+        return segmentsOf(p).filter(function (s) { return isChannel(s.src) && s.start >= today && s.start <= end; }).length;
     }
+    // Sin alojamiento elegido el menú solo ofrece elegir uno; con él, aparecen sus secciones.
     function renderNav() {
         var el = root.querySelector('.ad-nav');
         if (!el) return;
-        var item = function (page, badge) {
-            var on = st.page === page || (page === 'alojamientos' && st.page === 'editor');
-            return '<button type="button" class="ad-nav-item' + (on ? ' is-active' : '') + '"' + (on ? ' aria-current="page"' : '') + ' data-act="go" data-page="' + page + '">' + fa(PAGES[page][1]) + '<span>' + PAGES[page][0] + '</span>' + (badge ? '<b title="Llegadas en los próximos 30 días">' + badge + '</b>' : '') + '</button>';
+        var p = current();
+        var link = function (on, attrs, icon, label, badge) {
+            return '<button type="button" class="ad-nav-item' + (on ? ' is-active' : '') + '"' + (on ? ' aria-current="page"' : '') + ' data-act="go"' + attrs + '>' + fa(icon) + '<span>' + label + '</span>' + (badge ? '<b title="Llegadas en los próximos 30 días">' + badge + '</b>' : '') + '</button>';
         };
+        var item = function (page, badge) { return link(st.page === page, ' data-page="' + page + '"', PAGES[page][1], PAGES[page][0], badge); };
+        var sections = p
+            ? '<button type="button" class="ad-current" data-act="go" data-page="alojamientos" title="Cambiar de alojamiento">' +
+                '<span class="ad-current-img">' + (p.image ? '<img src="' + esc(thumb(p, p.image)) + '" alt="">' : fa('fa-house')) + '</span>' +
+                '<span class="ad-current-text"><strong>' + esc(propName(p)) + '</strong><span>Cambiar</span></span>' + fa('fa-right-left') + '</button>' +
+                '<p class="ad-nav-title">Gestión</p>' + item('panel') + item('reservas', upcoming(p)) + item('calendario') +
+                '<p class="ad-nav-title">Anuncio</p>' + TABS.map(function (t) { return link(st.page === 'editor' && st.tab === t[0], ' data-page="editor" data-tab="' + t[0] + '"', t[2], t[1]); }).join('')
+            : item('alojamientos') + '<p class="ad-nav-hint">Elija un alojamiento para ver su resumen, sus reservas, su calendario y su anuncio.</p>';
         el.innerHTML = '<div class="ad-brand"><img src="LOGO.png" alt=""><div><strong>Vellum Costa</strong><span>Panel de alojamientos</span></div></div>' +
-            '<p class="ad-nav-title">Gestión</p>' + item('panel') + item('reservas', upcoming()) + item('calendario') + item('alojamientos') +
-            '<p class="ad-nav-title">Configuración</p>' + item('ajustes') +
-            '<div class="ad-nav-foot"><a class="ad-nav-item" href="propiedades.html" target="_blank" rel="noopener">' + fa('fa-arrow-up-right-from-square') + '<span>Ver la web</span></a>' +
+            sections + '<p class="ad-nav-title">General</p>' + item('ajustes') +
+            '<div class="ad-nav-foot">' + (p
+                ? '<a class="ad-nav-item" href="propiedad.html?casa=' + encodeURIComponent(p.slug) + '" target="_blank" rel="noopener">' + fa('fa-arrow-up-right-from-square') + '<span>Ver su ficha en la web</span></a>'
+                : '<a class="ad-nav-item" href="propiedades.html" target="_blank" rel="noopener">' + fa('fa-arrow-up-right-from-square') + '<span>Ver la web</span></a>') +
             '<button type="button" class="ad-nav-item" data-act="logout">' + fa('fa-right-from-bracket') + '<span>Cerrar sesión</span></button></div>';
     }
     function renderTop() {
         var el = root.querySelector('.ad-top');
         if (!el) return;
         var light = document.documentElement.getAttribute('data-theme') === 'light';
-        var title = st.page === 'editor' && current() ? esc(propName(current())) + '<small>Alojamientos</small>' : PAGES[st.page === 'editor' ? 'alojamientos' : st.page][0];
+        var title = (st.page === 'editor' ? tabOf(st.tab)[1] : PAGES[st.page][0]) + (current() && st.page !== 'ajustes' ? '<small>' + esc(propName(current())) + '</small>' : '');
         var state = st.saving ? ['is-saving', 'fa-spinner fa-spin', 'Guardando…'] : st.failed ? ['is-failed', 'fa-circle-exclamation', 'No se ha guardado']
             : st.dirty ? ['is-dirty', 'fa-circle', 'Cambios sin guardar'] : ['is-saved', 'fa-circle-check', 'Todo guardado'];
         el.innerHTML = '<button type="button" class="ad-icon-btn ad-menu-btn" data-act="menu" aria-label="Abrir el menú">' + fa('fa-bars') + '</button><h1>' + title + '</h1>' +
@@ -1097,7 +1087,10 @@
         el.innerHTML = (st.fresh ? '<p class="ad-banner">' + fa('fa-circle-info') + '<span><strong>Primera vez:</strong> estos datos vienen del archivo de la web. Pulse <strong>Guardar</strong> para que, a partir de ahora, la web muestre lo que edite aquí.</span></p>' : '') + pages[st.page]();
     }
     function render() {
-        if (st.page === 'editor' && !current()) st.page = 'alojamientos';
+        // Resumen, reservas, calendario y anuncio solo existen dentro de un alojamiento.
+        if (!current()) { st.prop = null; if (st.page !== 'ajustes') st.page = 'alojamientos'; }
+        else if (st.page === 'alojamientos') st.prop = null;
+        if (!tabOf(st.tab)) st.tab = 'general';
         root.innerHTML = '<div class="ad-app' + (st.menu ? ' is-menu' : '') + '"><aside class="ad-nav" aria-label="Menú principal"></aside>' +
             '<button type="button" class="ad-backdrop" data-act="menu" aria-label="Cerrar el menú"></button>' +
             '<div class="ad-body"><header class="ad-top"></header><main class="ad-main"></main></div></div>';
@@ -1105,29 +1098,40 @@
         renderTop();
         renderMain();
     }
-    // La dirección recuerda la página abierta: #/reservas, #/calendario/0, #/alojamiento/0/precios…
-    function hash() { return '#/' + (st.page === 'editor' ? 'alojamiento/' + st.prop + '/' + st.tab : st.page === 'calendario' ? 'calendario/' + st.prop : st.page); }
+    // La dirección recuerda dónde se está: #/alojamientos, #/ajustes, #/casa-1/resumen, #/casa-1/precios…
+    function hash() {
+        var p = current();
+        if (!p || st.page === 'alojamientos' || st.page === 'ajustes') return '#/' + (st.page === 'ajustes' ? 'ajustes' : 'alojamientos');
+        return '#/' + encodeURIComponent(p.id) + '/' + (st.page === 'editor' ? st.tab : st.page === 'panel' ? 'resumen' : st.page);
+    }
     function remember(replace) { try { history[replace ? 'replaceState' : 'pushState'](null, '', hash()); } catch (e) { } }
     function route() {
-        var parts = location.hash.replace(/^#\/?/, '').split('/'), n = st.data.properties.length;
-        var index = Math.min(Math.max(parseInt(parts[1], 10) || 0, 0), Math.max(n - 1, 0));
-        st.page = 'panel';
-        if (parts[0] === 'alojamiento' && n) { st.page = 'editor'; st.prop = index; st.tab = TABS.some(function (t) { return t[0] === parts[2]; }) ? parts[2] : 'general'; }
-        else if (parts[0] === 'calendario' && n) { st.page = 'calendario'; st.prop = index; }
-        else if (PAGES[parts[0]]) st.page = parts[0];
+        var parts = location.hash.replace(/^#\/?/, '').split('/'), id = parts[0] || '';
+        try { id = decodeURIComponent(id); } catch (e) { }
+        // Ajustes no pertenece a ningún alojamiento: se conserva el que estuviera elegido.
+        if (id === 'ajustes') { st.page = 'ajustes'; return; }
+        st.page = 'alojamientos';
+        st.prop = indexOfId(id);
+        if (st.prop == null) return;
+        if (parts[1] === 'reservas' || parts[1] === 'calendario') st.page = parts[1];
+        else if (tabOf(parts[1])) { st.page = 'editor'; st.tab = parts[1]; }
+        else st.page = 'panel';
     }
     function go(page, o) {
         o = o || {};
+        var before = st.prop;
         st.page = page;
         if (o.prop != null) st.prop = o.prop;
         if (o.tab) st.tab = o.tab;
+        if (page === 'alojamientos') st.prop = null;
+        if (st.prop !== before) st.sim = null;
         st.pick = st.range = st.seg = st.form = st.rule = st.month = null;
         st.menu = false;
         render();
         remember();
         window.scrollTo(0, 0);
     }
-    window.addEventListener('popstate', function () { if (st.data) { route(); st.pick = st.range = st.seg = st.form = st.rule = null; render(); } });
+    window.addEventListener('popstate', function () { if (st.data) { route(); st.pick = st.range = st.seg = st.form = st.rule = st.month = st.sim = null; st.menu = false; render(); } });
     function setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         try { localStorage.setItem('vc-admin-theme', theme); } catch (e) { }
@@ -1137,7 +1141,7 @@
     }
     // Tras repintar, devuelve el foco al botón equivalente al que se pulsó.
     function refocus(b) {
-        var sel = ['act', 'path', 'value', 'list', 'i', 'd', 't', 'date', 'key', 'page', 'pi', 'ref', 'type', 'step'].map(function (k) {
+        var sel = ['act', 'path', 'value', 'list', 'i', 'd', 'date', 'key', 'page', 'tab', 'ref', 'type', 'step'].map(function (k) {
             return b.hasAttribute('data-' + k) ? '[data-' + k + '="' + b.getAttribute('data-' + k) + '"]' : '';
         }).join('');
         var el = sel && root.querySelector('.ad-main ' + sel);
@@ -1179,19 +1183,11 @@
     root.addEventListener('input', function (e) {
         var el = e.target;
         if (!st.data) return;
-        // Filtros y selectores que no cambian los datos.
-        if (el.hasAttribute('data-ui')) {
-            var key = el.getAttribute('data-ui');
-            st[key] = el.value === 'all' ? 'all' : +el.value;
-            st.pick = st.range = st.seg = null;
-            if (key === 'prop') remember(true);
-            return renderMain();
-        }
         // Reserva directa o bloqueo en edición: no toca los datos hasta pulsar "Anotar".
         if (el.hasAttribute('data-form')) {
             var name = el.getAttribute('data-form');
-            if (name === 'pi') st.form.pi = +el.value;
-            else st.form.d[name] = name === 'guests' || name === 'total' ? Number(el.value) || 0 : el.value;
+            if (!st.form) return;
+            st.form.d[name] = name === 'guests' || name === 'total' ? Number(el.value) || 0 : el.value;
             var info = document.getElementById('ad-form-info');
             if (info) info.innerHTML = formInfo();
             return;
@@ -1243,20 +1239,24 @@
     root.addEventListener('change', function (e) {
         // Restaurar una copia de seguridad descargada desde el panel.
         if (e.target.id !== 'ad-import' || !e.target.files || !e.target.files[0]) return;
-        var reader = new FileReader();
+        var reader = new FileReader(), file = e.target.files[0];
+        // Así se puede volver a elegir el mismo archivo si la primera vez falla.
+        e.target.value = '';
         reader.onload = function () {
             var data;
             try { data = JSON.parse(reader.result); } catch (err) { data = null; }
             if (!data || !Array.isArray(data.properties)) return toast('Ese archivo no es una copia de seguridad del panel.', true);
             st.data = data;
             normalize(st.data);
-            st.prop = 0;
-            st.scope = 'all';
+            // Los alojamientos de la copia pueden ser otros: se vuelve a elegir.
+            st.prop = st.form = st.rule = st.sim = st.pick = st.range = st.seg = null;
+            st.page = 'alojamientos';
             touch();
             render();
+            remember(true);
             toast('Copia cargada. Revísela y pulse Guardar para aplicarla.');
         };
-        reader.readAsText(e.target.files[0]);
+        reader.readAsText(file);
     });
     document.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S') && st.data) { e.preventDefault(); save(); }
@@ -1280,9 +1280,10 @@
         var p = current();
         var path = b.getAttribute('data-path'), value = b.getAttribute('data-value');
         var listPath = b.getAttribute('data-list') || '', items = listPath ? get(listPath) : null;
-        var i = +b.getAttribute('data-i'), pi = +b.getAttribute('data-pi'), ref = +b.getAttribute('data-ref');
-        var syncCover = function () { if (p) p.image = p.gallery[0] || ''; };
-        var isRules = /\.price\.rules$/.test(listPath), isRooms = /\.rooms$/.test(listPath);
+        var i = +b.getAttribute('data-i'), ref = +b.getAttribute('data-ref');
+        var isRules = /\.price\.rules$/.test(listPath), isRooms = /\.rooms$/.test(listPath), isGallery = /\.gallery$/.test(listPath);
+        // La portada es siempre la primera foto. Solo se recalcula al tocar la galería, no otras listas.
+        var syncCover = function () { p.image = p.gallery[0] || ''; };
 
         // Navegación y acciones generales
         if (act === 'go') return go(b.getAttribute('data-page'), { prop: b.hasAttribute('data-prop') ? +b.getAttribute('data-prop') : null, tab: b.getAttribute('data-tab') });
@@ -1297,7 +1298,6 @@
         if (act === 'sync') { st.sync = 'loading'; renderMain(); return loadEvents(); }
         if (act === 'ui') { st[b.getAttribute('data-key')] = value; renderMain(); return refocus(b); }
         if (act === 'table') { st.table[b.getAttribute('data-key')] = !st.table[b.getAttribute('data-key')]; renderMain(); return refocus(b); }
-        if (act === 'tab') { st.tab = b.getAttribute('data-t'); st.rule = null; renderMain(); remember(true); return refocus(b); }
         if (act === 'rule') { st.rule = st.rule === i ? null : i; renderMain(); return refocus(b); }
         if (act === 'export') {
             var a = document.createElement('a');
@@ -1307,6 +1307,16 @@
             return setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
         }
         if (act === 'import') return document.getElementById('ad-import').click();
+        if (act === 'add-prop') {
+            var box = document.getElementById('ad-new-prop'), name = box.value.trim();
+            if (!name) { box.classList.add('is-bad'); return box.focus(); }
+            st.data.properties.push(emptyProperty(name));
+            touch();
+            go('editor', { prop: st.data.properties.length - 1, tab: 'general' });
+            return toast('Alojamiento creado y oculto: complételo y desmarque «Ocultar» cuando esté listo.');
+        }
+        // Todo lo que sigue actúa sobre el alojamiento elegido.
+        if (!p) return;
 
         // Calendario
         if (act === 'nav') { st.month = addMonths(st.month || today.slice(0, 8) + '01', +b.getAttribute('data-step')); renderMain(); return refocus(b); }
@@ -1323,8 +1333,8 @@
         if (act === 'range-book' || act === 'range-block') { openForm(st.prop, act === 'range-book' ? 'booking' : 'block', null, st.range); renderMain(); return focusForm(); }
 
         // Reservas directas y bloqueos
-        if (act === 'form-new') { openForm(pi, b.getAttribute('data-type'), null); renderMain(); return focusForm(); }
-        if (act === 'form-edit') { openForm(pi, null, ref); renderMain(); return focusForm(); }
+        if (act === 'form-new') { openForm(st.prop, b.getAttribute('data-type'), null); renderMain(); return focusForm(); }
+        if (act === 'form-edit') { if (!p.blocked[ref]) return; openForm(st.prop, null, ref); renderMain(); return focusForm(); }
         if (act === 'form-cancel') { st.form = null; return renderMain(); }
         if (act === 'form-quote') {
             var f = st.form, fp = st.data.properties[f.pi];
@@ -1348,28 +1358,19 @@
             return toast((entry.type === 'booking' ? 'Reserva anotada' : 'Fechas bloqueadas') + '. Pulse Guardar para aplicarlo en la web.');
         }
         if (act === 'row-del') {
-            var owner = st.data.properties[pi], gone = owner.blocked[ref];
+            var gone = p.blocked[ref];
             if (!gone || !confirm(gone.type === 'booking' ? '¿Eliminar la reserva de «' + (gone.guest || 'sin nombre') + '»? Las fechas volverán a quedar libres.' : '¿Quitar este bloqueo? Las fechas volverán a quedar libres.')) return;
-            owner.blocked.splice(ref, 1);
+            p.blocked.splice(ref, 1);
             st.seg = st.form = null;
             touch();
             return renderMain();
         }
 
-        // Alojamientos
-        if (act === 'add-prop') {
-            var box = document.getElementById('ad-new-prop'), name = box.value.trim();
-            if (!name) { box.classList.add('is-bad'); return box.focus(); }
-            st.data.properties.push(emptyProperty(name));
-            touch();
-            go('editor', { prop: st.data.properties.length - 1, tab: 'general' });
-            return toast('Alojamiento creado y oculto: complételo y desmarque «Ocultar» cuando esté listo.');
-        }
+        // Anuncio
         if (act === 'del-prop') {
             if (!confirm('¿Eliminar «' + propName(p) + '» con todos sus datos y reservas directas? Se aplicará al pulsar Guardar.')) return;
             st.data.properties.splice(st.prop, 1);
-            st.prop = 0;
-            st.scope = 'all';
+            st.prop = null;
             touch();
             return go('alojamientos');
         }
@@ -1403,12 +1404,13 @@
             items.splice(i, 1);
             if (isRules) st.rule = null;
             if (isRooms) syncBedrooms(p);
-            syncCover();
+            if (isGallery) syncCover();
         } else if (act === 'move') {
             var j = i + (+b.getAttribute('data-d'));
+            if (j < 0 || j >= items.length) return;
             items.splice(j, 0, items.splice(i, 1)[0]);
             if (isRules) st.rule = null;
-            syncCover();
+            if (isGallery) syncCover();
         } else if (act === 'cover') {
             p.gallery.unshift(p.gallery.splice(i, 1)[0]);
             syncCover();
