@@ -919,7 +919,8 @@
     function pageAlojamientos() {
         var count = st.data.properties.length;
         var cards = st.data.properties.map(function (p, i) {
-            var q = quality(p), src = p.image ? thumb(p, p.image) : '';
+            // La tarjeta es grande: lleva la foto original, no la miniatura (240 px), que se vería borrosa.
+            var q = quality(p), src = p.image || '';
             var type = C.find(C.types, p.type), place = [type ? type.es : '', p.location.es, p.province].filter(Boolean).join(' · ');
             return '<article class="ad-prop"><div class="ad-prop-media">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy">' : '') +
                 (p.hidden ? '<span class="ad-tag">' + fa('fa-eye-slash') + 'Oculto</span>' : '<span class="ad-tag is-ok">' + fa('fa-circle-check') + 'Visible</span>') + '</div>' +

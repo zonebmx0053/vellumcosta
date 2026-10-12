@@ -120,7 +120,8 @@ async function handler(req, res) {
         storeFailed = e.message !== 'store_not_configured';
         if (storeFailed) console.error(`availability store: ${e.message}`);
     }
-    if (!PROPERTIES.includes(id) && !saved) return res.status(400).json({ error: 'unknown_property' });
+    // Un alojamiento oculto en el panel tampoco enseña su calendario.
+    if ((!PROPERTIES.includes(id) && !saved) || (saved && saved.hidden)) return res.status(400).json({ error: 'unknown_property' });
 
     const { sources, events } = await loadCalendars(id, saved);
 

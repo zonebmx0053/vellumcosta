@@ -5,9 +5,11 @@
     var RL_WIN = 60 * 1000;
 
     function _loadWindow() {
-        var now = Date.now();
-        var ts  = JSON.parse(localStorage.getItem(RL_KEY) || '[]').filter(function (t) { return now - t < RL_WIN; });
-        return { now: now, ts: ts };
+        var now = Date.now(), ts = [];
+        // Sin acceso al almacenamiento del navegador (o con datos estropeados) el formulario sigue funcionando.
+        try { ts = JSON.parse(localStorage.getItem(RL_KEY) || '[]'); } catch (e) { }
+        if (!Array.isArray(ts)) ts = [];
+        return { now: now, ts: ts.filter(function (t) { return now - t < RL_WIN; }) };
     }
 
     window.formRateLimit = {
@@ -21,7 +23,7 @@
         record: function () {
             var w = _loadWindow();
             w.ts.push(w.now);
-            localStorage.setItem(RL_KEY, JSON.stringify(w.ts));
+            try { localStorage.setItem(RL_KEY, JSON.stringify(w.ts)); } catch (e) { }
         }
     };
 
@@ -38,13 +40,11 @@
     var MALICIOUS = [
         /<script[\s\S]*?>/i,
         /javascript\s*:/i,
-        /on\w+\s*=/i,
+        /<[^>]+\son\w+\s*=/i,
         /<\s*iframe/i,
         /vbscript\s*:/i,
         /data\s*:\s*text\/html/i,
-        /\{\{[\s\S]*?\}\}/,
-        /UNION[\s\S]+SELECT/i,
-        /(?:DROP|DELETE|INSERT|UPDATE)\s+\w/i
+        /\{\{[\s\S]*?\}\}/
     ];
 
     function isMalicious(v) {

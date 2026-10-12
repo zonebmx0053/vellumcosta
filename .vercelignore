@@ -2,6 +2,8 @@
 contexto-vellum-propiedades.md
 portal-clientes
 tailwindcss.exe
+tailwind.config.js
+input.css
 
 # Configuración local de Claude Code
 .claude

@@ -5,7 +5,7 @@
 //   POST { action: 'logout' }
 //   POST { action: 'save', data }  -> valida y guarda (requiere sesión)
 
-const { loadData, saveData, hasSession, sessionCookie, login, sameOrigin, clean, adminPassword } = require('./_lib');
+const { loadData, saveData, hasSession, startSession, endSession, sessionCookie, login, sameOrigin, clean, adminPassword } = require('./_lib');
 const { loadCalendars } = require('./availability');
 
 module.exports = async function handler(req, res) {
@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
         adminPassword();
 
         if (req.method === 'GET') {
-            if (!hasSession(req)) return res.status(401).json({ error: 'unauthorized' });
+            if (!await hasSession(req)) return res.status(401).json({ error: 'unauthorized' });
             const data = await loadData();
             // ?events=1 -> reservas y bloqueos de las plataformas, por alojamiento y con su origen.
             if (req.query && req.query.events) {
@@ -33,15 +33,17 @@ module.exports = async function handler(req, res) {
         const body = req.body && typeof req.body === 'object' ? req.body : {};
         if (body.action === 'login') {
             await login(req, body.password);
-            res.setHeader('Set-Cookie', sessionCookie());
+            res.setHeader('Set-Cookie', sessionCookie(await startSession()));
             return res.status(200).json({ ok: true });
         }
         if (body.action === 'logout') {
-            res.setHeader('Set-Cookie', sessionCookie(true));
+            // La cookie se borra aunque el almacén falle.
+            res.setHeader('Set-Cookie', sessionCookie());
+            await endSession(req).catch(() => { });
             return res.status(200).json({ ok: true });
         }
         if (body.action === 'save') {
-            if (!hasSession(req)) return res.status(401).json({ error: 'unauthorized' });
+            if (!await hasSession(req)) return res.status(401).json({ error: 'unauthorized' });
             const data = clean(body.data);
             // "rev" cambia en cada guardado: la web lo usa para pedir el calendario actualizado.
             data.rev = Date.now();

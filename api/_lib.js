@@ -1,14 +1,15 @@
 // Código compartido por las funciones de /api (el guion bajo evita que Vercel lo publique como ruta).
 // - Almacén: Upstash Redis por su API REST. Vercel crea las variables KV_REST_API_URL y
 //   KV_REST_API_TOKEN al conectar la base de datos al proyecto.
-// - Sesión del panel: contraseña en la variable ADMIN_PASSWORD (mínimo 10 caracteres).
+// - Sesión del panel: contraseña en la variable ADMIN_PASSWORD (mínimo 10 caracteres). Cada
+//   sesión es un código aleatorio guardado en el almacén: al cerrarla deja de valer.
 
 const crypto = require('crypto');
 const catalog = require('../catalogo');
 
 const DATA_KEY = 'vellum:properties';
 const COOKIE = 'vc_admin';
-const SESSION_HOURS = 12;           // la sesión no sobrevive al navegador y caduca sola pasado este tiempo
+const SESSION_S = 12 * 3600;        // la sesión no sobrevive al navegador y caduca sola pasado este tiempo
 const MAX_LOGIN_ATTEMPTS = 8;       // por IP
 const LOGIN_WINDOW_S = 900;         // cada 15 minutos
 const MAX_DATA_CHARS = 400000;
@@ -59,18 +60,33 @@ function adminPassword() {
 }
 const digest = text => crypto.createHash('sha256').update(String(text)).digest();
 const safeEqual = (a, b) => crypto.timingSafeEqual(digest(a), digest(b));
-const sign = expires => crypto.createHmac('sha256', adminPassword()).update('session:' + expires).digest('hex');
+// En el almacén se guarda la huella del código, no el código: leer el almacén no da acceso al panel.
+const sessionKey = token => 'vellum:session:' + digest(token).toString('hex');
 
-function sessionCookie(clear) {
-    const expires = Date.now() + SESSION_HOURS * 3600000;
-    const value = clear ? '' : `${expires}.${sign(expires)}`;
-    // Sin Max-Age es una cookie de sesión: el navegador la borra al cerrarse.
-    return `${COOKIE}=${value}; Path=/api; HttpOnly; Secure; SameSite=Strict${clear ? '; Max-Age=0' : ''}`;
+function sessionToken(req) {
+    const m = new RegExp(`(?:^|;\\s*)${COOKIE}=([a-f0-9]{64})(?:;|$)`).exec(req.headers.cookie || '');
+    return m ? m[1] : '';
 }
 
-function hasSession(req) {
-    const m = new RegExp(`(?:^|;\\s*)${COOKIE}=(\\d+)\\.([a-f0-9]{64})`).exec(req.headers.cookie || '');
-    return !!m && Number(m[1]) > Date.now() && safeEqual(m[2], sign(m[1]));
+// Sin código, la cookie se borra. Sin Max-Age es una cookie de sesión: el navegador la borra al cerrarse.
+function sessionCookie(token) {
+    return `${COOKIE}=${token || ''}; Path=/api; HttpOnly; Secure; SameSite=Strict${token ? '' : '; Max-Age=0'}`;
+}
+
+async function startSession() {
+    const token = crypto.randomBytes(32).toString('hex');
+    await redis('SET', sessionKey(token), '1', 'EX', SESSION_S);
+    return token;
+}
+
+async function hasSession(req) {
+    const token = sessionToken(req);
+    return !!token && (await redis('GET', sessionKey(token))) != null;
+}
+
+async function endSession(req) {
+    const token = sessionToken(req);
+    if (token) await redis('DEL', sessionKey(token));
 }
 
 // Comprueba la contraseña limitando los intentos por IP.
@@ -278,4 +294,4 @@ function publicData(data) {
     };
 }
 
-module.exports = { SOURCES, redis, loadData, saveData, hasSession, sessionCookie, login, sameOrigin, clean, publicData, adminPassword };
+module.exports = { SOURCES, redis, loadData, saveData, hasSession, startSession, endSession, sessionCookie, login, sameOrigin, clean, publicData, adminPassword };
