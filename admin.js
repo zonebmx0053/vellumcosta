@@ -1279,7 +1279,7 @@
         document.documentElement.setAttribute('data-theme', theme);
         try { localStorage.setItem('vc-admin-theme', theme); } catch (e) { }
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'light' ? '#f2f4f8' : '#0e1117');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#f2f4f8' : '#121212');
         if (st.data) { renderTop(); if (st.page === 'ajustes') renderMain(); }
     }
     // Tras repintar, devuelve el foco al botón equivalente al que se pulsó.

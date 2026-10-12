@@ -3,20 +3,21 @@
 
 :root {
     color-scheme: dark;
-    --bg: #0e1117;                 /* fondo de la página */
-    --nav: #12161e;                /* menú lateral y barra superior */
-    --card: #181d27;               /* tarjetas (también es el fondo de los gráficos) */
-    --card-2: #1f2532;             /* campos, filas resaltadas */
-    --card-3: #283040;
+    /* Mismos tonos que el modo oscuro de la web (colores.css): fondo, tarjetas y dorado */
+    --bg: var(--color-oscuro-fondo, #121212);      /* fondo de la página */
+    --nav: #171717;                /* menú lateral y barra superior */
+    --card: var(--color-oscuro-tarjeta, #1E1E1E);  /* tarjetas (también es el fondo de los gráficos) */
+    --card-2: #272727;             /* campos, filas resaltadas */
+    --card-3: #323232;
     --line: rgba(255, 255, 255, .08);
     --line-2: rgba(255, 255, 255, .16);
-    --text: #eef0f4;
-    --text-2: #bcc3d0;
-    --muted: #8c96a8;
-    --accent: #d4b06c;             /* dorado de la marca: botones y selección */
+    --text: #f5f5f5;
+    --text-2: #c2c2c2;
+    --muted: #949494;
+    --accent: var(--color-dorado, #C5A059);        /* dorado de la marca: botones y selección */
     --accent-ink: #1a1407;         /* texto sobre dorado */
-    --accent-text: #dcbb7c;        /* dorado para iconos y enlaces sobre el fondo */
-    --accent-soft: rgba(212, 176, 108, .13);
+    --accent-text: #d6b676;        /* dorado para iconos y enlaces sobre el fondo */
+    --accent-soft: color-mix(in srgb, var(--accent) 13%, transparent);
     --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 10px 30px rgba(0, 0, 0, .22);
     --radius: 14px;
 
@@ -32,13 +33,13 @@
     --c-airbnb: #d95926;
     --c-vrbo: #199e70;
     --c-direct: #c98500;
-    --c-block: #7b8496;
-    --c-held: #4a5266;
+    --c-block: #868686;
+    --c-held: #505050;
 
     /* Tintes de los iconos de los indicadores */
     --t-blue: #6aa5f5;
     --t-green: #4ec28f;
-    --t-gold: #dcbb7c;
+    --t-gold: #d6b676;
     --t-violet: #a595f0;
 }
 :root[data-theme="light"] {
