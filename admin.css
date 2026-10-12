@@ -127,6 +127,10 @@ code { background: var(--card-3); padding: 1px 6px; border-radius: 4px; font-siz
 .ad-login p { color: var(--muted); font-size: 13.5px; margin-bottom: 20px; }
 .ad-login input { width: 100%; margin-bottom: 12px; }
 .ad-login .ad-btn { width: 100%; }
+.ad-pass { position: relative; margin-bottom: 12px; }
+.ad-pass input { margin-bottom: 0; padding-right: 42px; }
+.ad-pass button { position: absolute; top: 0; right: 0; width: 40px; height: 100%; border: 0; border-radius: 9px; background: none; color: var(--muted); cursor: pointer; }
+.ad-pass button:hover { color: var(--text); }
 .ad-login .ad-error { margin: 14px 0 0; }
 .ad-setup { max-width: 560px; text-align: left; }
 .ad-setup ol { padding-left: 20px; margin: 0; color: var(--text-2); font-size: 13.5px; }

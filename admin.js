@@ -291,11 +291,22 @@
             '<h1>Panel de alojamientos</h1><p>Acceso privado. Introduzca su contraseña.</p>' +
             // Campo de usuario oculto: los gestores de contraseñas lo necesitan para guardar el acceso.
             '<input type="text" name="username" autocomplete="username" value="admin" hidden>' +
-            '<input type="password" name="password" autocomplete="current-password" aria-label="Contraseña" placeholder="Contraseña" required>' +
+            '<div class="ad-pass"><input type="password" name="password" autocomplete="current-password" aria-label="Contraseña" placeholder="Contraseña" required>' +
+            '<button type="button" aria-label="Mostrar la contraseña" title="Mostrar la contraseña" aria-pressed="false">' + fa('fa-eye') + '</button></div>' +
             '<button type="submit" class="ad-btn ad-btn-solid">Entrar</button>' +
             '<p class="ad-error" role="alert" hidden></p></form>';
-        var form = root.querySelector('form'), password = form.querySelector('input[type="password"]'), error = form.querySelector('.ad-error'), button = form.querySelector('button');
+        var form = root.querySelector('form'), password = form.querySelector('input[type="password"]'), error = form.querySelector('.ad-error'), button = form.querySelector('button[type="submit"]');
+        var eye = form.querySelector('.ad-pass button');
         password.focus();
+        eye.addEventListener('click', function () {
+            var show = password.type === 'password', label = show ? 'Ocultar la contraseña' : 'Mostrar la contraseña';
+            password.type = show ? 'text' : 'password';
+            eye.innerHTML = fa(show ? 'fa-eye-slash' : 'fa-eye');
+            eye.setAttribute('aria-label', label);
+            eye.title = label;
+            eye.setAttribute('aria-pressed', show);
+            password.focus();
+        });
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             button.disabled = true;
@@ -1230,10 +1241,11 @@
         renderMain();
     }
     // La dirección recuerda dónde se está: #/alojamientos, #/ajustes, #/casa-1/resumen, #/casa-1/precios…
+    // Lleva delante la ruta de la página: con <base href="/">, un "#/…" suelto apuntaría a la portada de la web.
     function hash() {
-        var p = current();
-        if (!p || st.page === 'alojamientos' || st.page === 'ajustes') return '#/' + (st.page === 'ajustes' ? 'ajustes' : 'alojamientos');
-        return '#/' + encodeURIComponent(p.id) + '/' + (st.page === 'editor' ? st.tab : st.page === 'panel' ? 'resumen' : st.page);
+        var p = current(), here = location.pathname + location.search;
+        if (!p || st.page === 'alojamientos' || st.page === 'ajustes') return here + '#/' + (st.page === 'ajustes' ? 'ajustes' : 'alojamientos');
+        return here + '#/' + encodeURIComponent(p.id) + '/' + (st.page === 'editor' ? st.tab : st.page === 'panel' ? 'resumen' : st.page);
     }
     function remember(replace) { try { history[replace ? 'replaceState' : 'pushState'](null, '', hash()); } catch (e) { } }
     function route() {
@@ -1628,5 +1640,9 @@
         refocus(b);
     });
 
-    load();
+    // Cada vez que se abre el panel se cierra la sesión anterior y se pide la contraseña.
+    api('POST', { action: 'logout' }).then(function (res) {
+        if (res.error === 'store_not_configured' || res.error === 'password_not_configured') return renderSetup(res.error);
+        renderLogin(load);
+    });
 })();

@@ -8,7 +8,7 @@ const catalog = require('../catalogo');
 
 const DATA_KEY = 'vellum:properties';
 const COOKIE = 'vc_admin';
-const SESSION_DAYS = 7;
+const SESSION_HOURS = 12;           // la sesión no sobrevive al navegador y caduca sola pasado este tiempo
 const MAX_LOGIN_ATTEMPTS = 8;       // por IP
 const LOGIN_WINDOW_S = 900;         // cada 15 minutos
 const MAX_DATA_CHARS = 400000;
@@ -62,9 +62,10 @@ const safeEqual = (a, b) => crypto.timingSafeEqual(digest(a), digest(b));
 const sign = expires => crypto.createHmac('sha256', adminPassword()).update('session:' + expires).digest('hex');
 
 function sessionCookie(clear) {
-    const expires = Date.now() + SESSION_DAYS * 86400000;
+    const expires = Date.now() + SESSION_HOURS * 3600000;
     const value = clear ? '' : `${expires}.${sign(expires)}`;
-    return `${COOKIE}=${value}; Path=/api; HttpOnly; Secure; SameSite=Strict; Max-Age=${clear ? 0 : SESSION_DAYS * 86400}`;
+    // Sin Max-Age es una cookie de sesión: el navegador la borra al cerrarse.
+    return `${COOKIE}=${value}; Path=/api; HttpOnly; Secure; SameSite=Strict${clear ? '; Max-Age=0' : ''}`;
 }
 
 function hasSession(req) {
