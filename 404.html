@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <!-- Vercel muestra esta página en cualquier dirección que no exista (también dentro de
+         carpetas), por eso todas las rutas empiezan por "/". -->
+    <script>
+        (function () {
+            var root = document.documentElement;
+            try {
+                if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) root.classList.add('dark');
+            } catch (e) { }
+        })();
+    </script>
+    <title>Página no encontrada | Vellum Costa</title>
+    <link rel="icon" type="image/png" href="/LogoPestaña.png">
+    <link rel="preload" href="/fuentes/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fuentes/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/colores.css">
+    <link rel="stylesheet" href="/web.css">
+    <link rel="stylesheet" href="/tailwind.css">
+</head>
+<body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased min-h-screen flex items-center justify-center text-center px-6 py-16">
+    <main class="max-w-lg">
+        <a href="/" class="inline-block mb-10">
+            <img src="/logo.webp" alt="Vellum Costa" width="192" height="108" class="h-10 w-auto mx-auto">
+        </a>
+        <p class="font-serif text-6xl text-brand-gold mb-4">404</p>
+        <h1 class="font-serif text-4xl mb-6">Página no encontrada</h1>
+        <p class="text-base font-light text-brand-dark/70 dark:text-white/70 mb-10 leading-relaxed">
+            La dirección que ha escrito no existe o la página se ha movido. Puede volver al inicio o ver nuestros servicios.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+            <a href="/" class="inline-block bg-brand-gold text-brand-dark px-8 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-dark hover:text-white dark:hover:bg-white dark:hover:text-brand-dark transition-all duration-300 rounded-md">Ir al inicio</a>
+            <a href="/servicios" class="inline-block border border-brand-gold text-brand-gold px-8 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-gold hover:text-white transition-all duration-300 rounded-md">Servicios</a>
+        </div>
+        <div lang="en" class="border-t border-brand-dark/10 dark:border-white/10 pt-8 text-sm font-light text-brand-dark/70 dark:text-white/70">
+            <p class="mb-2">Page not found. The address doesn't exist or the page has moved.</p>
+            <a href="/home" class="text-brand-gold font-medium">Go to the English homepage</a>
+        </div>
+    </main>
+</body>
+</html>

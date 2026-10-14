@@ -3,49 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Tema antes de pintar la página (evita el destello en claro) y animaciones de scroll (animaciones.js).
+        (function () {
+            var root = document.documentElement;
+            try {
+                if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) root.classList.add('dark');
+                else root.classList.remove('dark');
+            } catch (e) { }
+            root.classList.add('anim');
+            // Si animaciones.js no llega a cargarse, el contenido no se queda escondido.
+            setTimeout(function () { if (!window.vcAnim) root.classList.remove('anim'); }, 3000);
+        })();
+    </script>
     
     <title>Gestión de Alquiler y Mantenimiento en Marbella | Vellum Costa</title>
     <meta name="description" content="Servicios de Property Management en Marbella y la Costa del Sol. Cuidamos de su vivienda y gestionamos sus alquileres vacacionales con total transparencia.">
-    <link rel="canonical" href="https://vellumcosta.com/servicios.html" />
-    <link rel="alternate" hreflang="es" href="https://vellumcosta.com/servicios.html" />
-    <link rel="alternate" hreflang="x-default" href="https://vellumcosta.com/servicios.html" />
-    <link rel="alternate" hreflang="en" href="https://vellumcosta.com/services.html" />
+    <link rel="canonical" href="https://www.vellumcosta.com/servicios" />
+    <link rel="alternate" hreflang="es" href="https://www.vellumcosta.com/servicios" />
+    <link rel="alternate" hreflang="x-default" href="https://www.vellumcosta.com/servicios" />
+    <link rel="alternate" hreflang="en" href="https://www.vellumcosta.com/services" />
     <link rel="icon" type="image/png" href="LogoPestaña.png">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vellumcosta.com/servicios.html">
+    <meta property="og:url" content="https://www.vellumcosta.com/servicios">
     <meta property="og:title" content="Gestión de Alquiler y Mantenimiento en Marbella | Vellum Costa">
     <meta property="og:description" content="Servicios de Property Management en Marbella y la Costa del Sol. Cuidamos de su vivienda y gestionamos sus alquileres vacacionales con total transparencia.">
-    <meta property="og:image" content="https://vellumcosta.com/imagen-principal.jpg">
+    <meta property="og:image" content="https://www.vellumcosta.com/imagen-principal.jpg">
     <meta property="og:locale" content="es_ES">
     <meta property="og:site_name" content="Vellum Costa">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Gestión de Alquiler y Mantenimiento en Marbella | Vellum Costa">
     <meta name="twitter:description" content="Servicios de Property Management en Marbella y la Costa del Sol. Cuidamos de su vivienda y gestionamos sus alquileres vacacionales.">
-    <meta name="twitter:image" content="https://vellumcosta.com/imagen-principal.jpg">
+    <meta name="twitter:image" content="https://www.vellumcosta.com/imagen-principal.jpg">
     <meta name="theme-color" content="#B8963E">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Property Management en Marbella y Costa del Sol","description":"Gestión integral de propiedades y alquiler vacacional en la Costa del Sol.","provider":{"@type":"Organization","@id":"https://vellumcosta.com/#organization","name":"Vellum Costa"},"serviceType":"Property Management","areaServed":{"@type":"Place","name":"Costa del Sol, Málaga"},"url":"https://vellumcosta.com/servicios.html"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Property Management en Marbella y Costa del Sol","description":"Gestión integral de propiedades y alquiler vacacional en la Costa del Sol.","provider":{"@type":"Organization","@id":"https://www.vellumcosta.com/#organization","name":"Vellum Costa"},"serviceType":"Property Management","areaServed":{"@type":"Place","name":"Costa del Sol, Málaga"},"url":"https://www.vellumcosta.com/servicios"}</script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
-    <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-
+    <link rel="preload" href="fuentes/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fuentes/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="colores.css">
+    <link rel="stylesheet" href="web.css">
     <link rel="stylesheet" href="tailwind.css">
 
-    <script>
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 </head>
 <body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 overflow-x-hidden">
 
@@ -53,21 +51,21 @@
     <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             
-            <a href="inicio.html" class="block">
-                <img src="LOGO.png" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            <a href="index.html" class="block">
+                <img src="logo.webp" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
             </a>
             
             <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
-                <a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
                 <a href="servicios.html" class="text-brand-gold transition-colors">Servicios</a>
                 <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
                 <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
                 <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
-                <a href="inicio.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+                <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
             </div>
         
             <div class="md:hidden flex items-center">
-                <button id="mobile-menu-button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu" class="text-brand-dark dark:text-white focus:outline-none"><i class="fa-solid fa-bars text-2xl" aria-hidden="true"></i>
+                <button id="mobile-menu-button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu" class="text-brand-dark dark:text-white focus:outline-none"><svg class="icon text-2xl" viewBox="0 0 448 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
                 </button>
             </div>
             
@@ -77,7 +75,7 @@
                     <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2 space-x-2">
                         <img src="flag-es.svg" alt="" class="w-5 h-auto rounded-sm shadow-sm">
                         <span class="font-bold text-sm tracking-wide">ES</span>
-                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70" aria-hidden="true"></i>
+                        <svg class="icon text-[10px] ml-1 opacity-70" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                     </button>
                     <div class="absolute right-0 mt-0 w-36 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
                         <div class="py-2 flex flex-col">
@@ -94,21 +92,21 @@
                 </div>
 
                 <button id="theme-toggle" aria-label="Cambiar tema" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
-                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
-                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                    <svg id="theme-toggle-dark-icon" class="icon hidden text-lg" viewBox="0 0 384 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
+                    <svg id="theme-toggle-light-icon" class="icon hidden text-lg" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
                 </button>
-                <a href="inicio.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+                <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
             </div>
         </div>
 
         <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
             <div class="px-6 py-4 space-y-4 text-center">
-                <a href="inicio.html" class="block text-brand-dark dark:text-white">Inicio</a>
+                <a href="index.html" class="block text-brand-dark dark:text-white">Inicio</a>
                 <a href="servicios.html" class="block text-brand-gold font-bold">Servicios</a>
                 <a href="nosotros.html" class="block text-brand-dark dark:text-white">Nosotros</a>
                 <a href="areas.html" class="block text-brand-dark dark:text-white">Áreas</a>
                 <a href="blog.html" class="block text-brand-dark dark:text-white">Blog</a>
-                <a href="inicio.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+                <a href="index.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
                 
                 <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-8">
                     <a href="#" class="text-brand-gold font-bold flex items-center space-x-2">
@@ -121,7 +119,7 @@
                     </a>
                 </div>
                 
-                <a href="inicio.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+                <a href="index.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
             </div>
         </div>
     </nav>
@@ -139,7 +137,7 @@
         <div class="flex flex-col lg:flex-row gap-16 items-start" data-aos="fade-up">
             <div class="w-full lg:w-7/12">
                 <div class="flex items-center space-x-4 mb-6">
-                    <i class="fa-solid fa-house-chimney-window text-4xl text-brand-gold" aria-hidden="true"></i>
+                    <svg class="icon text-4xl text-brand-gold" viewBox="0 0 576 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c.2 35.5-28.5 64.3-64 64.3H128.1c-35.3 0-64-28.7-64-64V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L416 100.7V64c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32V185l52.8 46.4c8 7 12 15 11 24zM248 192c-13.3 0-24 10.7-24 24v80c0 13.3 10.7 24 24 24h80c13.3 0 24-10.7 24-24V216c0-13.3-10.7-24-24-24H248z"/></svg>
                     <h2 class="font-serif text-3xl md:text-4xl text-brand-dark dark:text-white">Property Management Integral</h2>
                 </div>
                 <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-10 text-lg">
@@ -148,22 +146,22 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-3">
-                        <i class="fa-solid fa-clipboard-check text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 384 512" preserveAspectRatio="xMinYMid meet"><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Inspecciones Periódicas</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Realizamos revisiones semanales, quincenales o con la frecuencia que usted requiera. Comprobamos seguridad, estado general y suministros.</p>
                     </div>
                     <div class="space-y-3">
-                        <i class="fa-solid fa-toolbox text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet"><path d="M176 88v40H336V88c0-4.4-3.6-8-8-8H184c-4.4 0-8 3.6-8 8zm-48 40V88c0-30.9 25.1-56 56-56H328c30.9 0 56 25.1 56 56v40h28.1c12.7 0 24.9 5.1 33.9 14.1l51.9 51.9c9 9 14.1 21.2 14.1 33.9V304H384V288c0-17.7-14.3-32-32-32s-32 14.3-32 32v16H192V288c0-17.7-14.3-32-32-32s-32 14.3-32 32v16H0V227.9c0-12.7 5.1-24.9 14.1-33.9l51.9-51.9c9-9 21.2-14.1 33.9-14.1H128zM0 416V336H128v16c0 17.7 14.3 32 32 32s32-14.3 32-32V336H320v16c0 17.7 14.3 32 32 32s32-14.3 32-32V336H512v80c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Respuesta a Imprevistos 24/7</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Disponemos de un equipo de técnicos de confianza (fontaneros, electricistas, cerrajeros) listos para actuar ante cualquier necesidad o avería.</p>
                     </div>
                     <div class="space-y-3">
-                        <i class="fa-solid fa-leaf text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet"><path d="M272 96c-78.6 0-145.1 51.5-167.7 122.5c33.6-17 71.5-26.5 111.7-26.5h88c8.8 0 16 7.2 16 16s-7.2 16-16 16H288 216s0 0 0 0c-16.6 0-32.7 1.9-48.2 5.4c-25.9 5.9-50 16.4-71.4 30.7c0 0 0 0 0 0C38.3 298.8 0 364.9 0 440v16c0 13.3 10.7 24 24 24s24-10.7 24-24V440c0-48.7 20.7-92.5 53.8-123.2C121.6 392.3 190.3 448 272 448l1 0c132.1-.7 239-130.9 239-291.4c0-42.6-7.5-83.1-21.1-119.6c-2.6-6.9-12.7-6.6-16.2-.1C455.9 72.1 418.7 96 376 96L272 96z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Limpieza y Exteriores</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Coordinamos servicios de limpieza profesional, mantenimiento de jardines y cuidado experto de piscinas.</p>
                     </div>
                     <div class="space-y-3">
-                        <i class="fa-solid fa-boxes-stacked text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 576 512" preserveAspectRatio="xMinYMid meet"><path d="M248 0H208c-26.5 0-48 21.5-48 48V160c0 35.3 28.7 64 64 64H352c35.3 0 64-28.7 64-64V48c0-26.5-21.5-48-48-48H328V80c0 8.8-7.2 16-16 16H264c-8.8 0-16-7.2-16-16V0zM64 256c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H224c35.3 0 64-28.7 64-64V320c0-35.3-28.7-64-64-64H184v80c0 8.8-7.2 16-16 16H120c-8.8 0-16-7.2-16-16V256H64zM352 512H512c35.3 0 64-28.7 64-64V320c0-35.3-28.7-64-64-64H472v80c0 8.8-7.2 16-16 16H408c-8.8 0-16-7.2-16-16V256H352c-15 0-28.8 5.1-39.7 13.8c4.9 10.4 7.7 22 7.7 34.2V464c0 12.2-2.8 23.8-7.7 34.2C323.2 506.9 337 512 352 512z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Gestión de Inventario</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Control del mobiliario, menaje y enseres de la propiedad, reponiendo lo necesario para que el equipamiento sea siempre el adecuado.</p>
                     </div>
@@ -180,7 +178,7 @@
         <div class="flex flex-col lg:flex-row-reverse gap-16 items-start" data-aos="fade-up">
             <div class="w-full lg:w-7/12">
                 <div class="flex items-center space-x-4 mb-6">
-                    <i class="fa-solid fa-chart-line text-4xl text-brand-gold" aria-hidden="true"></i>
+                    <svg class="icon text-4xl text-brand-gold" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/></svg>
                     <h2 class="font-serif text-3xl md:text-4xl text-brand-dark dark:text-white">Optimización de Alquileres</h2>
                 </div>
                 <p class="font-light text-brand-dark/80 dark:text-white/80 leading-relaxed mb-10 text-lg">
@@ -189,22 +187,22 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-3">
-                        <i class="fa-solid fa-magnifying-glass-chart text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zm-312 8v64c0 13.3 10.7 24 24 24s24-10.7 24-24l0-64c0-13.3-10.7-24-24-24s-24 10.7-24 24zm80-96V280c0 13.3 10.7 24 24 24s24-10.7 24-24V120c0-13.3-10.7-24-24-24s-24 10.7-24 24zm80 64v96c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Análisis de Mercado y Precios</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Estudiamos la zona y ajustamos las tarifas de manera dinámica para lograr el mejor equilibrio entre ocupación e ingresos.</p>
                     </div>
                     <div class="space-y-3">
-                        <i class="fa-solid fa-key text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet"><path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0S160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17v80c0 13.3 10.7 24 24 24h80c13.3 0 24-10.7 24-24V448h40c13.3 0 24-10.7 24-24V384h40c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Recepción y Despedida</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Recibimiento cordial a los huéspedes, entrega de llaves y revisión de la vivienda a la salida para asegurar que todo está en orden.</p>
                     </div>
                     <div class="space-y-3">
-                        <i class="fa-solid fa-headset text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet"><path d="M256 48C141.1 48 48 141.1 48 256v40c0 13.3-10.7 24-24 24s-24-10.7-24-24V256C0 114.6 114.6 0 256 0S512 114.6 512 256V400.1c0 48.6-39.4 88-88.1 88L313.6 488c-8.3 14.3-23.8 24-41.6 24H240c-26.5 0-48-21.5-48-48s21.5-48 48-48h32c17.8 0 33.3 9.7 41.6 24l110.4 .1c22.1 0 40-17.9 40-40V256c0-114.9-93.1-208-208-208zM144 208h16c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32H144c-35.3 0-64-28.7-64-64V272c0-35.3 28.7-64 64-64zm224 0c35.3 0 64 28.7 64 64v48c0 35.3-28.7 64-64 64H352c-17.7 0-32-14.3-32-32V240c0-17.7 14.3-32 32-32h16z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Atención al Huésped</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Somos el único punto de contacto. Resolvemos dudas, ofrecemos recomendaciones y atendemos cualquier necesidad durante la estancia.</p>
                     </div>
                     <div class="space-y-3">
-                        <i class="fa-solid fa-shield-halved text-brand-gold text-xl mb-2 block" aria-hidden="true"></i>
+                        <span class="text-brand-gold text-xl mb-2 block leading-none" aria-hidden="true"><svg class="icon" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z"/></svg></span>
                         <h4 class="font-bold font-serif text-lg text-brand-dark dark:text-white">Marketing y Perfil de Clientes</h4>
                         <p class="text-sm font-light text-brand-dark/70 dark:text-white/70">Publicación atractiva en las principales plataformas y un adecuado filtro de huéspedes para cuidar su vivienda como si fuera nuestra.</p>
                     </div>
@@ -266,7 +264,7 @@
                         </li>
                         <li class="flex justify-between border-b border-brand-dark/10 dark:border-white/10 pb-2">
                             <span>Villas de +5 dormitorios</span>
-                            <a href="inicio.html#contacto" class="font-semibold text-brand-gold hover:text-brand-dark dark:hover:text-white transition-colors underline decoration-brand-gold/30 underline-offset-4">Presupuesto a medida</a>
+                            <a href="index.html#contacto" class="font-semibold text-brand-gold hover:text-brand-dark dark:hover:text-white transition-colors underline decoration-brand-gold/30 underline-offset-4">Presupuesto a medida</a>
                         </li>
                     </ul>
                     <p class="text-[10px] italic text-brand-dark/70 dark:text-white/40 uppercase tracking-widest text-right">* Precios base sin IVA. Presupuesto final sujeto a visita técnica.</p>
@@ -299,13 +297,13 @@
 
                     <div class="space-y-4 text-sm font-light mb-10 border-t border-white/10 pt-6">
                         <div class="flex items-start space-x-4">
-                            <i class="fa-solid fa-users-viewfinder text-brand-gold mt-1" aria-hidden="true"></i>
+                            <svg class="icon text-brand-gold mt-1" viewBox="0 0 640 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M48 48h88c13.3 0 24-10.7 24-24s-10.7-24-24-24H32C14.3 0 0 14.3 0 32V136c0 13.3 10.7 24 24 24s24-10.7 24-24V48zM175.8 224a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm-26.5 32C119.9 256 96 279.9 96 309.3c0 14.7 11.9 26.7 26.7 26.7h56.1c8-34.1 32.8-61.7 65.2-73.6c-7.5-4.1-16.2-6.4-25.3-6.4H149.3zm368 80c14.7 0 26.7-11.9 26.7-26.7c0-29.5-23.9-53.3-53.3-53.3H421.3c-9.2 0-17.8 2.3-25.3 6.4c32.4 11.9 57.2 39.5 65.2 73.6h56.1zm-89.4 0c-8.6-24.3-29.9-42.6-55.9-47c-3.9-.7-7.9-1-12-1H280c-4.1 0-8.1 .3-12 1c-26 4.4-47.3 22.7-55.9 47c-2.7 7.5-4.1 15.6-4.1 24c0 13.3 10.7 24 24 24H408c13.3 0 24-10.7 24-24c0-8.4-1.4-16.5-4.1-24zM464 224a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm-80-32a64 64 0 1 0 -128 0 64 64 0 1 0 128 0zM504 48h88v88c0 13.3 10.7 24 24 24s24-10.7 24-24V32c0-17.7-14.3-32-32-32H504c-13.3 0-24 10.7-24 24s10.7 24 24 24zM48 464V376c0-13.3-10.7-24-24-24s-24 10.7-24 24V480c0 17.7 14.3 32 32 32H136c13.3 0 24-10.7 24-24s-10.7-24-24-24H48zm456 0c-13.3 0-24 10.7-24 24s10.7 24 24 24H608c17.7 0 32-14.3 32-32V376c0-13.3-10.7-24-24-24s-24 10.7-24 24v88H504z"/></svg>
                             <p><span class="font-bold">Check-in y Check-out:</span> 50€ por reserva. <br>
                             <span class="text-xs text-white/50 italic mt-1 block">Aplicable a ambos planes si Vellum Costa realiza la recepción. Suele estar cubierto por el suplemento de limpieza abonado por el huésped.</span></p>
                         </div>
                     </div>
 
-                    <a href="inicio.html#contacto" class="block text-center border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-white py-3 transition-all duration-500 font-bold uppercase tracking-widest text-xs">Solicitar Auditoría de Alquiler</a>
+                    <a href="index.html#contacto" class="block text-center border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-white py-3 transition-all duration-500 font-bold uppercase tracking-widest text-xs">Solicitar Auditoría de Alquiler</a>
                 </div>
 
                 <div class="lg:col-span-2 bg-brand-dark/5 dark:bg-black/20 p-6 md:p-8 rounded-sm border border-brand-dark/10 dark:border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6" data-aos="fade-up">
@@ -317,11 +315,11 @@
                     </div>
                     <div class="md:w-1/2 w-full space-y-3">
                         <div class="flex justify-between items-center bg-white dark:bg-brand-darkcard p-3 rounded-sm shadow-sm">
-                            <span class="text-sm font-medium text-brand-dark dark:text-white"><i class="fa-solid fa-car text-brand-gold mr-2" aria-hidden="true"></i> Desplazamiento (Call out)</span>
+                            <span class="text-sm font-medium text-brand-dark dark:text-white"><svg class="icon text-brand-gold mr-2" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M135.2 117.4L109.1 192H402.9l-26.1-74.6C372.3 104.6 360.2 96 346.6 96H165.4c-13.6 0-25.7 8.6-30.2 21.4zM39.6 196.8L74.8 96.3C88.3 57.8 124.6 32 165.4 32H346.6c40.8 0 77.1 25.8 90.6 64.3l35.2 100.5c23.2 9.6 39.6 32.5 39.6 59.2V400v48c0 17.7-14.3 32-32 32H448c-17.7 0-32-14.3-32-32V400H96v48c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V400 256c0-26.7 16.4-49.6 39.6-59.2zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm288 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg> Desplazamiento (Call out)</span>
                             <span class="font-bold text-brand-dark dark:text-white">15€ <span class="text-xs font-light opacity-70">/viaje</span></span>
                         </div>
                         <div class="flex justify-between items-center bg-white dark:bg-brand-darkcard p-3 rounded-sm shadow-sm">
-                            <span class="text-sm font-medium text-brand-dark dark:text-white"><i class="fa-solid fa-stopwatch text-brand-gold mr-2" aria-hidden="true"></i> Tiempo de trabajo / Mano de obra</span>
+                            <span class="text-sm font-medium text-brand-dark dark:text-white"><svg class="icon text-brand-gold mr-2" viewBox="0 0 448 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M176 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h16V98.4C92.3 113.8 16 200 16 304c0 114.9 93.1 208 208 208s208-93.1 208-208c0-41.8-12.3-80.7-33.5-113.2l24.1-24.1c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L355.7 143c-28.1-23-62.2-38.8-99.7-44.6V64h16c17.7 0 32-14.3 32-32s-14.3-32-32-32H224 176zm72 192V320c0 13.3-10.7 24-24 24s-24-10.7-24-24V192c0-13.3 10.7-24 24-24s24 10.7 24 24z"/></svg> Tiempo de trabajo / Mano de obra</span>
                             <span class="font-bold text-brand-dark dark:text-white text-right">20€ <span class="text-xs font-light opacity-70">/hora</span></span>
                         </div>
                     </div>
@@ -336,8 +334,8 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
             
             <div>
-                <a href="inicio.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
-                    <img src="LOGO.png" alt="Icono Vellum Costa" width="192" height="108" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="logo.webp" alt="Icono Vellum Costa" width="192" height="108" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                     <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM&nbsp;COSTA</span>
                 </a>
                 <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
@@ -345,19 +343,19 @@
             
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h3>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold" aria-hidden="true"></i> <a href="mailto:info@vellumcosta.com" class="hover:text-brand-gold transition-colors">info@vellumcosta.com</a></p>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold" aria-hidden="true"></i> <a href="tel:+34642827794" class="hover:text-brand-gold transition-colors">+34 642 827 794</a></p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><svg class="icon mr-2 text-brand-gold" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg> <a href="mailto:info@vellumcosta.com" class="hover:text-brand-gold transition-colors">info@vellumcosta.com</a></p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><svg class="icon mr-2 text-brand-gold" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg> <a href="tel:+34642827794" class="hover:text-brand-gold transition-colors">+34 642 827 794</a></p>
             </div>
             
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Navegación</h3>
                 <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
-                    <a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                    <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
                     <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
                     <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
                     <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
                     <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
-                    <a href="inicio.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+                    <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
                 </div>
             </div>
             
@@ -394,14 +392,12 @@
     </footer>
 
     <a href="https://wa.me/34642827794" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
-        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+        <svg class="icon" viewBox="0 0 448 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
     </a>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" integrity="sha384-wziAfh6b/qT+3LrqebF9WeK4+J5sehS6FA10J1t3a866kJ/fvU5UwofWnQyzLtwu" crossorigin="anonymous"></script>
-    <script>AOS.init({ once: true, offset: 100, duration: 800 });</script>
 
     <script src="cookie-banner.js" defer></script>
 
+    <script src="animaciones.js" defer></script>
     <script src="theme.js" defer></script>
 </body>
 </html>

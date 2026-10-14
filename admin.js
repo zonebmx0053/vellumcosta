@@ -287,7 +287,7 @@
             '<ol>' + steps + '</ol></div>';
     }
     function renderLogin(then) {
-        root.innerHTML = '<form class="ad-login"><img src="LOGO.png" alt="Vellum Costa">' +
+        root.innerHTML = '<form class="ad-login"><img src="logo.webp" alt="Vellum Costa">' +
             '<h1>Panel de alojamientos</h1><p>Acceso privado. Introduzca su contraseña.</p>' +
             // Campo de usuario oculto: los gestores de contraseñas lo necesitan para guardar el acceso.
             '<input type="text" name="username" autocomplete="username" value="admin" hidden>' +
@@ -1203,7 +1203,7 @@
                 '<p class="ad-nav-title">Gestión</p>' + item('panel') + item('reservas', upcoming(p)) + item('calendario') +
                 '<p class="ad-nav-title">Anuncio</p>' + TABS.map(function (t) { return link(st.page === 'editor' && st.tab === t[0], ' data-page="editor" data-tab="' + t[0] + '"', t[2], t[1]); }).join('')
             : item('alojamientos') + '<p class="ad-nav-hint">Elija un alojamiento para ver su resumen, sus reservas, su calendario y su anuncio.</p>';
-        el.innerHTML = '<div class="ad-brand"><img src="LOGO.png" alt=""><div><strong>Vellum Costa</strong><span>Panel de alojamientos</span></div></div>' +
+        el.innerHTML = '<div class="ad-brand"><img src="logo.webp" alt=""><div><strong>Vellum Costa</strong><span>Panel de alojamientos</span></div></div>' +
             sections + '<p class="ad-nav-title">General</p>' + item('ajustes') +
             '<div class="ad-nav-foot">' + (p
                 ? '<a class="ad-nav-item" href="propiedad.html?casa=' + encodeURIComponent(p.slug) + '" target="_blank" rel="noopener">' + fa('fa-arrow-up-right-from-square') + '<span>Ver su ficha en la web</span></a>'

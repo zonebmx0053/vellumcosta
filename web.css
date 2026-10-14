@@ -1,0 +1,95 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Estilos comunes que no genera Tailwind: fuentes, iconos y animaciones.
+   Va antes de tailwind.css para que las clases de Tailwind puedan
+   cambiar lo que se define aquí (por ejemplo, "hidden" en un icono).
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Fuentes alojadas en la propia web (carpeta fuentes) ── */
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url(fuentes/montserrat-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url(fuentes/montserrat-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url(fuentes/playfair-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url(fuentes/playfair-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url(fuentes/playfair-italic-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url(fuentes/playfair-italic-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ── Iconos SVG (sustituyen a Font Awesome): miden lo mismo que el texto y toman su color ── */
+.icon {
+    display: inline-block;
+    height: 1em;
+    width: auto;
+    overflow: visible;
+    vertical-align: -0.125em;
+    fill: currentColor;
+}
+
+/* ── Animaciones al hacer scroll (sustituyen a AOS; las activa animaciones.js) ──
+   Solo se esconde el contenido si el navegador ha ejecutado el script de la cabecera
+   (clase "anim"); sin JavaScript todo se ve desde el principio. */
+html.anim [data-aos]:not(.aos-done) { transition-property: opacity, transform; transition-timing-function: ease; transition-duration: .8s; }
+html.anim [data-aos]:not(.aos-animate) { opacity: 0; }
+html.anim [data-aos="fade-up"]:not(.aos-animate) { transform: translate3d(0, 100px, 0); }
+html.anim [data-aos="fade-down"]:not(.aos-animate) { transform: translate3d(0, -100px, 0); }
+html.anim [data-aos="fade-left"]:not(.aos-animate) { transform: translate3d(100px, 0, 0); }
+html.anim [data-aos="fade-right"]:not(.aos-animate) { transform: translate3d(-100px, 0, 0); }
+html.anim [data-aos="zoom-in"]:not(.aos-animate) { transform: scale(.6); }
+@media (prefers-reduced-motion: reduce) {
+    html.anim [data-aos]:not(.aos-animate) { opacity: 1; transform: none; }
+    html.anim [data-aos]:not(.aos-done) { transition: none; }
+}
+
+/* ── Clases de Tailwind que faltaban en tailwind.css ── */
+/* Enlace "Saltar al contenido principal": oculto hasta que se llega a él con el teclado */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+.focus\:not-sr-only:focus { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; }
+.focus\:absolute:focus { position: absolute; }
+.focus\:top-4:focus { top: 1rem; }
+.focus\:left-4:focus { left: 1rem; }
+.focus\:z-50:focus { z-index: 60; } /* por encima del menú fijo, que también usa z-50 */
+/* Flecha de las preguntas frecuentes: separada del texto y gira al abrir la respuesta */
+.flex-shrink-0 { flex-shrink: 0; }
+.ml-4 { margin-left: 1rem; }
+.group[open] .group-open\:rotate-180 { transform: rotate(180deg); }
+/* Iconos grandes en su propia línea (gracias, error, servicios) */
+.leading-none { line-height: 1; }

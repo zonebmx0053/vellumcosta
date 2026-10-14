@@ -3,101 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Tema antes de pintar la página (evita el destello en claro) y animaciones de scroll (animaciones.js).
+        (function () {
+            var root = document.documentElement;
+            try {
+                if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) root.classList.add('dark');
+                else root.classList.remove('dark');
+            } catch (e) { }
+            root.classList.add('anim');
+            // Si animaciones.js no llega a cargarse, el contenido no se queda escondido.
+            setTimeout(function () { if (!window.vcAnim) root.classList.remove('anim'); }, 3000);
+        })();
+    </script>
 
     <title>Property Management Marbella | Gestión Alquileres Milla de Oro | Vellum Costa</title>
     <meta name="description" content="Gestión profesional de propiedades y alquiler vacacional en Marbella. Servicio boutique en la Milla de Oro, Puerto Banús y Nueva Andalucía. Auditoría gratuita.">
-    <link rel="canonical" href="https://vellumcosta.com/area-marbella.html" />
-    <link rel="alternate" hreflang="es" href="https://vellumcosta.com/area-marbella.html" />
-    <link rel="alternate" hreflang="x-default" href="https://vellumcosta.com/area-marbella.html" />
-    <link rel="alternate" hreflang="en" href="https://vellumcosta.com/area-marbella-en.html" />
+    <link rel="canonical" href="https://www.vellumcosta.com/area-marbella" />
+    <link rel="alternate" hreflang="es" href="https://www.vellumcosta.com/area-marbella" />
+    <link rel="alternate" hreflang="x-default" href="https://www.vellumcosta.com/area-marbella" />
+    <link rel="alternate" hreflang="en" href="https://www.vellumcosta.com/area-marbella-en" />
     <link rel="icon" type="image/png" href="LogoPestaña.png">
 
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vellumcosta.com/area-marbella.html">
+    <meta property="og:url" content="https://www.vellumcosta.com/area-marbella">
     <meta property="og:title" content="Property Management Marbella | Gestión Alquileres Milla de Oro | Vellum Costa">
     <meta property="og:description" content="Gestión profesional de propiedades y alquiler vacacional en Marbella. Servicio boutique en la Milla de Oro, Puerto Banús y Nueva Andalucía. Auditoría gratuita.">
-    <meta property="og:image" content="https://vellumcosta.com/marbella.jpg">
+    <meta property="og:image" content="https://www.vellumcosta.com/marbella.jpg">
     <meta property="og:locale" content="es_ES">
     <meta property="og:site_name" content="Vellum Costa">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Property Management Marbella | Gestión Alquileres Milla de Oro | Vellum Costa">
     <meta name="twitter:description" content="Gestión profesional de propiedades y alquiler vacacional en Marbella. Milla de Oro, Puerto Banús y Nueva Andalucía.">
-    <meta name="twitter:image" content="https://vellumcosta.com/marbella.jpg">
+    <meta name="twitter:image" content="https://www.vellumcosta.com/marbella.jpg">
     <meta name="theme-color" content="#B8963E">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "LocalBusiness",
-          "name": "Vellum Costa – Property Management Marbella",
-          "description": "Gestión profesional de propiedades y alquiler vacacional en Marbella, Milla de Oro, Puerto Banús y Nueva Andalucía.",
-          "url": "https://vellumcosta.com/area-marbella.html",
-          "telephone": "+34642827794",
-          "email": "info@vellumcosta.com",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Marbella",
-            "addressRegion": "Málaga",
-            "addressCountry": "ES"
-          },
-          "areaServed": { "@type": "City", "name": "Marbella" },
-          "priceRange": "€€€"
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://vellumcosta.com/inicio.html" },
-            { "@type": "ListItem", "position": 2, "name": "Áreas", "item": "https://vellumcosta.com/areas.html" },
-            { "@type": "ListItem", "position": 3, "name": "Marbella", "item": "https://vellumcosta.com/area-marbella.html" }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "¿Cuánto cobra Vellum Costa por gestionar mi propiedad en Marbella?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Nuestras comisiones son transparentes y se adaptan al tipo de propiedad y al nivel de servicio requerido. Ofrecemos una auditoría gratuita sin compromiso para presentarle una propuesta personalizada." }
-            },
-            {
-              "@type": "Question",
-              "name": "¿Qué plataformas de alquiler vacacional utilizáis en Marbella?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Gestionamos activamente su propiedad en Airbnb, Booking.com, Vrbo y otras plataformas especializadas en el segmento de lujo. Aplicamos precios dinámicos para maximizar la rentabilidad en cada temporada." }
-            },
-            {
-              "@type": "Question",
-              "name": "¿Cuánto puede generar mi propiedad en Marbella con alquiler vacacional?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Una villa o apartamento bien gestionado en Marbella puede alcanzar ocupaciones superiores al 75–85% en temporada alta, con precios nocturnos muy competitivos. La rentabilidad concreta depende de la ubicación, tamaño y estado de la propiedad; nuestra auditoría le dará cifras reales." }
-            },
-            {
-              "@type": "Question",
-              "name": "¿Incluís el mantenimiento de la propiedad?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Sí. Nuestro servicio integral cubre inspecciones regulares, mantenimiento preventivo, gestión de incidencias y coordinación con proveedores de confianza en Marbella, todo con reportes transparentes para el propietario." }
-            },
-            {
-              "@type": "Question",
-              "name": "¿Cómo funciona el check-in para los huéspedes en Marbella?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Ofrecemos check-in personalizado y flexible, con bienvenida presencial o mediante sistemas de acceso inteligente según las preferencias del propietario. Nuestro equipo local garantiza una primera impresión impecable." }
-            }
-          ]
-        }
-      ]
-    }
-    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LocalBusiness","name":"Vellum Costa – Property Management Marbella","description":"Gestión profesional de propiedades y alquiler vacacional en Marbella, Milla de Oro, Puerto Banús y Nueva Andalucía.","url":"https://www.vellumcosta.com/area-marbella","telephone":"+34642827794","email":"info@vellumcosta.com","address":{"@type":"PostalAddress","addressLocality":"Marbella","addressRegion":"Málaga","addressCountry":"ES"},"areaServed":{"@type":"City","name":"Marbella"},"priceRange":"€€€"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://www.vellumcosta.com/"},{"@type":"ListItem","position":2,"name":"Áreas","item":"https://www.vellumcosta.com/areas"},{"@type":"ListItem","position":3,"name":"Marbella","item":"https://www.vellumcosta.com/area-marbella"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Cuánto cobra Vellum Costa por gestionar mi propiedad en Marbella?","acceptedAnswer":{"@type":"Answer","text":"Nuestras comisiones son transparentes y se adaptan al tipo de propiedad y al nivel de servicio requerido. Ofrecemos una auditoría gratuita sin compromiso para presentarle una propuesta personalizada."}},{"@type":"Question","name":"¿Qué plataformas de alquiler vacacional utilizáis en Marbella?","acceptedAnswer":{"@type":"Answer","text":"Gestionamos activamente su propiedad en Airbnb, Booking.com, Vrbo y otras plataformas especializadas en el segmento de lujo. Aplicamos precios dinámicos para maximizar la rentabilidad en cada temporada."}},{"@type":"Question","name":"¿Cuánto puede generar mi propiedad en Marbella?","acceptedAnswer":{"@type":"Answer","text":"Una villa o apartamento bien gestionado en Marbella puede alcanzar ocupaciones superiores al 75–85% en temporada alta, con precios nocturnos muy competitivos. La rentabilidad concreta depende de la ubicación, tamaño y estado de la propiedad; nuestra auditoría le dará cifras reales."}},{"@type":"Question","name":"¿Incluís el mantenimiento de la propiedad?","acceptedAnswer":{"@type":"Answer","text":"Sí. Nuestro servicio integral cubre inspecciones regulares, mantenimiento preventivo, gestión de incidencias y coordinación con proveedores de confianza en Marbella, todo con reportes transparentes para el propietario."}},{"@type":"Question","name":"¿Cómo funciona el check-in para los huéspedes?","acceptedAnswer":{"@type":"Answer","text":"Ofrecemos check-in personalizado y flexible, con bienvenida presencial o mediante sistemas de acceso inteligente según las preferencias del propietario. Nuestro equipo local garantiza una primera impresión impecable."}}]}]}</script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
-    <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-
+    <link rel="preload" href="fuentes/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fuentes/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="colores.css">
+    <link rel="stylesheet" href="web.css">
     <link rel="stylesheet" href="tailwind.css">
 </head>
 <body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased selection:bg-brand-gold selection:text-white transition-colors duration-500">
@@ -105,20 +50,20 @@
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 bg-brand-gold text-brand-dark px-4 py-2 rounded font-semibold text-sm">Saltar al contenido principal</a>
     <nav class="fixed w-full top-0 z-50 bg-brand-bg/90 dark:bg-brand-darkmode/90 backdrop-blur-md border-b border-brand-dark/10 dark:border-white/10 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="inicio.html" class="block">
-                <img src="LOGO.png" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+            <a href="index.html" class="block">
+                <img src="logo.webp" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
             </a>
             <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
-                <a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
                 <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
                 <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
                 <a href="areas.html" class="text-brand-gold transition-colors">Áreas</a>
                 <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
-                <a href="inicio.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+                <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
             </div>
             <div class="md:hidden flex items-center">
                 <button id="mobile-menu-button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu" class="text-brand-dark dark:text-white focus:outline-none">
-                    <i class="fa-solid fa-bars text-2xl" aria-hidden="true"></i>
+                    <svg class="icon text-2xl" viewBox="0 0 448 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
                 </button>
             </div>
             <div class="hidden md:flex items-center space-x-5">
@@ -126,7 +71,7 @@
                     <button class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none flex items-center py-2 space-x-2">
                         <img src="flag-es.svg" alt="" class="w-5 h-auto rounded-sm shadow-sm">
                         <span class="font-bold text-sm tracking-wide">ES</span>
-                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 opacity-70" aria-hidden="true"></i>
+                        <svg class="icon text-[10px] ml-1 opacity-70" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                     </button>
                     <div class="absolute right-0 mt-0 w-36 bg-white dark:bg-brand-darkcard border border-brand-dark/10 dark:border-white/10 rounded-sm shadow-xl opacity-0 invisible transform -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
                         <div class="py-2 flex flex-col">
@@ -140,20 +85,20 @@
                     </div>
                 </div>
                 <button id="theme-toggle" aria-label="Cambiar tema" class="text-brand-dark dark:text-white hover:text-brand-gold transition-colors focus:outline-none">
-                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
-                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                    <svg id="theme-toggle-dark-icon" class="icon hidden text-lg" viewBox="0 0 384 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
+                    <svg id="theme-toggle-light-icon" class="icon hidden text-lg" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
                 </button>
-                <a href="inicio.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
+                <a href="index.html#contacto" class="border border-brand-gold text-brand-gold px-6 py-2 hover:bg-brand-gold hover:text-white transition-all duration-300 text-sm font-medium">Auditoría</a>
             </div>
         </div>
         <div id="mobile-menu" class="hidden bg-brand-bg dark:bg-brand-darkmode border-b border-brand-dark/10 dark:border-white/10 md:hidden">
             <div class="px-6 py-4 space-y-4 text-center">
-                <a href="inicio.html" class="block text-brand-dark dark:text-white">Inicio</a>
+                <a href="index.html" class="block text-brand-dark dark:text-white">Inicio</a>
                 <a href="servicios.html" class="block text-brand-dark dark:text-white">Servicios</a>
                 <a href="nosotros.html" class="block text-brand-dark dark:text-white">Nosotros</a>
                 <a href="areas.html" class="block text-brand-gold font-bold">Áreas</a>
                 <a href="blog.html" class="block text-brand-dark dark:text-white">Blog</a>
-                <a href="inicio.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
+                <a href="index.html#contacto" class="block text-brand-dark dark:text-white">Contacto</a>
                 <div class="border-t border-brand-dark/10 dark:border-white/10 pt-4 mt-4 flex justify-center space-x-8">
                     <a href="#" class="text-brand-gold font-bold flex items-center space-x-2">
                         <img src="flag-es.svg" alt="" class="w-5 h-auto rounded-sm shadow-sm"><span>ES</span>
@@ -162,7 +107,7 @@
                         <img src="flag-uk.svg" alt="" class="w-5 h-auto rounded-sm shadow-sm"><span>EN</span>
                     </a>
                 </div>
-                <a href="inicio.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
+                <a href="index.html#contacto" class="block border border-brand-gold text-brand-gold py-2 mt-4 font-bold">Solicitar Auditoría</a>
             </div>
         </div>
     </nav>
@@ -171,10 +116,10 @@
         <div class="max-w-5xl mx-auto px-6 text-center" data-aos="fade-down">
             <nav aria-label="Breadcrumb" class="mb-8">
                 <ol class="flex items-center justify-center space-x-2 text-xs text-white/40 uppercase tracking-widest">
-                    <li><a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a></li>
-                    <li><i class="fa-solid fa-chevron-right text-[8px]" aria-hidden="true"></i></li>
+                    <li><a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a></li>
+                    <li><svg class="icon text-[8px]" viewBox="0 0 320 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></li>
                     <li><a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a></li>
-                    <li><i class="fa-solid fa-chevron-right text-[8px]" aria-hidden="true"></i></li>
+                    <li><svg class="icon text-[8px]" viewBox="0 0 320 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></li>
                     <li class="text-brand-gold">Marbella</li>
                 </ol>
             </nav>
@@ -244,32 +189,32 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-brand-bg dark:bg-brand-darkcard p-8 border border-brand-dark/5 dark:border-white/5 hover:shadow-xl transition-all duration-500 group" data-aos="fade-up" data-aos-delay="100">
-                        <i class="fa-solid fa-calendar-check text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true"></i>
+                        <svg class="icon text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 448 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zM329 305c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-95 95-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L329 305z"/></svg>
                         <h3 class="font-serif text-xl mb-3 text-brand-dark dark:text-white">Gestión de Reservas</h3>
                         <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm leading-relaxed">Optimizamos su calendario en Airbnb, Booking y plataformas de lujo con precios dinámicos adaptados a la temporada y los eventos de Marbella.</p>
                     </div>
                     <div class="bg-brand-bg dark:bg-brand-darkcard p-8 border border-brand-dark/5 dark:border-white/5 hover:shadow-xl transition-all duration-500 group" data-aos="fade-up" data-aos-delay="200">
-                        <i class="fa-solid fa-broom text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true"></i>
+                        <svg class="icon text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 576 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M566.6 54.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192-34.7-34.7c-4.2-4.2-10-6.6-16-6.6c-12.5 0-22.6 10.1-22.6 22.6v29.1L364.3 320h29.1c12.5 0 22.6-10.1 22.6-22.6c0-6-2.4-11.8-6.6-16l-34.7-34.7 192-192zM341.1 353.4L222.6 234.9c-42.7-3.7-85.2 11.7-115.8 42.3l-8 8C76.5 307.5 64 337.7 64 369.2c0 6.8 7.1 11.2 13.2 8.2l51.1-25.5c5-2.5 9.5 4.1 5.4 7.9L7.3 473.4C2.7 477.6 0 483.6 0 489.9C0 502.1 9.9 512 22.1 512l173.3 0c38.8 0 75.9-15.4 103.4-42.8c30.6-30.6 45.9-73.1 42.3-115.8z"/></svg>
                         <h3 class="font-serif text-xl mb-3 text-brand-dark dark:text-white">Limpieza y Preparación</h3>
                         <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm leading-relaxed">Equipos especializados que preparan su propiedad al nivel de un hotel boutique antes de cada entrada. Lencería de calidad y amenities premium.</p>
                     </div>
                     <div class="bg-brand-bg dark:bg-brand-darkcard p-8 border border-brand-dark/5 dark:border-white/5 hover:shadow-xl transition-all duration-500 group" data-aos="fade-up" data-aos-delay="300">
-                        <i class="fa-solid fa-key text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true"></i>
+                        <svg class="icon text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0S160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17v80c0 13.3 10.7 24 24 24h80c13.3 0 24-10.7 24-24V448h40c13.3 0 24-10.7 24-24V384h40c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z"/></svg>
                         <h3 class="font-serif text-xl mb-3 text-brand-dark dark:text-white">Check-in Personalizado</h3>
                         <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm leading-relaxed">Recepción presencial o mediante acceso inteligente. Sus huéspedes se sienten bienvenidos desde el primer momento, lo que se traduce en valoraciones excelentes.</p>
                     </div>
                     <div class="bg-brand-bg dark:bg-brand-darkcard p-8 border border-brand-dark/5 dark:border-white/5 hover:shadow-xl transition-all duration-500 group" data-aos="fade-up" data-aos-delay="400">
-                        <i class="fa-solid fa-wrench text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true"></i>
+                        <svg class="icon text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M352 320c88.4 0 160-71.6 160-160c0-15.3-2.2-30.1-6.2-44.2c-3.1-10.8-16.4-13.2-24.3-5.3l-76.8 76.8c-3 3-7.1 4.7-11.3 4.7H336c-8.8 0-16-7.2-16-16V118.6c0-4.2 1.7-8.3 4.7-11.3l76.8-76.8c7.9-7.9 5.4-21.2-5.3-24.3C382.1 2.2 367.3 0 352 0C263.6 0 192 71.6 192 160c0 19.1 3.4 37.5 9.5 54.5L19.9 396.1C7.2 408.8 0 426.1 0 444.1C0 481.6 30.4 512 67.9 512c18 0 35.3-7.2 48-19.9L297.5 310.5c17 6.2 35.4 9.5 54.5 9.5zM80 408a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
                         <h3 class="font-serif text-xl mb-3 text-brand-dark dark:text-white">Mantenimiento Preventivo</h3>
                         <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm leading-relaxed">Inspecciones regulares, coordinación con proveedores locales de confianza y atención de emergencias 24/7. Su propiedad siempre en perfectas condiciones.</p>
                     </div>
                     <div class="bg-brand-bg dark:bg-brand-darkcard p-8 border border-brand-dark/5 dark:border-white/5 hover:shadow-xl transition-all duration-500 group" data-aos="fade-up" data-aos-delay="500">
-                        <i class="fa-solid fa-camera text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true"></i>
+                        <svg class="icon text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
                         <h3 class="font-serif text-xl mb-3 text-brand-dark dark:text-white">Fotografía Profesional</h3>
                         <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm leading-relaxed">Reportaje fotográfico de alta calidad y descripción estratégica en múltiples idiomas para maximizar el atractivo de su anuncio en el mercado internacional de Marbella.</p>
                     </div>
                     <div class="bg-brand-bg dark:bg-brand-darkcard p-8 border border-brand-dark/5 dark:border-white/5 hover:shadow-xl transition-all duration-500 group" data-aos="fade-up" data-aos-delay="600">
-                        <i class="fa-solid fa-chart-bar text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true"></i>
+                        <svg class="icon text-3xl text-brand-gold mb-5 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zm96 96c0-17.7 14.3-32 32-32l192 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32zm32 64H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 96H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H160c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
                         <h3 class="font-serif text-xl mb-3 text-brand-dark dark:text-white">Informes de Rentabilidad</h3>
                         <p class="text-brand-dark/70 dark:text-white/70 font-light text-sm leading-relaxed">Reportes mensuales detallados con ocupación, ingresos y comparativas de mercado. Toda la información que necesita para tomar decisiones con datos reales.</p>
                     </div>
@@ -286,27 +231,27 @@
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" data-aos="fade-up" data-aos-delay="100">
                 <div class="text-center py-6 px-4 bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 hover:border-brand-gold transition-colors duration-300">
-                    <i class="fa-solid fa-star text-brand-gold mb-3 text-lg" aria-hidden="true"></i>
+                    <svg class="icon text-brand-gold mb-3 text-lg" viewBox="0 0 576 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
                     <p class="font-semibold text-sm text-brand-dark dark:text-white">Milla de Oro</p>
                 </div>
                 <div class="text-center py-6 px-4 bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 hover:border-brand-gold transition-colors duration-300">
-                    <i class="fa-solid fa-sailboat text-brand-gold mb-3 text-lg" aria-hidden="true"></i>
+                    <svg class="icon text-brand-gold mb-3 text-lg" viewBox="0 0 576 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M256 16c0-7 4.5-13.2 11.2-15.3s13.9 .4 17.9 6.1l224 320c3.4 4.9 3.8 11.3 1.1 16.6s-8.2 8.6-14.2 8.6H272c-8.8 0-16-7.2-16-16V16zM212.1 96.5c7 1.9 11.9 8.2 11.9 15.5V336c0 8.8-7.2 16-16 16H80c-5.7 0-11-3-13.8-8s-2.9-11-.1-16l128-224c3.6-6.3 11-9.4 18-7.5zM5.7 404.3C2.8 394.1 10.5 384 21.1 384H554.9c10.6 0 18.3 10.1 15.4 20.3l-4 14.3C550.7 473.9 500.4 512 443 512H133C75.6 512 25.3 473.9 9.7 418.7l-4-14.3z"/></svg>
                     <p class="font-semibold text-sm text-brand-dark dark:text-white">Puerto Banús</p>
                 </div>
                 <div class="text-center py-6 px-4 bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 hover:border-brand-gold transition-colors duration-300">
-                    <i class="fa-solid fa-golf-ball-tee text-brand-gold mb-3 text-lg" aria-hidden="true"></i>
+                    <svg class="icon text-brand-gold mb-3 text-lg" viewBox="0 0 384 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M384 192c0 66.8-34.1 125.6-85.8 160H85.8C34.1 317.6 0 258.8 0 192C0 86 86 0 192 0S384 86 384 192zM242.1 256.6c0 18.5-15 33.5-33.5 33.5c-4.9 0-9.1 5.1-5.4 8.4c5.9 5.2 13.7 8.4 22.1 8.4c18.5 0 33.5-15 33.5-33.5c0-8.5-3.2-16.2-8.4-22.1c-3.3-3.7-8.4 .5-8.4 5.4zm-52.3-49.3c-4.9 0-9.1 5.1-5.4 8.4c5.9 5.2 13.7 8.4 22.1 8.4c18.5 0 33.5-15 33.5-33.5c0-8.5-3.2-16.2-8.4-22.1c-3.3-3.7-8.4 .5-8.4 5.4c0 18.5-15 33.5-33.5 33.5zm113.5-17.5c0 18.5-15 33.5-33.5 33.5c-4.9 0-9.1 5.1-5.4 8.4c5.9 5.2 13.7 8.4 22.1 8.4c18.5 0 33.5-15 33.5-33.5c0-8.5-3.2-16.2-8.4-22.1c-3.3-3.7-8.4 .5-8.4 5.4zM96 416c0-17.7 14.3-32 32-32h64 64c17.7 0 32 14.3 32 32s-14.3 32-32 32H240c-8.8 0-16 7.2-16 16v16c0 17.7-14.3 32-32 32s-32-14.3-32-32V464c0-8.8-7.2-16-16-16H128c-17.7 0-32-14.3-32-32z"/></svg>
                     <p class="font-semibold text-sm text-brand-dark dark:text-white">Nueva Andalucía</p>
                 </div>
                 <div class="text-center py-6 px-4 bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 hover:border-brand-gold transition-colors duration-300">
-                    <i class="fa-solid fa-city text-brand-gold mb-3 text-lg" aria-hidden="true"></i>
+                    <svg class="icon text-brand-gold mb-3 text-lg" viewBox="0 0 640 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M480 48c0-26.5-21.5-48-48-48H336c-26.5 0-48 21.5-48 48V96H224V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V96H112V24c0-13.3-10.7-24-24-24S64 10.7 64 24V96H48C21.5 96 0 117.5 0 144v96V464c0 26.5 21.5 48 48 48H304h32 96H592c26.5 0 48-21.5 48-48V240c0-26.5-21.5-48-48-48H480V48zm96 320v32c0 8.8-7.2 16-16 16H528c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16zM240 416H208c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16zM128 400c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32zM560 256c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H528c-8.8 0-16-7.2-16-16V272c0-8.8 7.2-16 16-16h32zM256 176v32c0 8.8-7.2 16-16 16H208c-8.8 0-16-7.2-16-16V176c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16zM112 160c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V176c0-8.8 7.2-16 16-16h32zM256 304c0 8.8-7.2 16-16 16H208c-8.8 0-16-7.2-16-16V272c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32zM112 320H80c-8.8 0-16-7.2-16-16V272c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16zm304-48v32c0 8.8-7.2 16-16 16H368c-8.8 0-16-7.2-16-16V272c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16zM400 64c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16H368c-8.8 0-16-7.2-16-16V80c0-8.8 7.2-16 16-16h32zm16 112v32c0 8.8-7.2 16-16 16H368c-8.8 0-16-7.2-16-16V176c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16z"/></svg>
                     <p class="font-semibold text-sm text-brand-dark dark:text-white">Marbella Centro</p>
                 </div>
                 <div class="text-center py-6 px-4 bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 hover:border-brand-gold transition-colors duration-300">
-                    <i class="fa-solid fa-sun text-brand-gold mb-3 text-lg" aria-hidden="true"></i>
+                    <svg class="icon text-brand-gold mb-3 text-lg" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
                     <p class="font-semibold text-sm text-brand-dark dark:text-white">Marbella Este</p>
                 </div>
                 <div class="text-center py-6 px-4 bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 hover:border-brand-gold transition-colors duration-300">
-                    <i class="fa-solid fa-map-location-dot text-brand-gold mb-3 text-lg" aria-hidden="true"></i>
+                    <svg class="icon text-brand-gold mb-3 text-lg" viewBox="0 0 576 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M408 120c0 54.6-73.1 151.9-105.2 192c-7.7 9.6-22 9.6-29.6 0C241.1 271.9 168 174.6 168 120C168 53.7 221.7 0 288 0s120 53.7 120 120zm8 80.4c3.5-6.9 6.7-13.8 9.6-20.6c.5-1.2 1-2.5 1.5-3.7l116-46.4C558.9 123.4 576 135 576 152V422.8c0 9.8-6 18.6-15.1 22.3L416 503V200.4zM137.6 138.3c2.4 14.1 7.2 28.3 12.8 41.5c2.9 6.8 6.1 13.7 9.6 20.6V451.8L32.9 502.7C17.1 509 0 497.4 0 480.4V209.6c0-9.8 6-18.6 15.1-22.3l122.6-49zM327.8 332c13.9-17.4 35.7-45.7 56.2-77V504.3L192 449.4V255c20.5 31.3 42.3 59.6 56.2 77c20.5 25.6 59.1 25.6 79.6 0zM288 152a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
                     <p class="font-semibold text-sm text-brand-dark dark:text-white">Elviria / Las Chapas</p>
                 </div>
             </div>
@@ -323,35 +268,35 @@
                     <details class="group bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 rounded-sm overflow-hidden">
                         <summary class="flex justify-between items-center px-6 py-5 cursor-pointer font-semibold text-brand-dark dark:text-white list-none hover:text-brand-gold dark:hover:text-brand-gold transition-colors duration-200">
                             ¿Cuánto cobra Vellum Costa por gestionar mi propiedad en Marbella?
-                            <i class="fa-solid fa-chevron-down text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" aria-hidden="true"></i>
+                            <svg class="icon text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                         </summary>
                         <p class="px-6 pb-5 text-brand-dark/70 dark:text-white/70 font-light leading-relaxed text-sm">Nuestras comisiones son transparentes y se adaptan al tipo de propiedad y al nivel de servicio requerido. Ofrecemos una auditoría gratuita sin compromiso para presentarle una propuesta personalizada.</p>
                     </details>
                     <details class="group bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 rounded-sm overflow-hidden">
                         <summary class="flex justify-between items-center px-6 py-5 cursor-pointer font-semibold text-brand-dark dark:text-white list-none hover:text-brand-gold dark:hover:text-brand-gold transition-colors duration-200">
                             ¿Qué plataformas de alquiler vacacional utilizáis en Marbella?
-                            <i class="fa-solid fa-chevron-down text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" aria-hidden="true"></i>
+                            <svg class="icon text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                         </summary>
                         <p class="px-6 pb-5 text-brand-dark/70 dark:text-white/70 font-light leading-relaxed text-sm">Gestionamos activamente su propiedad en Airbnb, Booking.com, Vrbo y otras plataformas especializadas en el segmento de lujo. Aplicamos precios dinámicos para maximizar la rentabilidad en cada temporada.</p>
                     </details>
                     <details class="group bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 rounded-sm overflow-hidden">
                         <summary class="flex justify-between items-center px-6 py-5 cursor-pointer font-semibold text-brand-dark dark:text-white list-none hover:text-brand-gold dark:hover:text-brand-gold transition-colors duration-200">
                             ¿Cuánto puede generar mi propiedad en Marbella?
-                            <i class="fa-solid fa-chevron-down text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" aria-hidden="true"></i>
+                            <svg class="icon text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                         </summary>
                         <p class="px-6 pb-5 text-brand-dark/70 dark:text-white/70 font-light leading-relaxed text-sm">Una villa o apartamento bien gestionado en Marbella puede alcanzar ocupaciones superiores al 75–85% en temporada alta, con precios nocturnos muy competitivos. La rentabilidad concreta depende de la ubicación, tamaño y estado de la propiedad; nuestra auditoría le dará cifras reales.</p>
                     </details>
                     <details class="group bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 rounded-sm overflow-hidden">
                         <summary class="flex justify-between items-center px-6 py-5 cursor-pointer font-semibold text-brand-dark dark:text-white list-none hover:text-brand-gold dark:hover:text-brand-gold transition-colors duration-200">
                             ¿Incluís el mantenimiento de la propiedad?
-                            <i class="fa-solid fa-chevron-down text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" aria-hidden="true"></i>
+                            <svg class="icon text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                         </summary>
                         <p class="px-6 pb-5 text-brand-dark/70 dark:text-white/70 font-light leading-relaxed text-sm">Sí. Nuestro servicio integral cubre inspecciones regulares, mantenimiento preventivo, gestión de incidencias y coordinación con proveedores de confianza en Marbella, todo con reportes transparentes para el propietario.</p>
                     </details>
                     <details class="group bg-white dark:bg-brand-darkcard border border-brand-dark/5 dark:border-white/5 rounded-sm overflow-hidden">
                         <summary class="flex justify-between items-center px-6 py-5 cursor-pointer font-semibold text-brand-dark dark:text-white list-none hover:text-brand-gold dark:hover:text-brand-gold transition-colors duration-200">
                             ¿Cómo funciona el check-in para los huéspedes?
-                            <i class="fa-solid fa-chevron-down text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" aria-hidden="true"></i>
+                            <svg class="icon text-brand-gold text-sm flex-shrink-0 ml-4 transition-transform duration-300 group-open:rotate-180" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                         </summary>
                         <p class="px-6 pb-5 text-brand-dark/70 dark:text-white/70 font-light leading-relaxed text-sm">Ofrecemos check-in personalizado y flexible, con bienvenida presencial o mediante sistemas de acceso inteligente según las preferencias del propietario. Nuestro equipo local garantiza una primera impresión impecable.</p>
                     </details>
@@ -368,9 +313,9 @@
                             <div class="w-12 h-0.5 bg-brand-gold mb-8"></div>
                             <p class="font-light text-white/80 leading-relaxed mb-12">Solicite su auditoría gratuita y descubra el potencial real de su propiedad en Marbella. Sin compromiso, con cifras reales de mercado.</p>
                             <div class="space-y-6 font-light">
-                                <div class="flex items-center"><i class="fa-solid fa-phone text-brand-gold text-xl w-8" aria-hidden="true"></i><a href="tel:+34642827794" class="tracking-wide hover:text-brand-gold transition-colors">+34 642 827 794</a></div>
-                                <div class="flex items-center"><i class="fa-solid fa-envelope text-brand-gold text-xl w-8" aria-hidden="true"></i><a href="mailto:info@vellumcosta.com" class="tracking-wide hover:text-brand-gold transition-colors">info@vellumcosta.com</a></div>
-                                <div class="flex items-center"><i class="fa-solid fa-location-dot text-brand-gold text-xl w-8" aria-hidden="true"></i><span class="tracking-wide">Marbella, Málaga, España</span></div>
+                                <div class="flex items-center"><svg class="icon text-brand-gold text-xl w-8" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg><a href="tel:+34642827794" class="tracking-wide hover:text-brand-gold transition-colors">+34 642 827 794</a></div>
+                                <div class="flex items-center"><svg class="icon text-brand-gold text-xl w-8" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg><a href="mailto:info@vellumcosta.com" class="tracking-wide hover:text-brand-gold transition-colors">info@vellumcosta.com</a></div>
+                                <div class="flex items-center"><svg class="icon text-brand-gold text-xl w-8" viewBox="0 0 384 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg><span class="tracking-wide">Marbella, Málaga, España</span></div>
                             </div>
                         </div>
                     </div>
@@ -418,26 +363,26 @@
     <footer class="bg-white dark:bg-brand-darkcard border-t border-brand-dark/10 dark:border-white/10 pt-16 pb-8 px-6 text-center md:text-left transition-colors duration-500">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
             <div>
-                <a href="inicio.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
-                    <img src="LOGO.png" alt="Icono Vellum Costa" width="192" height="108" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
+                    <img src="logo.webp" alt="Icono Vellum Costa" width="192" height="108" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                     <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM&nbsp;COSTA</span>
                 </a>
                 <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm">Property Management Boutique en la Costa del Sol. Paz mental para propietarios exigentes.</p>
             </div>
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Contacto</h3>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><i class="fa-solid fa-envelope mr-2 text-brand-gold" aria-hidden="true"></i> <a href="mailto:info@vellumcosta.com" class="hover:text-brand-gold transition-colors">info@vellumcosta.com</a></p>
-                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><i class="fa-solid fa-phone mr-2 text-brand-gold" aria-hidden="true"></i> <a href="tel:+34642827794" class="hover:text-brand-gold transition-colors">+34 642 827 794</a></p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm mb-2"><svg class="icon mr-2 text-brand-gold" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg> <a href="mailto:info@vellumcosta.com" class="hover:text-brand-gold transition-colors">info@vellumcosta.com</a></p>
+                <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm"><svg class="icon mr-2 text-brand-gold" viewBox="0 0 512 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg> <a href="tel:+34642827794" class="hover:text-brand-gold transition-colors">+34 642 827 794</a></p>
             </div>
             <div>
                 <h3 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark dark:text-white">Navegación</h3>
                 <div class="flex flex-col space-y-2 text-sm text-brand-dark/75 dark:text-white/60 font-light">
-                    <a href="inicio.html" class="hover:text-brand-gold transition-colors">Inicio</a>
+                    <a href="index.html" class="hover:text-brand-gold transition-colors">Inicio</a>
                     <a href="servicios.html" class="hover:text-brand-gold transition-colors">Servicios</a>
                     <a href="nosotros.html" class="hover:text-brand-gold transition-colors">Nosotros</a>
                     <a href="areas.html" class="hover:text-brand-gold transition-colors">Áreas</a>
                     <a href="blog.html" class="hover:text-brand-gold transition-colors">Blog</a>
-                    <a href="inicio.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
+                    <a href="index.html#contacto" class="hover:text-brand-gold transition-colors">Contacto</a>
                 </div>
             </div>
             
@@ -470,11 +415,8 @@
     </footer>
 
     <a href="https://wa.me/34642827794" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-110 transition-transform duration-300 z-50">
-        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+        <svg class="icon" viewBox="0 0 448 512" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
     </a>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" integrity="sha384-wziAfh6b/qT+3LrqebF9WeK4+J5sehS6FA10J1t3a866kJ/fvU5UwofWnQyzLtwu" crossorigin="anonymous"></script>
-    <script>AOS.init({ once: true, offset: 80, duration: 800 });</script>
 
     <script>
         const formArea = document.getElementById('mi-formulario-area');
@@ -505,6 +447,7 @@
 
     <script src="form-rate-limit.js" defer></script>
     <script src="cookie-banner.js" defer></script>
+    <script src="animaciones.js" defer></script>
     <script src="theme.js" defer></script>
 </body>
 </html>

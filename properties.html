@@ -3,39 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Tema antes de pintar la página (evita el destello en claro) y animaciones de scroll (animaciones.js).
+        (function () {
+            var root = document.documentElement;
+            try {
+                if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) root.classList.add('dark');
+                else root.classList.remove('dark');
+            } catch (e) { }
+            root.classList.add('anim');
+            // Si animaciones.js no llega a cargarse, el contenido no se queda escondido.
+            setTimeout(function () { if (!window.vcAnim) root.classList.remove('anim'); }, 3000);
+        })();
+    </script>
     
     <title>Holiday Rental Properties on the Costa del Sol | Vellum Costa</title>
     <meta name="description" content="Check the availability of our holiday rental properties on the Costa del Sol and book directly with Vellum Costa.">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="canonical" href="https://vellumcosta.com/properties.html" />
-    <link rel="alternate" hreflang="es" href="https://vellumcosta.com/propiedades.html" />
-    <link rel="alternate" hreflang="x-default" href="https://vellumcosta.com/propiedades.html" />
-    <link rel="alternate" hreflang="en" href="https://vellumcosta.com/properties.html" />
+    <link rel="canonical" href="https://www.vellumcosta.com/properties" />
+    <link rel="alternate" hreflang="es" href="https://www.vellumcosta.com/propiedades" />
+    <link rel="alternate" hreflang="x-default" href="https://www.vellumcosta.com/propiedades" />
+    <link rel="alternate" hreflang="en" href="https://www.vellumcosta.com/properties" />
     <link rel="icon" type="image/png" href="LogoPestaña.png">
     <meta name="theme-color" content="#B8963E">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
-    <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
+    <link rel="preload" href="fuentes/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fuentes/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="colores.css">
+    <link rel="stylesheet" href="web.css">
     <link rel="stylesheet" href="tailwind.css">
     <link rel="stylesheet" href="propiedades.css">
 
-    <script>
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 </head>
 <body class="bg-brand-bg dark:bg-brand-darkmode text-brand-dark dark:text-white font-sans antialiased transition-colors duration-500 overflow-x-hidden">
 
@@ -44,7 +46,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             
             <a href="home.html" class="block">
-                <img src="LOGO.png" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
+                <img src="logo.webp" alt="Vellum Costa Logo" width="192" height="108" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105">
             </a>
             
             <div class="hidden md:flex space-x-8 text-sm font-medium tracking-wide">
@@ -135,7 +137,7 @@
             
             <div>
                 <a href="home.html" class="flex items-center justify-center md:justify-start space-x-3 mb-4 group">
-                    <img src="LOGO.png" alt="Vellum Costa Icon" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    <img src="logo.webp" alt="Vellum Costa Icon" class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                     <span class="font-serif text-2xl font-bold tracking-wider text-brand-dark dark:text-white">VELLUM&nbsp;COSTA</span>
                 </a>
                 <p class="text-brand-dark/75 dark:text-white/60 font-light text-sm">Boutique Property Management on the Costa del Sol. Peace of mind for demanding property owners.</p>
@@ -195,11 +197,9 @@
         <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" integrity="sha384-wziAfh6b/qT+3LrqebF9WeK4+J5sehS6FA10J1t3a866kJ/fvU5UwofWnQyzLtwu" crossorigin="anonymous"></script>
-    <script>AOS.init({ once: true, offset: 100, duration: 800 });</script>
-
     <script src="cookie-banner.js" defer></script>
 
+    <script src="animaciones.js" defer></script>
     <script src="theme.js" defer></script>
     <script src="propiedades-data.js" defer></script>
     <script src="/api/properties" defer></script>

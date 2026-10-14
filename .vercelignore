@@ -13,3 +13,6 @@ Fotos CAMPO ARRIBA
 
 # Imágenes que la web no usa
 sin-usar
+
+# Tests (se ejecutan en local con: node --test "tests/*.test.js")
+tests

@@ -83,7 +83,7 @@
         var price = p.price || {}, nights = diff(a, b), stay = 0;
         for (var d = a; d < b; d = addDays(d, 1)) stay += nightPrice(p, d);
         var extraGuests = price.extraGuestAfter > 0 && price.extraGuestFee > 0 ? Math.max(0, (guests || 0) - price.extraGuestAfter) : 0;
-        var extra = extraGuests * price.extraGuestFee * nights;
+        var extra = extraGuests ? extraGuests * price.extraGuestFee * nights : 0;   // sin suplemento definido, 0 (no NaN)
         var off = discount(p, a, nights, today);
         var amount = off ? Math.round((stay + extra) * off.percent / 100) : 0;
         var cleaning = price.cleaningFee || 0;

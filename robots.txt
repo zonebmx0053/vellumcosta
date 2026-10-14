@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vellumcosta.com/sitemap.xml
+Sitemap: https://www.vellumcosta.com/sitemap.xml
