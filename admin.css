@@ -509,7 +509,7 @@ input.is-bad { border-color: var(--critical); }
 .ad-cal-layout > .ad-card { margin-bottom: 0; }
 .ad-months { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px 28px; }
 .ad-month-name { font-weight: 700; margin-bottom: 8px; font-size: 13.5px; }
-.ad-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 1px 1px 0; }
+.ad-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 1px 1px 0; user-select: none; -webkit-user-select: none; }
 .ad-dow { text-align: center; font-size: 10.5px; font-weight: 700; color: var(--muted); padding-bottom: 6px; }
 /* Cada día es una casilla con su número y, debajo, su precio */
 .ad-day {
