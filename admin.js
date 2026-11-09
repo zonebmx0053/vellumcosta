@@ -215,7 +215,7 @@
         return {
             id: 'casa-' + n, slug: slugify(name) || 'casa-' + n, hidden: true,
             name: { es: name, en: name }, type: '', location: { es: '', en: '' }, province: 'Málaga', license: '',
-            image: '', imageAlt: { es: '', en: '' }, thumbs: false, gallery: [],
+            image: '', imageAlt: { es: '', en: '' }, thumbs: false, gallery: [], photoRooms: {},
             summary: { es: '', en: '' }, guests: 2, bedrooms: 1, bathrooms: 1, toilets: 0, rooms: [],
             description: { es: '', en: '' }, services: [], featured: [], extraServices: [],
             locationText: { es: '', en: '' }, mapQuery: '', mapZoom: 14, checkIn: '15:00', checkOut: '10:00',
@@ -1120,19 +1120,46 @@
             return grid(field('Español', R + '.es'), field('English', R + '.en'));
         }, { empty: 'Nada añadido.' }), 'Solo para lo que no esté en las listas de arriba.', 'fa-circle-plus');
     }
+    // Estancias que se pueden elegir para una foto: [valor, texto]. Los dormitorios, baños y aseos
+    // van numerados hasta los que tiene el alojamiento (o los que ya se estén usando).
+    function spaceOptions(p) {
+        var used = {}, out = [['', 'Sin estancia']];
+        Object.keys(p.photoRooms).forEach(function (src) {
+            var s = C.parseSpace(p.photoRooms[src]);
+            if (s && s.n) used[s.space.id] = Math.max(used[s.space.id] || 0, s.n);
+        });
+        var have = { bedroom: p.bedrooms, bathroom: p.bathrooms, toilet: p.toilets };
+        C.spaces.forEach(function (s) {
+            if (!s.numbered) return out.push([s.id, s.es]);
+            for (var k = 1, top = Math.max(1, have[s.id] || 0, used[s.id] || 0); k <= top; k++) out.push([s.id + '-' + k, s.es + ' ' + k]);
+        });
+        return out;
+    }
+    // Resumen de la ruta fotográfica: cuántas fotos hay en cada estancia y cuántas faltan por asignar.
+    function tourSummary(p, options) {
+        var per = {}, free = 0;
+        p.gallery.forEach(function (src) { var k = p.photoRooms[src]; if (k && C.parseSpace(k)) per[k] = (per[k] || 0) + 1; else free++; });
+        var chips = options.filter(function (o) { return o[0] && per[o[0]]; }).map(function (o) { return '<span class="ad-chip">' + esc(o[1]) + ' · ' + per[o[0]] + '</span>'; });
+        if (!chips.length) return '<p class="ad-help">Elija la estancia de cada foto (debajo de cada una) y la ficha mostrará las fotos agrupadas por estancias: Salón, Cocina, Dormitorio 1… Mientras no haya ninguna asignada, la ficha muestra las fotos seguidas, como hasta ahora.</p>';
+        return '<div class="ad-chips">' + chips.join('') + (free ? '<span class="ad-chip is-error">' + free + ' sin estancia: saldrán en «Fotos adicionales»</span>' : '') + '</div>';
+    }
     function tabFotos(P, p) {
-        var n = p.gallery.length;
+        var n = p.gallery.length, options = spaceOptions(p);
         var photos = n ? '<div class="ad-photos">' + p.gallery.map(function (src, i) {
-            var shown = thumb(p, src);
+            var shown = thumb(p, src), room = p.photoRooms[src] || '';
             return '<figure class="ad-photo' + (i === 0 ? ' is-cover' : '') + '">' + (i === 0 ? '<span class="ad-photo-tag">Portada</span>' : '') +
-                '<img src="' + esc(shown) + '" alt="" loading="lazy" title="' + esc(src) + '"><figcaption>' +
+                '<img src="' + esc(shown) + '" alt="" loading="lazy" title="' + esc(src) + '">' +
+                '<select class="ad-photo-room' + (room ? ' is-set' : '') + '" data-photo-room="' + i + '" aria-label="Estancia de la foto ' + (i + 1) + '">' + options.map(function (o) {
+                    return '<option value="' + o[0] + '"' + (o[0] === room ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+                }).join('') + '</select><figcaption>' +
                 '<button type="button" class="ad-icon-btn" data-act="move" data-list="' + P + 'gallery" data-i="' + i + '" data-d="-1" aria-label="Mover antes"' + (i === 0 ? ' disabled' : '') + '>' + fa('fa-arrow-left') + '</button>' +
                 '<button type="button" class="ad-icon-btn" data-act="cover" data-i="' + i + '" aria-label="Poner como portada" title="Poner como portada"' + (i === 0 ? ' disabled' : '') + '>' + fa('fa-star') + '</button>' +
                 '<button type="button" class="ad-icon-btn" data-act="move" data-list="' + P + 'gallery" data-i="' + i + '" data-d="1" aria-label="Mover después"' + (i === n - 1 ? ' disabled' : '') + '>' + fa('fa-arrow-right') + '</button>' +
                 '<button type="button" class="ad-icon-btn is-danger" data-act="del" data-list="' + P + 'gallery" data-i="' + i + '" aria-label="Quitar de la galería" title="Quitar de la galería">' + fa('fa-trash') + '</button>' +
                 '</figcaption></figure>';
         }).join('') + '</div>' : '<p class="ad-empty">Este alojamiento todavía no tiene fotos.</p>';
-        return card('Galería (' + n + ')', photos, 'Las fotos se ven en este orden y la primera es la portada. Quitar una foto de la galería no borra el archivo.', 'fa-images') +
+        return card('Galería (' + n + ')', (n ? '<div id="ad-tour-sum">' + tourSummary(p, options) + '</div>' : '') + photos,
+            'Las fotos se ven en este orden y la primera es la portada. Dentro de cada estancia, la ficha respeta este orden. Quitar una foto de la galería no borra el archivo.', 'fa-images') +
             card('Añadir una foto', '<div class="ad-inline">' +
                 '<label class="ad-field"><span class="ad-label">Ruta del archivo o dirección https</span><input type="text" id="ad-new-photo" placeholder="fotos/' + esc(p.id) + '/46.jpg"></label>' +
                 '<button type="button" class="ad-btn" data-act="add-photo">' + fa('fa-plus') + 'Añadir</button></div>',
@@ -1372,6 +1399,16 @@
         if (el.hasAttribute('data-draft')) {
             if (st.draft) st.draft[el.getAttribute('data-draft')] = Number(el.value) || 0;
             return;
+        }
+        // Estancia de una foto de la galería (ruta fotográfica de la ficha).
+        if (el.hasAttribute('data-photo-room')) {
+            var fp = current(), src = fp && fp.gallery[+el.getAttribute('data-photo-room')];
+            if (!src) return;
+            if (el.value) fp.photoRooms[src] = el.value; else delete fp.photoRooms[src];
+            el.classList.toggle('is-set', !!el.value);
+            var sum = document.getElementById('ad-tour-sum');
+            if (sum) sum.innerHTML = tourSummary(fp, spaceOptions(fp));
+            return touch();
         }
         if (el.hasAttribute('data-sim')) {
             st.sim.start = el.value;

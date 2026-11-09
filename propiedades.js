@@ -11,7 +11,7 @@
         es: {
             demo: 'Página en preparación: las fechas ocupadas del calendario son de ejemplo.',
             guests: 'huéspedes', bedrooms: 'dormitorios', bathrooms: 'baños',
-            photos: 'Ver las {n} fotos', closePhotos: 'Cerrar', prevPhoto: 'Foto anterior', nextPhoto: 'Foto siguiente',
+            photos: 'Ver las {n} fotos', tourTitle: 'Ruta fotográfica', tourBack: 'Volver a la ficha', closePhotos: 'Cerrar', prevPhoto: 'Foto anterior', nextPhoto: 'Foto siguiente',
             priceAsk: 'Precio a consultar', checkIn: 'Llegada a partir de las {t}', checkOut: 'Salida antes de las {t}',
             toilet: 'aseo', toilets: 'aseos', minNightsLabel: 'Estancia mínima de {n} noches', cleaningFee: 'de limpieza por estancia',
             back: 'Todas las propiedades', about: 'La casa', included: 'Qué incluye', rulesTitle: 'Normas de la casa',
@@ -56,7 +56,7 @@
         en: {
             demo: 'Page in preparation: the booked dates shown in the calendar are samples.',
             guests: 'guests', bedrooms: 'bedrooms', bathrooms: 'bathrooms',
-            photos: 'View all {n} photos', closePhotos: 'Close', prevPhoto: 'Previous photo', nextPhoto: 'Next photo',
+            photos: 'View all {n} photos', tourTitle: 'Photo tour', tourBack: 'Back to the listing', closePhotos: 'Close', prevPhoto: 'Previous photo', nextPhoto: 'Next photo',
             priceAsk: 'Price on request', checkIn: 'Check-in from {t}', checkOut: 'Check-out before {t}',
             toilet: 'toilet', toilets: 'toilets', minNightsLabel: 'Minimum stay of {n} nights', cleaningFee: 'cleaning fee per stay',
             back: 'All properties', about: 'The house', included: 'What is included', rulesTitle: 'House rules',
@@ -340,7 +340,78 @@
         });
         new Image().src = boxPhotos[(boxIndex + 1) % boxPhotos.length];
     }
-    function closeGallery() { box.hidden = true; document.documentElement.style.overflow = ''; }
+    // Al cerrar la galería, la página sigue sin desplazarse si debajo está abierta la ruta fotográfica.
+    function closeGallery() { box.hidden = true; document.documentElement.style.overflow = tourOpen() ? 'hidden' : ''; }
+
+    // Ruta fotográfica: todas las fotos agrupadas por estancias (Salón, Cocina, Dormitorio 1…),
+    // a pantalla completa. Arriba, una miniatura por estancia; debajo, cada estancia con sus fotos.
+    // Pulsar una foto la abre en la galería, que recorre las fotos en el orden de la ruta.
+    var tour = null, tourPushed = false;
+    function tourOpen() { return !!tour && !tour.hidden; }
+    function closeTour(fromHistory) {
+        if (!tourOpen()) return;
+        if (box && !box.hidden) box.hidden = true;
+        tour.hidden = true;
+        document.documentElement.style.overflow = '';
+        // El botón "atrás" del móvil también cierra la ruta: se deshace la entrada que se añadió al abrirla.
+        if (tourPushed && !fromHistory) history.back();
+        tourPushed = false;
+        if (tour.opener) tour.opener.focus();
+    }
+    function openTour(name, groups, photos, small, alt, start, opener) {
+        if (!tour) {
+            var order = [];
+            groups.forEach(function (g) { order = order.concat(g.photos); });
+            tour = document.createElement('div');
+            tour.className = 'prop-tour';
+            tour.setAttribute('role', 'dialog');
+            tour.setAttribute('aria-modal', 'true');
+            tour.setAttribute('aria-label', T.tourTitle);
+            tour.innerHTML = '<div class="prop-tour-bar"><button type="button" class="prop-tour-close" aria-label="' + T.tourBack + '" title="' + T.tourBack + '"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>' +
+                '<span class="prop-tour-name">' + esc(name) + '</span></div>' +
+                '<div class="prop-tour-body"><h2 class="prop-tour-title">' + T.tourTitle + '</h2>' +
+                '<nav class="prop-tour-index" aria-label="' + T.tourTitle + '">' + groups.map(function (g, k) {
+                    return '<a href="#prop-tour-' + k + '" class="prop-tour-card" data-room="' + k + '"><span class="prop-tour-cover"><img src="' + esc(small[g.photos[0]]) + '" alt="" loading="lazy"></span>' +
+                        '<span>' + esc(g.title[lang]) + '</span></a>';
+                }).join('') + '</nav>' +
+                groups.map(function (g, k) {
+                    var n = g.photos.length;
+                    return '<section class="prop-tour-room" id="prop-tour-' + k + '"><div class="prop-tour-head"><h3>' + esc(g.title[lang]) + '</h3>' +
+                        (g.sub && g.sub[lang] ? '<p>' + esc(g.sub[lang]) + '</p>' : '') + '</div><div class="prop-tour-grid">' +
+                        g.photos.map(function (i, j) {
+                            // Una foto ancha y dos a la par, y así sucesivamente; la última sola, también ancha.
+                            var wide = j % 3 === 0 || (j === n - 1 && j % 3 === 1);
+                            return '<button type="button" class="prop-tour-photo' + (wide ? ' is-wide' : '') + '" data-i="' + order.indexOf(i) + '">' +
+                                '<img src="' + esc(photos[i]) + '" alt="' + esc(g.title[lang] + ' (' + (j + 1) + '/' + n + ')') + '" loading="lazy"></button>';
+                        }).join('') + '</div></section>';
+                }).join('') + '</div>';
+            document.body.appendChild(tour);
+            tour.addEventListener('click', function (e) {
+                var card = e.target.closest('.prop-tour-card'), photo = e.target.closest('.prop-tour-photo');
+                if (e.target.closest('.prop-tour-close')) return closeTour();
+                if (card) {
+                    e.preventDefault();
+                    document.getElementById('prop-tour-' + card.getAttribute('data-room')).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else if (photo) {
+                    openGallery(order.map(function (i) { return photos[i]; }), alt, +photo.getAttribute('data-i'), order.map(function (i) { return small[i]; }));
+                }
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && tourOpen() && !(box && !box.hidden)) closeTour();
+            });
+            window.addEventListener('popstate', function () { if (tourOpen()) closeTour(true); });
+        }
+        tour.opener = opener || null;
+        tour.hidden = false;
+        document.documentElement.style.overflow = 'hidden';
+        try { history.pushState({ propTour: 1 }, ''); tourPushed = true; } catch (e) { tourPushed = false; }
+        // Desde una miniatura se va directo a su estancia; desde la foto principal, al principio.
+        var room = 0;
+        groups.forEach(function (g, k) { if (start && g.photos.indexOf(start) >= 0) room = k; });
+        tour.scrollTop = 0;
+        if (room) tour.querySelector('#prop-tour-' + room).scrollIntoView({ block: 'start' });
+        tour.querySelector('.prop-tour-close').focus({ preventScroll: true });
+    }
     function openGallery(photos, alt, i, small) {
         if (!box) {
             box = document.createElement('div');
@@ -374,7 +445,7 @@
             });
             document.addEventListener('keydown', function (e) {
                 if (box.hidden) return;
-                if (e.key === 'Escape') closeGallery();
+                if (e.key === 'Escape') { closeGallery(); e.stopImmediatePropagation(); }
                 else if (e.key === 'ArrowLeft') showPhoto(boxIndex - 1);
                 else if (e.key === 'ArrowRight') showPhoto(boxIndex + 1);
             });
@@ -478,6 +549,10 @@
         // Foto principal + cuatro miniaturas repartidas por la galería (distintas zonas de la casa)
         var photos = p.gallery && p.gallery.length ? p.gallery : [p.image];
         var small = p.thumbs ? photos.map(function (s) { return s.replace(/([^\/]+)$/, 'thumbs/$1'); }) : photos;
+        // Ruta fotográfica por estancias (si en el panel se ha asignado alguna); si no, galería seguida.
+        var tourGroups = (p.gallery && p.gallery.length ? p.photoTour || [] : []).filter(function (g) {
+            return g.photos && g.photos.length && g.photos.every(function (i) { return i >= 0 && i < photos.length; });
+        });
         var thumbs = photos.length < 5 ? [] : [1, 2, 3, 4].map(function (k) { return Math.floor(k * photos.length / 5); });
         var hero = '<div class="prop-hero">' +
             '<button type="button" class="prop-hero-main" data-i="0"><img src="' + esc(photos[0]) + '" alt="' + esc(p.imageAlt[lang]) + '" fetchpriority="high">' +
@@ -587,7 +662,9 @@
 
         detailRoot.querySelector('.prop-hero').addEventListener('click', function (e) {
             var cell = e.target.closest('[data-i]');
-            if (cell && photos.length > 1) openGallery(photos, full, +cell.getAttribute('data-i'), small);
+            if (!cell || photos.length < 2) return;
+            if (tourGroups.length) openTour(parts[0], tourGroups, photos, small, full, +cell.getAttribute('data-i'), cell);
+            else openGallery(photos, full, +cell.getAttribute('data-i'), small);
         });
         var mapBox = detailRoot.querySelector('.prop-map');
         if (mapBox) mapBox.querySelector('.prop-map-load').addEventListener('click', function () {

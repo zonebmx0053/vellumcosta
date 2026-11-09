@@ -475,6 +475,10 @@ input.is-bad { border-color: var(--critical); }
 .ad-photo { position: relative; border: 1px solid var(--line-2); border-radius: 11px; overflow: hidden; background: var(--card-2); }
 .ad-photo img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
 .ad-photo figcaption { display: flex; justify-content: space-between; gap: 4px; padding: 6px; }
+/* Estancia de la foto: en dorado cuando ya tiene una */
+.ad-photo .ad-photo-room { display: block; width: calc(100% - 12px); min-height: 32px; margin: 6px 6px 0; padding: 4px 8px; font-size: 12.5px; }
+.ad-photo .ad-photo-room.is-set { border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+#ad-tour-sum { margin-bottom: 14px; }
 .ad-photo .ad-icon-btn { width: 28px; height: 28px; font-size: 12px; border-radius: 7px; }
 .ad-photo.is-cover { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 .ad-photo-tag { position: absolute; top: 6px; left: 6px; padding: 2px 9px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 700; }

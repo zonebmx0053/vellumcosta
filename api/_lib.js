@@ -159,6 +159,9 @@ function cleanProperty(p) {
             kind: oneOf(catalog.roomKinds, r && r.kind, 'bedroom'),
             beds: Object.fromEntries(catalog.beds.map(b => [b.id, int(r && r.beds && r.beds[b.id], 0, 9)])),
         })),
+        // Estancia de cada foto ("bedroom-1", "kitchen"…), por su ruta. Solo fotos que están en la galería.
+        photoRooms: Object.fromEntries(Object.entries(p.photoRooms && typeof p.photoRooms === 'object' ? p.photoRooms : {})
+            .filter(([src, v]) => gallery.includes(src) && catalog.parseSpace(v))),
     };
     // Precios por fechas. Las temporadas antiguas (mes-día) se convierten a este formato.
     const rules = Array.isArray(price.rules) ? price.rules : catalog.seasonsToRules(price.seasons);
@@ -184,8 +187,8 @@ function cleanProperty(p) {
         // Lo que se elige en el panel...
         ...selection,
         // ...y lo que se calcula a partir de ello para la web: highlights, amenities,
-        // typeLabel, houseRules, cancellationText y sleeping.
-        ...catalog.derive(selection),
+        // typeLabel, houseRules, cancellationText, sleeping y photoTour.
+        ...catalog.derive({ ...selection, gallery }),
         locationText: pair(p.locationText, 2000),
         mapQuery: str(p.mapQuery, 160),
         mapZoom: int(p.mapZoom, 1, 20, 14),

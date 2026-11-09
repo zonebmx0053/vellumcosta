@@ -162,6 +162,48 @@
 .prop-lb-thumb:hover, .prop-lb-thumb:focus-visible { opacity: 1; outline: none; }
 .prop-lb-thumb.is-active { opacity: 1; border-color: var(--color-dorado); }
 
+/* ── Ruta fotográfica: fotos por estancias a pantalla completa ── */
+.prop-tour { position: fixed; inset: 0; z-index: 90; overflow-y: auto; overscroll-behavior: contain; background: var(--color-fondo); color: var(--color-texto); }
+.dark .prop-tour { background: var(--color-oscuro-fondo); color: #fff; }
+.prop-tour[hidden] { display: none; }
+.prop-tour-bar {
+    position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.25rem;
+    background: color-mix(in srgb, var(--color-fondo) 92%, transparent); backdrop-filter: blur(8px);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-dorado) 25%, transparent);
+}
+.dark .prop-tour-bar { background: color-mix(in srgb, var(--color-oscuro-fondo) 92%, transparent); }
+.prop-tour-close {
+    flex: none; width: 2.5rem; height: 2.5rem; border: 1px solid rgba(128, 128, 128, 0.4); border-radius: 50%;
+    background: transparent; color: inherit; cursor: pointer; transition: border-color 0.3s, color 0.3s;
+}
+.prop-tour-close:hover, .prop-tour-close:focus-visible { border-color: var(--color-dorado); color: var(--color-dorado); outline: none; }
+.prop-tour-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; font-weight: 600; }
+.prop-tour-body { max-width: 72rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+.prop-tour-title { margin-bottom: 1.5rem; font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; }
+/* Índice: una miniatura por estancia */
+.prop-tour-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.25rem, 1fr)); gap: 1rem 0.75rem; margin-bottom: 2.5rem; }
+.prop-tour-card { display: block; color: inherit; text-decoration: none; font-size: 0.85rem; }
+.prop-tour-cover { display: block; margin-bottom: 0.5rem; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 6px; background: var(--color-oscuro-tarjeta); }
+.prop-tour-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s, opacity 0.3s; }
+.prop-tour-card:hover img, .prop-tour-card:focus-visible img { transform: scale(1.05); opacity: 0.9; }
+.prop-tour-card:focus-visible { outline: 2px solid var(--color-dorado); outline-offset: 3px; }
+/* Cada estancia: título a la izquierda y fotos a la derecha (una ancha, dos a la par) */
+.prop-tour-room { display: grid; gap: 1rem; padding: 1.5rem 0 2.5rem; scroll-margin-top: 4.5rem; }
+.prop-tour-head h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; line-height: 1.25; }
+.prop-tour-head p { margin-top: 0.25rem; font-size: 0.9rem; opacity: 0.75; }
+.prop-tour-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.prop-tour-photo { display: block; padding: 0; border: 0; overflow: hidden; border-radius: 4px; background: var(--color-oscuro-tarjeta); cursor: zoom-in; aspect-ratio: 4 / 3; }
+.prop-tour-photo.is-wide { grid-column: 1 / -1; aspect-ratio: 3 / 2; }
+.prop-tour-photo img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
+.prop-tour-photo:hover img { opacity: 0.88; }
+.prop-tour-photo:focus-visible { outline: 2px solid var(--color-dorado); outline-offset: 2px; }
+@media (min-width: 900px) {
+    .prop-tour-body { padding: 2.5rem 2rem 5rem; }
+    .prop-tour-index { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
+    .prop-tour-room { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 2.5rem; padding: 2rem 0 3rem; }
+    .prop-tour-head { position: sticky; top: 5.5rem; align-self: start; }
+}
+
 /* ── Listado: fichas resumidas ── */
 .prop-toolbar {
     display: flex; align-items: center; justify-content: space-between; gap: 1rem;

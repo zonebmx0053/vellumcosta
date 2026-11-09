@@ -155,6 +155,36 @@
         { id: 'living', icon: 'fa-couch', es: 'Salón', en: 'Living room' },
         { id: 'other', icon: 'fa-door-open', es: 'Otra estancia', en: 'Other room' }
     ];
+    // Estancias a las que se asigna cada foto de la galería (ruta fotográfica de la ficha).
+    // "numbered": hay una por número (Dormitorio 1, Dormitorio 2…). Este orden es el de la ficha.
+    var spaces = [
+        { id: 'living', es: 'Salón', en: 'Living room' },
+        { id: 'kitchen', es: 'Cocina', en: 'Kitchen' },
+        { id: 'dining', es: 'Comedor', en: 'Dining area' },
+        { id: 'bedroom', es: 'Dormitorio', en: 'Bedroom', numbered: true },
+        { id: 'bathroom', es: 'Baño completo', en: 'Full bathroom', numbered: true },
+        { id: 'toilet', es: 'Aseo', en: 'Half bathroom', numbered: true },
+        { id: 'workspace', es: 'Zona de trabajo', en: 'Workspace' },
+        { id: 'laundry', es: 'Lavadero', en: 'Laundry area' },
+        { id: 'entrance', es: 'Entrada', en: 'Entrance' },
+        { id: 'terrace', es: 'Terraza', en: 'Terrace' },
+        { id: 'porch', es: 'Porche', en: 'Porch' },
+        { id: 'patio', es: 'Patio', en: 'Patio' },
+        { id: 'garden', es: 'Jardín', en: 'Garden' },
+        { id: 'pool', es: 'Piscina', en: 'Pool' },
+        { id: 'bbq', es: 'Barbacoa', en: 'Barbecue area' },
+        { id: 'exterior', es: 'Exterior', en: 'Exterior' },
+        { id: 'parking', es: 'Aparcamiento', en: 'Parking' },
+        { id: 'views', es: 'Vistas', en: 'Views' },
+        { id: 'area', es: 'Alrededores', en: 'Surroundings' }
+    ];
+    var extraPhotos = { es: 'Fotos adicionales', en: 'Additional photos' };
+    // "bedroom-2" → { space, n: 2 }; null si no es válido.
+    function parseSpace(v) {
+        var m = /^([a-z]+)(?:-(\d{1,2}))?$/.exec(String(v || '')), s = m && find(spaces, m[1]);
+        if (!s || !!s.numbered !== !!m[2] || (m[2] && !(+m[2] >= 1))) return null;
+        return { space: s, n: m[2] ? +m[2] : 0 };
+    }
     var beds = [
         { id: 'double', label: 'Matrimonio', es: ['cama de matrimonio', 'camas de matrimonio'], en: ['double bed', 'double beds'] },
         { id: 'single', label: 'Individual', es: ['cama individual', 'camas individuales'], en: ['single bed', 'single beds'] },
@@ -237,19 +267,24 @@
         var perKind = {}, seen = {};
         var join = function (items, and) { return items.length > 1 ? items.slice(0, -1).join(', ') + and + items[items.length - 1] : items[0]; };
         (p.rooms || []).forEach(function (r) { perKind[r.kind] = (perKind[r.kind] || 0) + 1; });
-        var sleeping = (p.rooms || []).map(function (r) {
-            var kind = find(roomKinds, r.kind) || roomKinds[0], es = [], en = [];
-            seen[r.kind] = (seen[r.kind] || 0) + 1;
-            var number = perKind[r.kind] > 1 ? ' ' + seen[r.kind] : '';
+        var bedsOf = function (r) {
+            var es = [], en = [];
             beds.forEach(function (b) {
                 var n = (r.beds || {})[b.id] || 0;
                 if (n) { es.push(n + ' ' + b.es[n > 1 ? 1 : 0]); en.push(n + ' ' + b.en[n > 1 ? 1 : 0]); }
             });
-            return es.length ? { icon: kind.icon, title: { es: kind.es + number, en: kind.en + number }, beds: { es: join(es, ' y '), en: join(en, ' and ') } } : null;
+            return es.length ? { es: join(es, ' y '), en: join(en, ' and ') } : null;
+        };
+        var sleeping = (p.rooms || []).map(function (r) {
+            var kind = find(roomKinds, r.kind) || roomKinds[0], text = bedsOf(r);
+            seen[r.kind] = (seen[r.kind] || 0) + 1;
+            var number = perKind[r.kind] > 1 ? ' ' + seen[r.kind] : '';
+            return text ? { icon: kind.icon, title: { es: kind.es + number, en: kind.en + number }, beds: text } : null;
         }).filter(Boolean);
 
         return {
             sleeping: sleeping,
+            photoTour: photoTour(p, bedsOf),
             amenities: amenities,
             highlights: (p.featured || []).filter(function (id) { return services[id] && on.indexOf(id) >= 0; })
                 .map(function (id) { return { icon: services[id].icon, es: services[id].es, en: services[id].en }; }),
@@ -259,8 +294,39 @@
         };
     }
 
+    // Ruta fotográfica: las fotos de la galería agrupadas por estancia, en el orden de "spaces"
+    // (y por número), con las que no tienen estancia al final. Vacía si no hay ninguna asignada.
+    // Cada grupo: { id, title: {es, en}, sub: {es, en} o null, photos: [posiciones en la galería] }.
+    function photoTour(p, bedsOf) {
+        var gallery = p.gallery || [], assigned = p.photoRooms || {}, groups = {}, extra = [], count = {};
+        gallery.forEach(function (src, i) {
+            var key = assigned[src], s = parseSpace(key);
+            if (!s) return extra.push(i);
+            if (!groups[key]) { groups[key] = { s: s, photos: [] }; count[s.space.id] = (count[s.space.id] || 0) + 1; }
+            groups[key].photos.push(i);
+        });
+        var keys = Object.keys(groups);
+        if (!keys.length) return [];
+        keys.sort(function (a, b) {
+            var x = groups[a].s, y = groups[b].s;
+            return spaces.indexOf(x.space) - spaces.indexOf(y.space) || x.n - y.n;
+        });
+        // Camas de cada dormitorio (y del salón, si tiene sofá cama), según la distribución de camas.
+        var rooms = { bedroom: [], living: [] };
+        (p.rooms || []).forEach(function (r) { if (rooms[r.kind]) rooms[r.kind].push(r); });
+        var tour = keys.map(function (key) {
+            var s = groups[key].s, sp = s.space;
+            // El número solo se muestra si hay fotos de más de un dormitorio (o baño, o aseo).
+            var number = s.n && count[sp.id] > 1 ? ' ' + s.n : '';
+            var room = sp.id === 'bedroom' ? rooms.bedroom[s.n - 1] : sp.id === 'living' ? rooms.living[0] : null;
+            return { id: key, title: { es: sp.es + number, en: sp.en + number }, sub: room ? bedsOf(room) : null, photos: groups[key].photos };
+        });
+        if (extra.length) tour.push({ id: 'extra', title: extraPhotos, sub: null, photos: extra });
+        return tour;
+    }
+
     var api = { categories: categories, services: services, types: types, house: house, cancellation: cancellation, ruleNames: ruleNames,
-        roomKinds: roomKinds, beds: beds, channels: channels, payments: payments,
+        roomKinds: roomKinds, beds: beds, spaces: spaces, parseSpace: parseSpace, channels: channels, payments: payments,
         find: find, fromLegacy: fromLegacy, seasonsToRules: seasonsToRules, derive: derive };
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     else root.VELLUM_CATALOG = api;
