@@ -77,8 +77,11 @@
         if (c.lastDays > 0 && ahead >= 0 && ahead <= c.lastDays) offer('last', c.lastPercent);
         return best;
     }
-    // Presupuesto: entrada "a", salida "b" y número de huéspedes. El descuento se aplica a
-    // las noches y a los huéspedes adicionales, no a la limpieza.
+    // Descuento por reservar directamente en la web (0 = no hay). Se suma a los de estancia.
+    function webDiscount(p) { return (p.price && p.price.discounts && p.price.discounts.web) || 0; }
+    // Presupuesto: entrada "a", salida "b" y número de huéspedes. Los descuentos se aplican a
+    // las noches y a los huéspedes adicionales, no a la limpieza. Primero el de estancia (el
+    // mayor de los que correspondan) y después, sobre lo que queda, el de reservar en la web.
     function quote(p, a, b, guests, today) {
         var price = p.price || {}, nights = diff(a, b), stay = 0;
         for (var d = a; d < b; d = addDays(d, 1)) stay += nightPrice(p, d);
@@ -86,16 +89,18 @@
         var extra = extraGuests ? extraGuests * price.extraGuestFee * nights : 0;   // sin suplemento definido, 0 (no NaN)
         var off = discount(p, a, nights, today);
         var amount = off ? Math.round((stay + extra) * off.percent / 100) : 0;
+        var webPercent = webDiscount(p), webAmount = webPercent ? Math.round((stay + extra - amount) * webPercent / 100) : 0;
         var cleaning = price.cleaningFee || 0;
         return {
             nights: nights, stay: round(stay), extraGuests: extraGuests, extra: round(extra),
             discount: off ? { type: off.type, percent: off.percent, amount: amount } : null,
-            cleaning: cleaning, total: round(stay + extra - amount + cleaning)
+            web: webPercent ? { percent: webPercent, amount: webAmount } : null,
+            cleaning: cleaning, total: round(stay + extra - amount - webAmount + cleaning)
         };
     }
 
     var api = { addDays: addDays, diff: diff, weekday: weekday, ruleFor: ruleFor, nightPrice: nightPrice, lowestPrice: lowestPrice,
-        minNights: minNights, maxNights: maxNights, firstArrival: firstArrival, lastDay: lastDay, canArrive: canArrive, discount: discount, quote: quote };
+        minNights: minNights, maxNights: maxNights, firstArrival: firstArrival, lastDay: lastDay, canArrive: canArrive, discount: discount, webDiscount: webDiscount, quote: quote };
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     else root.VELLUM_PRICING = api;
 })(typeof window !== 'undefined' ? window : this);

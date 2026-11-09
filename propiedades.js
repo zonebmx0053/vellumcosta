@@ -45,6 +45,7 @@
             guest: 'huésped', guestsLabel: 'Huéspedes', fewerGuests: 'Menos huéspedes', moreGuests: 'Más huéspedes',
             brExtra: 'Huéspedes adicionales ({n})', brCleaning: 'Limpieza',
             discounts: { weekly: 'Descuento semanal', monthly: 'Descuento mensual', early: 'Descuento por reserva anticipada', last: 'Descuento de última hora' },
+            webOff: 'Descuento por reservar en la web', webRate: '{p} % de descuento por reservar directamente en esta web', webBadge: '−{p} % reservando en esta web',
             weeklyRate: '{p} % de descuento en estancias de 7 noches o más', monthlyRate: '{p} % de descuento en estancias de 28 noches o más',
             earlyRate: '{p} % de descuento al reservar con {n} días de antelación o más', lastRate: '{p} % de descuento en llegadas dentro de los próximos {n} días',
             extraRate: 'Hasta {n} huéspedes incluidos; {fee} por noche por cada huésped adicional', depositRate: 'Fianza: {fee}',
@@ -89,6 +90,7 @@
             guest: 'guest', guestsLabel: 'Guests', fewerGuests: 'Fewer guests', moreGuests: 'More guests',
             brExtra: 'Additional guests ({n})', brCleaning: 'Cleaning',
             discounts: { weekly: 'Weekly discount', monthly: 'Monthly discount', early: 'Early booking discount', last: 'Last-minute discount' },
+            webOff: 'Direct booking discount', webRate: '{p}% off when booking directly on this website', webBadge: '−{p}% when booking on this website',
             weeklyRate: '{p}% off stays of 7 nights or more', monthlyRate: '{p}% off stays of 28 nights or more',
             earlyRate: '{p}% off when booking {n} days or more in advance', lastRate: '{p}% off arrivals within the next {n} days',
             extraRate: 'Up to {n} guests included; {fee} per night for each additional guest', depositRate: 'Security deposit: {fee}',
@@ -248,6 +250,7 @@
             var rows = [[q.nights + ' ' + (q.nights === 1 ? T.night : T.nights), q.stay]];
             if (q.extra) rows.push([fill(T.brExtra, { n: q.extraGuests }), q.extra]);
             if (q.discount) rows.push([T.discounts[q.discount.type] + ' (−' + q.discount.percent + ' %)', -q.discount.amount]);
+            if (q.web) rows.push([T.webOff + ' (−' + q.web.percent + ' %)', -q.web.amount]);
             if (q.cleaning) rows.push([T.brCleaning, q.cleaning]);
             return (rows.length > 1 ? '<dl class="prop-breakdown">' + rows.map(function (r) {
                 return '<div' + (r[1] < 0 ? ' class="is-off"' : '') + '><dt>' + esc(r[0]) + '</dt><dd>' + (r[1] < 0 ? '−' + money(-r[1]) : money(r[1])) + '</dd></div>';
@@ -396,7 +399,8 @@
     function priceHtml(p, withCleaning) {
         if (!hasPrice(p)) return '<p class="prop-price">' + T.priceAsk + '</p>';
         return '<p class="prop-price">' + T.from + ' <strong>' + money(PR.lowestPrice(p, today)) + '</strong> / ' + T.night +
-            (withCleaning && p.price.cleaningFee ? ' <span>+ ' + money(p.price.cleaningFee) + ' ' + T.cleaningFee + '</span>' : '') + '</p>';
+            (withCleaning && p.price.cleaningFee ? ' <span>+ ' + money(p.price.cleaningFee) + ' ' + T.cleaningFee + '</span>' : '') +
+            (PR.webDiscount(p) ? ' <em class="prop-web-off">' + esc(fill(T.webBadge, { p: PR.webDiscount(p) })) + '</em>' : '') + '</p>';
     }
     function detailUrl(p) {
         return (lang === 'en' ? 'property.html' : 'propiedad.html') + '?casa=' + encodeURIComponent(p.slug || p.id);
@@ -523,6 +527,7 @@
             if (PR.maxNights(p)) rates.push(fill(T.maxNightsLabel, { n: PR.maxNights(p) }));
             if (p.price.deposit > 0) rates.push(fill(T.depositRate, { fee: money(p.price.deposit) }));
             var offers = [];
+            if (off.web > 0) offers.push(fill(T.webRate, { p: off.web }));
             if (off.weekly > 0) offers.push(fill(T.weeklyRate, { p: off.weekly }));
             if (off.monthly > 0) offers.push(fill(T.monthlyRate, { p: off.monthly }));
             if (off.earlyDays > 0 && off.earlyPercent > 0) offers.push(fill(T.earlyRate, { p: off.earlyPercent, n: off.earlyDays }));

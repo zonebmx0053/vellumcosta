@@ -222,7 +222,7 @@
             house: { pets: '', smoking: '', parties: '', children: '', quiet: '' }, cancellation: '',
             pets: { es: '', en: '' },
             price: { base: 0, rules: [], seasons: [], cleaningFee: 0, minNights: 1, approx: false,
-                discounts: { weekly: 0, monthly: 0, earlyDays: 60, earlyPercent: 0, lastDays: 3, lastPercent: 0 },
+                discounts: { weekly: 0, monthly: 0, earlyDays: 60, earlyPercent: 0, lastDays: 3, lastPercent: 0, web: 0 },
                 extraGuestAfter: 0, extraGuestFee: 0, deposit: 0 },
             stay: { maxNights: 0, notice: 0, window: 0, prep: 0, checkinDays: [] },
             reviews: [], links: { airbnb: '', vrbo: '', booking: '' },
@@ -255,6 +255,7 @@
             // Un descuento sin porcentaje no se aplica; los días por defecto solo evitan un selector vacío.
             if (!p.price.discounts.earlyDays) p.price.discounts.earlyDays = 60;
             if (!p.price.discounts.lastDays) p.price.discounts.lastDays = 3;
+            if (p.price.discounts.web == null) p.price.discounts.web = 0;
             p.rooms.forEach(function (r) { r.beds = r.beds || {}; C.beds.forEach(function (b) { r.beds[b.id] = r.beds[b.id] || 0; }); });
             p.blocked.forEach(function (b) { if (b.type !== 'booking') b.type = 'block'; });
             p.price.rules.forEach(function (r) { r.days = r.days || []; r.discount = r.discount || 0; });
@@ -647,7 +648,8 @@
         var out = '<strong>' + nights(diff(d.start, d.end)) + '</strong>';
         if (f.type === 'booking' && p.price.base > 0) {
             var q = PR.quote(p, d.start, d.end, d.guests, today);
-            out += ' · Según su tarifa: <strong>' + money(q.total) + '</strong>' + (q.discount ? ' (' + OFFERS[q.discount.type].toLowerCase() + ' del ' + q.discount.percent + ' %)' : '');
+            out += ' · Según su tarifa: <strong>' + money(q.total) + '</strong>' + (q.discount ? ' (' + OFFERS[q.discount.type].toLowerCase() + ' del ' + q.discount.percent + ' %)' : '') +
+                (q.web ? ' (reserva en la web: −' + q.web.percent + ' %)' : '');
         }
         if (clash.length) out += '<br><span class="ad-error">' + fa('fa-triangle-exclamation') + ' Coincide con: ' + clash.map(function (s) { return SRC[s.src].label + ' (' + human(s.start, true) + ' → ' + human(s.end, true) + ')'; }).join(', ') + '.</span>';
         return out;
@@ -864,7 +866,7 @@
             field('Limpieza por estancia', P + 'price.cleaningFee', { kind: 'number', unit: '€' }) +
             '<p class="ad-help">Fianza, huéspedes adicionales y simulador: en <button type="button" class="ad-link" data-act="go" data-page="editor" data-tab="precios">Precios</button>.</p>' + sideDone() + '</section>';
         if (st.side === 'descuentos') return sideHead('Descuentos') + discountsHtml(P, c) +
-            '<p class="ad-help">Con 0 % no se aplica. Si a una estancia le corresponden varios, se aplica solo el mayor.</p>' + sideDone();
+            '<p class="ad-help">Con 0 % no se aplica. De los cuatro por estancia se aplica solo el mayor; el de reservar en la web se suma después.</p>' + sideDone();
         if (st.side === 'disponibilidad') return sideHead('Disponibilidad') + '<section class="ad-card ad-side-fields">' +
             field('Estancia mínima (noches)', P + 'price.minNights', { kind: 'stepper', min: 1, max: 60 }) +
             field('Estancia máxima (noches)', P + 'stay.maxNights', { kind: 'stepper', max: 365, zero: 'Sin límite' }) +
@@ -874,6 +876,7 @@
         if (st.side === 'cancelacion') return sideHead('Cancelaciones') + policyOptions(P, p) + sideDone();
 
         var offers = [];
+        if (c.web > 0) offers.push('Reserva en la web: ' + c.web + ' %');
         if (c.weekly > 0) offers.push('Descuento semanal del ' + c.weekly + ' %');
         if (c.monthly > 0) offers.push('Descuento mensual del ' + c.monthly + ' %');
         if (c.earlyPercent > 0) offers.push('Reserva anticipada: ' + c.earlyPercent + ' %');
@@ -1018,10 +1021,11 @@
     function offer(icon, title, text, on, fields) {
         return '<div class="ad-offer' + (on ? ' is-on' : '') + '"><h4>' + fa(icon) + title + '</h4><p>' + text + '</p>' + fields + '</div>';
     }
-    // Los cuatro descuentos por estancia. Se editan en Precios y en el panel lateral del Calendario.
+    // Los descuentos: el de reservar en la web y los cuatro por estancia. Se editan en Precios y en el panel lateral del Calendario.
     function discountsHtml(P, c) {
         var percent = function (key) { return field('Descuento', P + 'price.discounts.' + key, { kind: 'number', unit: '%', max: 90 }); };
         return '<div class="ad-offers">' +
+            offer('fa-globe', 'Reserva en la web', 'Para quien reserva directamente en vellumcosta.com. Se suma a los demás descuentos.', c.web > 0, percent('web')) +
             offer('fa-calendar-week', 'Semanal', 'Estancias de 7 noches o más.', c.weekly > 0, percent('weekly')) +
             offer('fa-calendar', 'Mensual', 'Estancias de 28 noches o más.', c.monthly > 0, percent('monthly')) +
             offer('fa-hourglass-start', 'Reserva anticipada', 'Para quien reserva con mucha antelación.', c.earlyPercent > 0, percent('earlyPercent') +
@@ -1049,6 +1053,7 @@
         return '<div class="ad-quote"><dl>' + line(nights(q.nights), money(q.stay)) +
             (q.extra ? line('Huéspedes adicionales (' + q.extraGuests + ')', money(q.extra)) : '') +
             (q.discount ? line(OFFERS[q.discount.type] + ' (−' + q.discount.percent + ' %)', '−' + money(q.discount.amount), 'is-off') : '') +
+            (q.web ? line('Descuento por reservar en la web (−' + q.web.percent + ' %)', '−' + money(q.web.amount), 'is-off') : '') +
             (q.cleaning ? line('Limpieza', money(q.cleaning)) : '') + line('Total para el huésped', money(q.total), 'is-total') + '</dl>' +
             notes.map(function (n) { return '<p>' + fa('fa-triangle-exclamation') + n + '</p>'; }).join('') + '</div>';
     }
@@ -1073,7 +1078,7 @@
                 grid(field('Huéspedes incluidos en el precio', P + 'price.extraGuestAfter', { kind: 'stepper', max: p.guests, zero: 'Todos', help: 'A partir de este número se cobra el suplemento.' }),
                     field('Suplemento por huésped y noche', P + 'price.extraGuestFee', { kind: 'number', unit: '€' })),
                 'Útil si el precio base es para un grupo pequeño y quiere cobrar algo más por cada persona extra.', 'fa-user-plus') +
-            card('Descuentos', discountsHtml(P, c), 'Con 0 % el descuento no se aplica. Si a una estancia le corresponden varios, se aplica solo el mayor. Se calculan sobre las noches, no sobre la limpieza.', 'fa-percent') +
+            card('Descuentos', discountsHtml(P, c), 'Con 0 % el descuento no se aplica. De los cuatro por estancia (semanal, mensual, anticipada y última hora) se aplica solo el mayor; el de reservar en la web se suma después. Se calculan sobre las noches, no sobre la limpieza.', 'fa-percent') +
             '<p class="ad-help" style="margin-bottom:16px">Los precios, descuentos y estancias mínimas de unas fechas concretas (' + p.price.rules.length + ') se ponen en el ' +
             '<button type="button" class="ad-link" data-act="go" data-page="calendario">Calendario</button>, eligiendo los días.</p>' +
             card('Simulador de precio', '<div id="ad-sim">' + simulator(p) + '</div>', 'Lo que vería un huésped en la ficha con las tarifas de esta pestaña, también antes de guardar.', 'fa-calculator');
@@ -1407,12 +1412,12 @@
         } else if (st.page === 'calendario' && /\.price\.|\.stay\./.test(path)) {
             // Los precios del calendario siguen a lo que se escribe, sin repintar el campo en uso.
             var offerBox = el.closest('.ad-offer');
-            if (offerBox && /Percent$|weekly$|monthly$/.test(path)) offerBox.classList.toggle('is-on', v > 0);
+            if (offerBox && /Percent$|weekly$|monthly$|\.web$/.test(path)) offerBox.classList.toggle('is-on', v > 0);
             refreshCalendar(true);
         } else if (st.page === 'editor' && st.tab === 'precios' && /\.price\./.test(path)) {
             // El simulador y el aspecto de los descuentos siguen a lo que se escribe.
             var box = el.closest('.ad-offer');
-            if (box && /Percent$|weekly$|monthly$/.test(path)) box.classList.toggle('is-on', v > 0);
+            if (box && /Percent$|weekly$|monthly$|\.web$/.test(path)) box.classList.toggle('is-on', v > 0);
             var sim = document.getElementById('ad-sim-out');
             if (sim) sim.innerHTML = quoteHtml(current());
         }
