@@ -678,3 +678,13 @@ input.is-bad { border-color: var(--critical); }
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
+
+/* Aviso de fallo al dibujar el panel (en vez de dejar la pantalla vacía) */
+.ad-crash {
+    position: fixed; left: 50%; top: 24px; transform: translateX(-50%); z-index: 200; display: grid; gap: 10px;
+    width: min(520px, calc(100vw - 32px)); padding: 20px; border: 1px solid var(--critical); border-radius: var(--radius);
+    background: var(--card); color: var(--text); box-shadow: var(--shadow);
+}
+.ad-crash span { color: var(--text-2); font-size: 13.5px; }
+.ad-crash code { padding: 8px 10px; border-radius: 8px; background: var(--card-2); font-size: 12px; overflow-wrap: anywhere; }
+.ad-crash .ad-btn { justify-self: start; }

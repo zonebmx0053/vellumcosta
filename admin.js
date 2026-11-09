@@ -5,6 +5,27 @@
     var C = window.VELLUM_CATALOG, PR = window.VELLUM_PRICING;
     if (!root || !C || !PR) return;
 
+    // Si algo falla al dibujar el panel, se avisa en pantalla (con el detalle) en vez de dejarlo vacío.
+    // Solo cuentan los fallos de los archivos de la web, no los de las extensiones del navegador.
+    function crash(detail) {
+        if (document.getElementById('ad-crash')) return;
+        var box = document.createElement('div');
+        box.id = 'ad-crash';
+        box.className = 'ad-crash';
+        box.setAttribute('role', 'alert');
+        box.innerHTML = '<strong>El panel ha tenido un problema al mostrarse.</strong>' +
+            '<span>Pulse «Recargar». Si vuelve a pasar, pruebe a desactivar las extensiones del navegador para esta web, o envíe una captura de este aviso.</span>' +
+            '<code></code><button type="button" class="ad-btn ad-btn-solid">Recargar</button>';
+        box.querySelector('code').textContent = String(detail || 'Error desconocido').slice(0, 300);
+        box.querySelector('button').addEventListener('click', function () { location.reload(); });
+        document.body.appendChild(box);
+    }
+    window.addEventListener('error', function (e) {
+        if (!e.filename || e.filename.indexOf(location.origin) === 0) crash(e.message + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : ''));
+    });
+    // Una página restaurada de la memoria del navegador (al volver atrás) se vuelve a cargar entera.
+    window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
+
     var st = {
         data: null, dirty: false, fresh: false, saving: false, failed: false,
         events: {}, eventsAt: '', sync: 'idle',              // calendarios de las plataformas: idle | loading | ok | error
