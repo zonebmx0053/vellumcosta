@@ -365,7 +365,7 @@
             var p = st.data.properties[i];
             if (p.price.rules.length > MAX_RULES) {
                 st.page = 'calendario'; st.prop = i;
-                return '«' + propName(p) + '» tiene ' + p.price.rules.length + ' periodos de precio y el máximo es ' + MAX_RULES + '. Elimine los que ya no necesite en «Periodos y temporadas».';
+                return '«' + propName(p) + '» tiene ' + p.price.rules.length + ' periodos de precio y el máximo es ' + MAX_RULES + '. Quite precios propios de fechas desde el Calendario.';
             }
             for (var j = 0; j < p.price.rules.length; j++) {
                 if (!ruleOk(p.price.rules[j])) {
@@ -756,10 +756,45 @@
         }
         return html + '</div></div>';
     }
+    // Vista del calendario: un mes en grande o varios meses, con tres tamaños. Se recuerda en este navegador.
+    var CAL_SIZES = { s: ['Pequeño', 250], m: ['Mediano', 320], l: ['Grande', 420] };   // ancho mínimo de cada mes
+    var cal = { view: 'multi', size: 'm', cols: 2 };
+    try {
+        var saved = JSON.parse(localStorage.getItem('vc-admin-cal') || '{}');
+        if (saved.view === 'month' || saved.view === 'multi') cal.view = saved.view;
+        if (CAL_SIZES[saved.size]) cal.size = saved.size;
+    } catch (e) { }
+    function saveCal() { try { localStorage.setItem('vc-admin-cal', JSON.stringify({ view: cal.view, size: cal.size })); } catch (e) { } }
+    // Meses que se ven a la vez: uno en la vista de mes; en la de varios, dos filas de los que quepan a lo ancho.
+    function calCount() { return cal.view === 'month' ? 1 : cal.cols * 2; }
     function calendarGrid(p) {
         var month = st.month || today.slice(0, 8) + '01', map = nightMap(p), months = '';
-        for (var k = 0; k < 6; k++) months += monthHtml(p, addMonths(month, k), map);
-        return '<div class="ad-months">' + months + '</div>';
+        for (var k = 0; k < calCount(); k++) months += monthHtml(p, addMonths(month, k), map);
+        var style = cal.view === 'month' ? '' : ' style="grid-template-columns:repeat(' + cal.cols + ',minmax(0,1fr))"';
+        return '<div class="ad-months ' + (cal.view === 'month' ? 'is-month' : 'is-' + cal.size) + '"' + style + '>' + months + '</div>';
+    }
+    // Cuántos meses caben a lo ancho con el tamaño elegido. Si cambia, se repinta la rejilla.
+    function fitCalendar() {
+        var el = document.getElementById('ad-cal');
+        if (!el || !current() || cal.view === 'month') return;
+        var w = el.clientWidth, gap = 28, cols = Math.max(1, Math.floor((w + gap) / (CAL_SIZES[cal.size][1] + gap)));
+        if (!w || cols === cal.cols) return;
+        cal.cols = cols;
+        el.innerHTML = calendarGrid(current());
+    }
+    var fitting = 0;
+    window.addEventListener('resize', function () {
+        cancelAnimationFrame(fitting);
+        fitting = requestAnimationFrame(fitCalendar);
+    });
+    function calTools() {
+        var btn = function (act, value, label, on) {
+            return '<button type="button" class="' + (on ? 'is-on' : '') + '" aria-pressed="' + on + '" data-act="' + act + '" data-value="' + value + '">' + label + '</button>';
+        };
+        return '<div class="ad-seg" role="group" aria-label="Vista">' + btn('cal-view', 'month', 'Mes', cal.view === 'month') + btn('cal-view', 'multi', 'Varios meses', cal.view === 'multi') + '</div>' +
+            (cal.view === 'multi' ? '<div class="ad-seg" role="group" aria-label="Tamaño">' + Object.keys(CAL_SIZES).map(function (k) {
+                return btn('cal-size', k, CAL_SIZES[k][0], cal.size === k);
+            }).join('') + '</div>' : '');
     }
     function rangeLabel(a, b) {
         var noYear = b.slice(0, 4) === today.slice(0, 4);
@@ -907,33 +942,28 @@
         return generalPanel('properties.' + st.prop + '.', p);
     }
     function sideClass() { return 'ad-side' + (st.form || st.seg || st.days ? ' is-sel' : ''); }
-    function rulesList(P, p) {
-        var n = p.price.rules.length;
-        return (n ? p.price.rules.map(function (r, i) { return ruleHtml(P, r, i, n); }).join('') : '<p class="ad-empty">Sin precios por fechas: se aplica la tarifa general todo el año.</p>') +
-            '<button type="button" class="ad-btn ad-btn-small ad-add" data-act="add" data-list="' + P + 'price.rules" data-new="rule">' + fa('fa-plus') + 'Añadir periodo</button>';
-    }
     // Calendario a un lado y, al otro, el panel de lo elegido: como en los paneles de las plataformas.
     function pageCalendario() {
         var p = current(), month = st.month || today.slice(0, 8) + '01';
-        return '<div class="ad-head"><div class="ad-head-text"><h2>Calendario</h2><p>Pulse los días que quiera (uno a uno), o mantenga pulsado y arrastre para elegir varios seguidos, para cambiar su precio, bloquearlos o anotar una reserva.</p></div></div>' +
+        return '<div class="ad-head ad-head-tight"><div class="ad-head-text"><h2>Calendario</h2><p>Pulse días sueltos o arrastre para elegir varios seguidos.</p></div></div>' +
             '<div class="ad-cal-layout"><section class="ad-card"><div class="ad-cal-bar">' +
-            '<button type="button" class="ad-icon-btn" data-act="nav" data-step="-1" aria-label="Mes anterior"' + (month <= addMonths(today, -12) ? ' disabled' : '') + '>' + fa('fa-chevron-left') + '</button>' +
+            '<button type="button" class="ad-icon-btn" data-act="nav" data-step="-1" aria-label="Anteriores"' + (month <= addMonths(today, -12) ? ' disabled' : '') + '>' + fa('fa-chevron-left') + '</button>' +
             '<button type="button" class="ad-btn ad-btn-small" data-act="today">Hoy</button>' +
-            '<button type="button" class="ad-icon-btn" data-act="nav" data-step="1" aria-label="Mes siguiente"' + (month >= addMonths(today, 18) ? ' disabled' : '') + '>' + fa('fa-chevron-right') + '</button>' +
+            '<button type="button" class="ad-icon-btn" data-act="nav" data-step="1" aria-label="Siguientes"' + (month >= addMonths(today, 18) ? ' disabled' : '') + '>' + fa('fa-chevron-right') + '</button>' +
+            calTools() +
             (st.sync === 'loading' ? '<span class="ad-help">' + fa('fa-spinner fa-spin') + ' Leyendo los calendarios…</span>' : '') +
             '<p class="ad-legend">' + CHANNELS.concat(['block', 'held']).map(function (k) { return '<span><i class="ad-key is-' + k + '"></i>' + SRC[k].label + '</span>'; }).join('') + '</p></div>' +
             '<div id="ad-cal">' + calendarGrid(p) + '</div>' +
-            '<p class="ad-help" style="margin-top:16px">Los días libres muestran su precio por noche; en dorado, los que tienen un precio o un descuento propio. La ficha pública cierra todas las fechas ocupadas, sea cual sea su origen' +
+            '<p class="ad-help ad-cal-note">Los días libres muestran su precio por noche; en dorado, los que tienen un precio o un descuento propio. La ficha pública cierra todas las fechas ocupadas, sea cual sea su origen' +
             (p.stay.prep ? ', más ' + nights(p.stay.prep) + ' de margen alrededor de cada reserva' : '') + '.</p></section>' +
-            '<aside id="ad-side" class="' + sideClass() + '" aria-label="Precio y disponibilidad">' + sidePanel(p) + '</aside></div>' +
-            card('Periodos y temporadas', rulesList('properties.' + st.prop + '.', p),
-                'Todos los precios por fechas, también los que pone desde el calendario. Aquí puede crear temporadas que se repiten cada año o que solo afectan a ciertas noches de la semana. Si dos coinciden en una noche, manda el que esté más arriba.', 'fa-calendar-plus');
+            '<aside id="ad-side" class="' + sideClass() + '" aria-label="Precio y disponibilidad">' + sidePanel(p) + '</aside></div>';
     }
     // Repinta el calendario y, salvo que se esté escribiendo en él, el panel lateral.
     function refreshCalendar(keepSide) {
         var el = document.getElementById('ad-cal'), side = document.getElementById('ad-side');
         if (!el || !current()) return;
         el.innerHTML = calendarGrid(current());
+        fitCalendar();
         if (side && !keepSide) { side.className = sideClass(); side.innerHTML = sidePanel(current()); }
     }
 
@@ -985,33 +1015,6 @@
     }
 
     // Precios
-    function ruleSummary(r) {
-        if (!ruleOk(r)) return '<span class="ad-error">Fechas no válidas</span>';
-        return esc(human(r.start, r.repeat)) + ' → ' + esc(human(r.end, r.repeat)) + (r.repeat ? ' · cada año' : '');
-    }
-    function ruleHtml(P, r, i, n) {
-        var R = P + 'price.rules.' + i, open = st.rule === i;
-        var tags = (r.price > 0 ? '<span class="ad-tag is-price">' + money(r.price) + ' / noche</span>' : r.discount > 0 ? '' : '<span class="ad-tag">Precio base</span>') +
-            (r.discount > 0 ? '<span class="ad-tag is-price">−' + r.discount + ' %</span>' : '') +
-            (r.minNights > 0 ? '<span class="ad-tag">mín. ' + nights(r.minNights) + '</span>' : '') +
-            (r.days.length ? '<span class="ad-tag">' + r.days.map(function (d) { return WEEK[d]; }).join(' ') + '</span>' : '');
-        var head = '<div class="ad-rule-head"><div class="ad-rule-main"><strong>' + esc(r.name || 'Sin nombre') + '</strong><span>' + ruleSummary(r) + '</span></div>' +
-            '<div class="ad-rule-tags">' + tags + '</div><div class="ad-row-tools">' +
-            '<button type="button" class="ad-icon-btn" data-act="rule" data-i="' + i + '" aria-label="' + (open ? 'Cerrar' : 'Editar') + '" aria-expanded="' + open + '">' + fa(open ? 'fa-chevron-up' : 'fa-pen') + '</button>' +
-            '<button type="button" class="ad-icon-btn" data-act="move" data-list="' + P + 'price.rules" data-i="' + i + '" data-d="-1" aria-label="Subir prioridad"' + (i === 0 ? ' disabled' : '') + '>' + fa('fa-arrow-up') + '</button>' +
-            '<button type="button" class="ad-icon-btn" data-act="move" data-list="' + P + 'price.rules" data-i="' + i + '" data-d="1" aria-label="Bajar prioridad"' + (i === n - 1 ? ' disabled' : '') + '>' + fa('fa-arrow-down') + '</button>' +
-            '<button type="button" class="ad-icon-btn is-danger" data-act="del" data-list="' + P + 'price.rules" data-i="' + i + '" aria-label="Eliminar">' + fa('fa-trash') + '</button></div></div>';
-        if (!open) return '<div class="ad-rule">' + head + '</div>';
-        return '<div class="ad-rule is-open">' + head + '<div class="ad-rule-form">' +
-            grid(field('Tipo de periodo', R + '.name', { kind: 'select', options: C.ruleNames.map(function (x) { return [x, x]; }) }),
-                field('Desde', R + '.start', { kind: 'date' }), field('Hasta (incluido)', R + '.end', { kind: 'date' })) +
-            grid(field('Precio por noche', R + '.price', { kind: 'number', unit: '€', help: '0 = se mantiene el precio que ya tengan esas noches.' }),
-                field('Descuento', R + '.discount', { kind: 'number', unit: '%', max: 90, help: 'Se resta del precio de esas noches. 0 = sin descuento.' }),
-                field('Estancia mínima', R + '.minNights', { kind: 'number', unit: 'noches', help: '0 = la estancia mínima general.' })) +
-            seg('Noches a las que se aplica', R + '.days', WEEK.map(function (d, k) { return [k, d]; }), { num: true, help: r.days.length ? 'Solo las noches marcadas.' : 'Sin marcar ninguna = todas las noches.' }) +
-            field('Repetir todos los años', R + '.repeat', { kind: 'check', help: 'Se aplica cada año entre el mismo día y mes.' }) +
-            '<button type="button" class="ad-btn ad-btn-small" data-act="rule" data-i="' + i + '">' + fa('fa-check') + 'Listo</button></div></div>';
-    }
     function offer(icon, title, text, on, fields) {
         return '<div class="ad-offer' + (on ? ' is-on' : '') + '"><h4>' + fa(icon) + title + '</h4><p>' + text + '</p>' + fields + '</div>';
     }
@@ -1249,7 +1252,9 @@
         var el = root.querySelector('.ad-main');
         if (!el) return;
         var pages = { panel: pagePanel, reservas: pageReservas, calendario: pageCalendario, alojamientos: pageAlojamientos, editor: pageEditor, ajustes: pageAjustes };
+        el.classList.toggle('is-wide', st.page === 'calendario');
         el.innerHTML = (st.fresh ? '<p class="ad-banner">' + fa('fa-circle-info') + '<span><strong>Primera vez:</strong> estos datos vienen del archivo de la web. Pulse <strong>Guardar</strong> para que, a partir de ahora, la web muestre lo que edite aquí.</span></p>' : '') + pages[st.page]();
+        if (st.page === 'calendario') fitCalendar();
     }
     function render() {
         // Resumen, reservas, calendario y anuncio solo existen dentro de un alojamiento.
@@ -1548,7 +1553,14 @@
         if (!p) return;
 
         // Calendario
-        if (act === 'nav') { st.month = addMonths(st.month || today.slice(0, 8) + '01', +b.getAttribute('data-step')); renderMain(); return refocus(b); }
+        // Las flechas pasan de golpe todos los meses que se ven.
+        if (act === 'nav') { st.month = addMonths(st.month || today.slice(0, 8) + '01', +b.getAttribute('data-step') * calCount()); renderMain(); return refocus(b); }
+        if (act === 'cal-view' || act === 'cal-size') {
+            cal[act === 'cal-view' ? 'view' : 'size'] = b.getAttribute('data-value');
+            saveCal();
+            renderMain();
+            return refocus(b);
+        }
         if (act === 'today') { st.month = null; return renderMain(); }
         if (act === 'range-cancel') { st.days = st.seg = st.side = st.draft = null; return refreshCalendar(); }
         if (act === 'day') {

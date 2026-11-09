@@ -502,12 +502,35 @@ input.is-bad { border-color: var(--critical); }
 .ad-prop.is-new .ad-inline { margin-top: 12px; }
 
 /* ── Calendario ── */
-.ad-cal-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+.ad-cal-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 12px; }
 .ad-cal-bar .ad-legend { margin: 0 0 0 auto; }
 /* Calendario a un lado y panel de lo elegido al otro */
-.ad-cal-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; margin-bottom: 16px; }
-.ad-cal-layout > .ad-card { margin-bottom: 0; }
-.ad-months { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px 28px; }
+.ad-cal-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 14px; align-items: start; margin-bottom: 16px; }
+.ad-cal-layout > .ad-card { margin-bottom: 0; padding: 16px 18px; }
+.ad-cal-note { margin-top: 12px; }
+/* En el calendario la página usa todo el ancho de la pantalla */
+.ad-main.is-wide { max-width: none; padding-top: 16px; }
+.ad-head-tight { margin-bottom: 12px; }
+.ad-months { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px 28px; }
+/* Varios meses: tres tamaños de casilla */
+.ad-months.is-s .ad-day { min-height: 46px; font-size: 12px; }
+.ad-months.is-s .ad-day small { font-size: 9px; }
+.ad-months.is-m .ad-day { min-height: 58px; font-size: 13.5px; }
+.ad-months.is-m .ad-day small { font-size: 10.5px; }
+.ad-months.is-l .ad-day { min-height: 72px; font-size: 15px; }
+.ad-months.is-l .ad-day small { font-size: 12px; }
+.ad-months.is-l .ad-month-name { font-size: 15px; }
+/* Un solo mes en grande: número arriba a la izquierda y precio debajo */
+.ad-months.is-month { grid-template-columns: minmax(0, 1fr); }
+.ad-months.is-month .ad-month-name { font-size: 20px; margin-bottom: 10px; }
+.ad-months.is-month .ad-dow { font-size: 12px; padding-bottom: 8px; }
+.ad-months.is-month .ad-day {
+    min-height: clamp(64px, calc((100vh - 300px) / 6), 120px); align-items: flex-start; justify-content: space-between;
+    padding: 10px 12px; font-size: 16px;
+}
+.ad-months.is-month .ad-day small { font-size: 14px; font-weight: 600; color: var(--text-2); }
+.ad-months.is-month .ad-day.is-special small { color: var(--accent-text); }
+.ad-months.is-month .ad-day.is-pick small { color: var(--accent-ink); }
 .ad-month-name { font-weight: 700; margin-bottom: 8px; font-size: 13.5px; }
 .ad-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 1px 1px 0; user-select: none; -webkit-user-select: none; }
 .ad-dow { text-align: center; font-size: 10.5px; font-weight: 700; color: var(--muted); padding-bottom: 6px; }
@@ -536,17 +559,18 @@ input.is-bad { border-color: var(--critical); }
 .ad-day.is-sel { position: relative; outline: 2px solid var(--text); outline-offset: -2px; }
 
 /* Panel lateral del calendario */
-.ad-side { position: sticky; top: 78px; display: grid; gap: 12px; max-height: calc(100vh - 94px); overflow-y: auto; padding: 1px; }
+/* Una sola columna que nunca pasa del ancho del panel, aunque la etiqueta de las fechas sea larga */
+.ad-side { position: sticky; top: 78px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; max-height: calc(100vh - 94px); overflow-x: hidden; overflow-y: auto; padding: 1px; }
 .ad-side > .ad-card, .ad-side .ad-offers, .ad-side .ad-options { margin-bottom: 0; }
 .ad-side > .ad-card { padding: 16px; }
 .ad-side > .ad-btn { width: 100%; }
 .ad-side > .ad-link { justify-self: start; text-align: left; }
 .ad-side .ad-offers, .ad-side .ad-options { grid-template-columns: minmax(0, 1fr); }
-.ad-side-head { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+.ad-side-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; min-height: 40px; }
 .ad-side-head > strong { font-size: 16px; font-weight: 700; }
 .ad-side-head .ad-icon-btn { border-radius: 50%; }
 .ad-side-head .ad-side-chip ~ .ad-icon-btn { margin-left: auto; }
-.ad-side-chip { padding: 8px 16px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 14px; font-weight: 700; white-space: nowrap; }
+.ad-side-chip { min-width: 0; max-width: 100%; padding: 7px 14px; border-radius: 18px; background: var(--accent); color: var(--accent-ink); font-size: 13.5px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
 .ad-side-item {
     display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius);
     background: var(--card); box-shadow: var(--shadow); cursor: pointer; text-align: left;
@@ -629,6 +653,8 @@ input.is-bad { border-color: var(--critical); }
     .ad-chart { grid-template-rows: 170px auto; }
     .ad-chart-x span:nth-child(even) { visibility: hidden; }
     .ad-cal-bar .ad-legend { margin-left: 0; flex-basis: 100%; }
+    .ad-months.is-month .ad-day { min-height: 60px; padding: 6px 2px; align-items: center; justify-content: center; font-size: 14px; }
+    .ad-months.is-month .ad-day small { font-size: 10.5px; }
     /* Las tablas pasan a fichas: una reserva por tarjeta */
     .ad-table-wrap { margin: 0; overflow: visible; }
     .ad-table thead { display: none; }
