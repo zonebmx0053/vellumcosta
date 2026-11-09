@@ -222,6 +222,8 @@ function cleanProperty(p) {
                 earlyPercent: int(discounts.earlyPercent, 0, 90),
                 lastDays: int(discounts.lastDays, 0, 60),
                 lastPercent: int(discounts.lastPercent, 0, 90),
+                // Por reservar directamente en la web; se suma al de estancia.
+                web: int(discounts.web, 0, 90),
             },
             // Suplemento por noche por cada huésped a partir de "extraGuestAfter" (0 = no se cobra).
             extraGuestAfter: int(price.extraGuestAfter, 0, 99),

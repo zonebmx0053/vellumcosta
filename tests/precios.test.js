@@ -105,7 +105,7 @@ test('discount: si corresponden varios descuentos, solo se aplica el mayor', () 
 test('quote: suma noches, huéspedes adicionales y limpieza', () => {
     const p = { price: { base: 100, cleaningFee: 50, extraGuestAfter: 4, extraGuestFee: 20 } };
     assert.deepEqual(P.quote(p, '2026-11-02', '2026-11-05', 6, TODAY), {
-        nights: 3, stay: 300, extraGuests: 2, extra: 120, discount: null, cleaning: 50, total: 470,
+        nights: 3, stay: 300, extraGuests: 2, extra: 120, discount: null, web: null, cleaning: 50, total: 470,
     });
     // Sin pasar del límite de huéspedes no hay suplemento.
     assert.equal(P.quote(p, '2026-11-02', '2026-11-05', 4, TODAY).total, 350);
@@ -117,6 +117,19 @@ test('quote: el descuento de estancia no se aplica a la limpieza', () => {
     assert.equal(q.nights, 7);
     assert.deepEqual(q.discount, { type: 'weekly', percent: 10, amount: 98 });   // 10 % de (700 + 280)
     assert.equal(q.total, 700 + 280 - 98 + 50);
+});
+
+test('quote: el descuento por reservar en la web se suma al de estancia y no toca la limpieza', () => {
+    const p = { price: { base: 100, cleaningFee: 50, discounts: { weekly: 10, web: 10 } } };
+    const q = P.quote(p, '2026-11-02', '2026-11-09', 2, TODAY);
+    assert.deepEqual(q.discount, { type: 'weekly', percent: 10, amount: 70 });   // 10 % de 700
+    assert.deepEqual(q.web, { percent: 10, amount: 63 });                        // 10 % de lo que queda (630)
+    assert.equal(q.total, 700 - 70 - 63 + 50);
+    // Sin descuento de estancia, el de la web se aplica sobre todas las noches.
+    const short = P.quote(p, '2026-11-02', '2026-11-05', 2, TODAY);
+    assert.equal(short.discount, null);
+    assert.deepEqual(short.web, { percent: 10, amount: 30 });
+    assert.equal(short.total, 300 - 30 + 50);
 });
 
 test('quote: cada noche con su propio precio, también si la estancia cambia de temporada', () => {
