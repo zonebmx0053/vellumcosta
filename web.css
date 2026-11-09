@@ -93,3 +93,10 @@ html.anim [data-aos="zoom-in"]:not(.aos-animate) { transform: scale(.6); }
 .group[open] .group-open\:rotate-180 { transform: rotate(180deg); }
 /* Iconos grandes en su propia línea (gracias, error, servicios) */
 .leading-none { line-height: 1; }
+
+/* Menú superior: con «Propiedades» son siete enlaces; en tablets se juntan un poco para que quepan */
+@media (min-width: 768px) and (max-width: 1100px) {
+    nav .md\:flex.space-x-8 > :not([hidden]) ~ :not([hidden]) { margin-left: 1.1rem; }
+    nav .md\:flex.space-x-5 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.75rem; }
+    nav .md\:flex.space-x-5 a.px-6 { padding-left: 0.9rem; padding-right: 0.9rem; }
+}
