@@ -1181,6 +1181,10 @@
         }).join('') + '</div>' : '<p class="ad-empty">Este alojamiento todavía no tiene fotos.</p>';
         return card('Galería (' + n + ')', (n ? '<div id="ad-tour-sum">' + tourSummary(p, options) + '</div>' : '') + photos,
             'Las fotos se ven en este orden y la primera es la portada. Dentro de cada estancia, la ficha respeta este orden. Quitar una foto de la galería no borra el archivo.', 'fa-images') +
+            card('Añadir todas las fotos de una carpeta', '<div class="ad-inline">' +
+                '<label class="ad-field"><span class="ad-label">Carpeta en la web</span><input type="text" id="ad-photo-dir" value="fotos/' + esc(p.id) + '/"></label>' +
+                '<button type="button" class="ad-btn ad-btn-solid" data-act="add-folder">' + fa('fa-images') + 'Añadir todas</button></div>',
+                'Añade, en orden, las fotos numeradas de la carpeta (01.jpg, 02.jpg…) que aún no estén en la galería. Si la carpeta tiene la subcarpeta <code>thumbs</code> con las miniaturas, se activan solas.', 'fa-folder-open') +
             card('Añadir una foto', '<div class="ad-inline">' +
                 '<label class="ad-field"><span class="ad-label">Ruta del archivo o dirección https</span><input type="text" id="ad-new-photo" placeholder="fotos/' + esc(p.id) + '/46.jpg"></label>' +
                 '<button type="button" class="ad-btn" data-act="add-photo">' + fa('fa-plus') + 'Añadir</button></div>',
@@ -1188,6 +1192,53 @@
             card('Opciones',
                 bi('Descripción de la foto de portada (accesibilidad y buscadores)', P + 'imageAlt') +
                 field('Usar miniaturas', P + 'thumbs', { kind: 'check', help: 'Actívelo solo si cada foto tiene una copia pequeña con el mismo nombre en la subcarpeta <code>thumbs</code>.' }), '', 'fa-sliders');
+    }
+    // Añade a la galería las fotos numeradas de una carpeta de la web (01.jpg, 02.jpg…, también
+    // 1.jpg o .webp/.png), en orden, hasta la primera que no exista. El panel no puede ver qué
+    // archivos hay en una carpeta, así que pregunta por cada número.
+    function exists(url) {
+        return fetch(url, { method: 'HEAD', cache: 'no-store', credentials: 'same-origin' })
+            .then(function (r) { return r.ok && /^image\//.test(r.headers.get('content-type') || ''); }, function () { return false; });
+    }
+    function findPhoto(dir, n) {
+        var names = [], num = n < 10 ? ['0' + n, String(n)] : [String(n)];
+        num.forEach(function (x) { ['jpg', 'jpeg', 'webp', 'png'].forEach(function (ext) { names.push(dir + x + '.' + ext); }); });
+        var next = function (k) {
+            if (k >= names.length) return Promise.resolve('');
+            return exists(names[k]).then(function (ok) { return ok ? names[k] : next(k + 1); });
+        };
+        return next(0);
+    }
+    function addFolder(p, b) {
+        var box = document.getElementById('ad-photo-dir'), dir = box.value.trim().replace(/^\/+/, '').replace(/\\/g, '/');
+        if (!/^[a-z0-9._\/-]+$/i.test(dir) || /\.\./.test(dir)) { box.classList.add('is-bad'); return toast('Escriba la carpeta, por ejemplo fotos/' + p.id + '/', true); }
+        if (!/\/$/.test(dir)) dir += '/';
+        var wasEmpty = !p.gallery.length, found = [], label = b.innerHTML;
+        b.disabled = true;
+        var step = function (n) {
+            b.innerHTML = fa('fa-spinner fa-spin') + 'Buscando la ' + n + '…';
+            return findPhoto(dir, n).then(function (src) {
+                if (!src || n > 200) return;
+                found.push(src);
+                return step(n + 1);
+            });
+        };
+        step(1).then(function () {
+            return found.length ? exists(dir + 'thumbs/' + found[0].split('/').pop()) : false;
+        }).then(function (thumbs) {
+            b.disabled = false;
+            b.innerHTML = label;
+            if (!found.length) return toast('No hay fotos numeradas (01.jpg, 02.jpg…) en ' + dir + '. Compruebe que la carpeta ya está publicada en la web.', true);
+            var added = found.filter(function (src) { return p.gallery.indexOf(src) < 0; });
+            if (!added.length) return toast('Las ' + found.length + ' fotos de esa carpeta ya están en la galería.');
+            p.gallery = p.gallery.concat(added);
+            p.image = p.gallery[0];
+            // Las miniaturas se activan solo si la galería era de esta carpeta (todas sus fotos las tienen).
+            if (thumbs && wasEmpty) p.thumbs = true;
+            touch();
+            renderMain();
+            toast(added.length + (added.length === 1 ? ' foto añadida' : ' fotos añadidas') + ' a la galería. Pulse Guardar para que se vean en la web.');
+        });
     }
     function tabNormas(P, p) {
         return card('Horarios', grid(field('Hora de entrada (a partir de)', P + 'checkIn', { kind: 'select', options: times() }),
@@ -1593,6 +1644,7 @@
             return api('POST', { action: 'logout' }).then(function () { st.data = null; renderLogin(load); });
         }
         if (act === 'sync') { st.sync = 'loading'; renderMain(); return loadEvents(); }
+        if (act === 'add-folder' && p) return addFolder(p, b);
         if (act === 'ui') { st[b.getAttribute('data-key')] = value; renderMain(); return refocus(b); }
         if (act === 'table') { st.table[b.getAttribute('data-key')] = !st.table[b.getAttribute('data-key')]; renderMain(); return refocus(b); }
         if (act === 'rule') { st.rule = st.rule === i ? null : i; renderMain(); return refocus(b); }
